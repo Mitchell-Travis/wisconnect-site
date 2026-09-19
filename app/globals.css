@@ -1229,3 +1229,96 @@ main::after{
   position:relative;
   z-index:1;
 }
+
+
+/* Rail-aware content gutter system — 2026-09-19 */
+:root{
+  --rail-max:1280px;
+  --content-gutter:56px;
+}
+
+/*
+  Rails define the outer frame.
+  The shell aligns to the rails, then adds an inner gutter so content
+  never sits directly against the frame.
+*/
+.shell{
+  width:min(var(--rail-max),calc(100% - 48px));
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:var(--content-gutter);
+  padding-right:var(--content-gutter);
+  box-sizing:border-box;
+}
+
+/* Keep nav aligned with the same frame, but slightly tighter inside */
+.nav-shell{
+  padding-left:40px;
+  padding-right:40px;
+}
+
+/* Give major two-column layouts a Stripe-like breathing rhythm */
+.hero-grid,
+.manifesto-grid,
+.split-heading,
+.global-grid{
+  column-gap:clamp(32px,4vw,64px);
+}
+
+/* Dense content grids use a smaller, consistent gutter */
+.model-grid,
+.member-layout,
+.stories-grid,
+.join-grid{
+  gap:24px;
+}
+
+/* Tablet */
+@media(max-width:980px){
+  :root{
+    --content-gutter:30px;
+  }
+
+  .shell{
+    width:calc(100% - 36px);
+    padding-left:var(--content-gutter);
+    padding-right:var(--content-gutter);
+  }
+
+  .nav-shell{
+    padding-left:22px;
+    padding-right:22px;
+  }
+
+  .hero-grid,
+  .manifesto-grid,
+  .split-heading,
+  .global-grid{
+    column-gap:28px;
+  }
+}
+
+/* Mobile */
+@media(max-width:620px){
+  :root{
+    --content-gutter:16px;
+  }
+
+  .shell{
+    width:calc(100% - 24px);
+    padding-left:var(--content-gutter);
+    padding-right:var(--content-gutter);
+  }
+
+  .nav-shell{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .model-grid,
+  .member-layout,
+  .stories-grid,
+  .join-grid{
+    gap:18px;
+  }
+}
