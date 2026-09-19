@@ -375,3 +375,31 @@ h1{
   background:#4B2E83;
   border-color:#4B2E83;
 }
+
+
+/* Exact original interaction colors — 2026-09-19 */
+.button{
+  background:#4B2E83;
+  color:#fff;
+  box-shadow:0 8px 24px rgba(75,46,131,.18);
+}
+.button:hover{
+  background:#3B226E;
+}
+.text-link{
+  color:#4B2E83;
+}
+.desktop-nav a:not(.button):after{
+  background:#4B2E83;
+}
+.sector-tabs button,
+.region-buttons button{
+  background:rgba(255,255,255,.72);
+  color:#24182F;
+}
+.sector-tabs button.active,
+.region-buttons button.active{
+  background:#2A1B3D;
+  border-color:#2A1B3D;
+  color:#fff;
+}
