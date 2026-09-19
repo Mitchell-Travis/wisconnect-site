@@ -33,7 +33,7 @@ export default function Home(){
     </div></header>
 
     <section id="top" className="hero light-surface"><div className="shell hero-grid">
-      <div className="hero-copy"><h1 className="hero-title-long">Black Women Business Development &amp; Resource Center</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
+      <div className="hero-copy"><p className="eyebrow">Local roots. Global reach.</p><h1 className="hero-title-long">Black Women Business Development &amp; Resource Center</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
       <div className="hero-art"><div className="orbit orbit-a"></div><div className="orbit orbit-b"></div><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
     </div></section>
 
