@@ -1627,3 +1627,39 @@ main::after{
     letter-spacing:-.04em;
   }
 }
+
+
+/* Auto-hide nav + compact mobile hamburger — 2026-09-19 */
+.site-header{
+  transform:translate3d(0,0,0);
+  transition:
+    transform .34s cubic-bezier(.22,.61,.36,1),
+    background-color .28s ease,
+    border-color .28s ease,
+    box-shadow .28s ease;
+  will-change:transform;
+}
+
+.site-header.nav-hidden{
+  transform:translate3d(0,calc(-100% - 2px),0);
+}
+
+@media(max-width:700px){
+  .menu-button{
+    width:38px;
+    height:38px;
+    border-radius:5px;
+    gap:3px;
+  }
+
+  .menu-button span{
+    width:18px;
+    height:2.5px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .site-header{
+    transition:none;
+  }
+}
