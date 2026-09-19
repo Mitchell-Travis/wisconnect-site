@@ -1814,62 +1814,83 @@ main::after{
   display:none !important;
 }
 
-/* Hero 3D artwork frame correction — use the original portrait footprint */
+/* True cutout treatment for the supplied hero artwork — 2026-09-19 */
+.hero-filter-defs{
+  position:absolute;
+  width:0;
+  height:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.hero-art{
+  overflow:visible;
+}
+
 .hero-portrait[src$="hero-3d.png"]{
-  width:min(455px,35vw);
-  height:565px;
+  width:min(820px,58vw);
+  height:auto;
   max-height:none;
-  right:-8px;
-  bottom:0;
+  right:-205px;
+  bottom:-2px;
+  left:auto;
   transform:none;
-  object-fit:cover;
-  object-position:50% 50%;
-  filter:drop-shadow(0 20px 28px rgba(41,24,51,.08));
+  object-fit:contain;
+  object-position:bottom right;
+  filter:url(#hero-remove-black);
 }
 
 @media(max-width:1120px) and (min-width:981px){
   .hero-portrait[src$="hero-3d.png"]{
-    width:min(410px,36vw);
-    height:535px;
-    right:-28px;
-    object-position:50% 50%;
+    width:min(720px,62vw);
+    right:-185px;
+    bottom:0;
   }
 }
 
 @media(max-width:980px) and (min-width:701px){
+  .hero-grid{
+    overflow:visible;
+  }
+
+  .hero-art{
+    min-height:510px;
+    overflow:visible;
+  }
+
   .hero-portrait[src$="hero-3d.png"]{
-    width:min(350px,42vw);
-    height:505px;
-    right:-48px;
-    object-position:50% 50%;
+    width:min(650px,72vw);
+    right:-175px;
+    bottom:8px;
   }
 }
 
 @media(max-width:700px){
   .hero-art{
-    min-height:470px;
+    min-height:365px;
+    margin-top:8px;
+    overflow:hidden;
   }
 
   .hero-portrait[src$="hero-3d.png"]{
-    width:min(430px,98vw);
-    height:470px;
+    width:124vw;
+    height:auto;
     max-height:none;
     left:50%;
     right:auto;
     bottom:0;
-    transform:translateX(-46%);
-    object-fit:cover;
-    object-position:50% 50%;
+    transform:translateX(-44%);
+    object-fit:contain;
   }
 }
 
 @media(max-width:380px){
   .hero-art{
-    min-height:455px;
+    min-height:340px;
   }
 
   .hero-portrait[src$="hero-3d.png"]{
-    width:100vw;
-    height:455px;
+    width:130vw;
+    transform:translateX(-44%);
   }
 }
