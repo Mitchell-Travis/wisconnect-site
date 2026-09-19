@@ -35,30 +35,7 @@ export default function Home(){
 
     <section id="top" className="hero light-surface"><div className="shell hero-grid">
       <div className="hero-copy"><h1 className="hero-title-long">Black Women Business Development &amp; Resource Center</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
-      <div className="hero-art hero-symbolic-art">
-        <img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/>
-        <svg className="hero-gold-thread" viewBox="0 0 620 620" fill="none" aria-hidden="true">
-          <path d="M72 182C170 88 330 80 470 150C575 202 588 300 522 350C451 404 301 384 190 430C105 466 88 522 170 564" />
-          <path className="thread-fine" d="M42 390C160 300 324 278 498 328C564 348 596 390 578 432" />
-        </svg>
-        <div className="hero-symbol hero-symbol-people" aria-hidden="true">
-          <div className="people-glass">
-            <span className="person person-main"></span>
-            <span className="person person-left"></span>
-            <span className="person person-right"></span>
-          </div>
-        </div>
-        <div className="hero-symbol hero-symbol-capital" aria-hidden="true">
-          <span className="gold-loop gold-loop-one"></span>
-          <span className="gold-loop gold-loop-two"></span>
-        </div>
-        <div className="hero-symbol hero-symbol-community" aria-hidden="true">
-          <span className="woven-band woven-band-one"></span>
-          <span className="woven-band woven-band-two"></span>
-        </div>
-        <span className="hero-float hero-float-purple" aria-hidden="true"></span>
-        <span className="hero-float hero-float-gold" aria-hidden="true"></span>
-      </div>
+      <div className="hero-art"><img className="hero-portrait" src="assets/hero-3d.png" alt="WisConnect — People, Capital and Communities"/></div>
     </div></section>
 
     <section id="about" className="manifesto section section-roomy"><div className="shell manifesto-grid"><div><p className="eyebrow">The belief behind the cooperative</p><h2>When women own,<br/>communities grow.</h2></div><div className="manifesto-copy"><p>WisConnect brings people, capital, businesses and community assets into a cooperative model designed to create opportunity that can be shared.</p><p>It is about ownership, dignity, professional growth and economic participation that strengthens the wider community.</p></div></div></section>
