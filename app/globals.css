@@ -1677,3 +1677,132 @@ main::after{
 .desktop-nav .language{
   color:#5B545E;
 }
+
+
+/* Animated textile hero — 2026-09-19 */
+.hero-art.textile-hero{
+  position:relative;
+  align-self:stretch;
+  min-height:588px;
+  margin:0;
+  overflow:visible;
+  pointer-events:none;
+  isolation:isolate;
+}
+
+.textile-flow{
+  position:absolute;
+  top:50%;
+  right:-22%;
+  width:clamp(560px,52vw,860px);
+  max-width:none;
+  height:auto;
+  object-fit:contain;
+  transform-origin:82% 50%;
+  will-change:transform,opacity,filter;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+.textile-flow-main{
+  z-index:2;
+  opacity:.98;
+  filter:saturate(1.06) contrast(1.02);
+  animation:textileDriftMain 18s cubic-bezier(.45,.05,.35,.95) infinite alternate;
+}
+
+.textile-flow-back{
+  z-index:1;
+  right:-18%;
+  opacity:.24;
+  filter:blur(18px) saturate(1.15);
+  animation:textileDriftGlow 26s cubic-bezier(.45,.05,.35,.95) infinite alternate;
+}
+
+@keyframes textileDriftMain{
+  0%{
+    transform:translate3d(2%,-51%,0) scale(1.18) rotate(-1.2deg);
+  }
+  48%{
+    transform:translate3d(-4%,-48%,0) scale(1.27) rotate(.9deg);
+  }
+  100%{
+    transform:translate3d(1%,-52%,0) scale(1.22) rotate(-.3deg);
+  }
+}
+
+@keyframes textileDriftGlow{
+  0%{
+    transform:translate3d(5%,-48%,0) scale(1.24) rotate(1deg);
+    opacity:.18;
+  }
+  55%{
+    transform:translate3d(-7%,-53%,0) scale(1.34) rotate(-1.2deg);
+    opacity:.30;
+  }
+  100%{
+    transform:translate3d(1%,-49%,0) scale(1.28) rotate(.4deg);
+    opacity:.22;
+  }
+}
+
+@media(max-width:1120px) and (min-width:981px){
+  .hero-art.textile-hero{
+    min-height:568px;
+  }
+  .textile-flow{
+    right:-30%;
+    width:clamp(520px,56vw,760px);
+  }
+}
+
+@media(max-width:980px) and (min-width:701px){
+  .hero-art.textile-hero{
+    min-height:500px;
+    overflow:hidden;
+  }
+  .textile-flow{
+    right:-17%;
+    width:min(760px,90vw);
+  }
+}
+
+@media(max-width:700px){
+  .hero-art.textile-hero{
+    min-height:360px;
+    margin-top:6px;
+    overflow:hidden;
+  }
+  .textile-flow{
+    top:47%;
+    right:-34%;
+    width:min(720px,142vw);
+  }
+  .textile-flow-back{
+    right:-30%;
+    filter:blur(14px) saturate(1.12);
+  }
+}
+
+@media(max-width:380px){
+  .hero-art.textile-hero{
+    min-height:320px;
+  }
+  .textile-flow{
+    right:-38%;
+    width:150vw;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .textile-flow-main,
+  .textile-flow-back{
+    animation:none;
+  }
+  .textile-flow-main{
+    transform:translate3d(0,-50%,0) scale(1.22);
+  }
+  .textile-flow-back{
+    transform:translate3d(2%,-50%,0) scale(1.28);
+  }
+}
