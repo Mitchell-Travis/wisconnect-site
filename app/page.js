@@ -10,6 +10,13 @@ const regions = {
   'Vietnam / Southeast Asia': 'A priority direction within WisConnect’s wider global-connection vision.'
 };
 
+function ArrowUpRightIcon(){
+  return <svg className="inline-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 14L14 6M8 6h6v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+}
+function ArrowDownIcon(){
+  return <svg className="inline-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4v11m0 0l-4-4m4 4l4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+}
+
 export default function Home(){
   const [menuOpen,setMenuOpen]=useState(false);
   const [sector,setSector]=useState(sectors[0]);
@@ -26,7 +33,7 @@ export default function Home(){
     </div></header>
 
     <section id="top" className="hero light-surface"><div className="shell hero-grid">
-      <div className="hero-copy"><p className="eyebrow">A worker-owned cooperative for women</p><h1>Built by women.<br/><span className="hero-emphasis">Owned together.</span><br/>Growing beyond borders.</h1><p className="hero-lede">WisConnect connects women entrepreneurs to shared ownership, capital, opportunity and a global network — turning individual progress into collective prosperity.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative ↗</a><a className="text-link" href="#cooperative">See how it works ↓</a></div></div>
+      <div className="hero-copy"><p className="eyebrow">Local roots. Global reach.</p><h1>Connected women.<br/>Shared ownership.<br/>Stronger communities.</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
       <div className="hero-art"><div className="orbit orbit-a"></div><div className="orbit orbit-b"></div><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
     </div></section>
 
@@ -55,7 +62,7 @@ export default function Home(){
 
     <section id="stories" className="section stories-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Stories from the network</p><h2>Make the institution feel alive.</h2></div><p>Member stories, cooperative updates and events should show real work and real outcomes.</p></div><div className="stories-grid"><article className="story-feature"><div className="story-media"></div><span>Featured story</span><h3>How a WisConnect member is building opportunity through her business.</h3><p>Real member story and verified outcome will appear here.</p></article><div className="story-stack"><article><span>News</span><h3>Cooperative update</h3></article><article><span>Event</span><h3>Upcoming event</h3></article><article><span>Gallery</span><h3>Community moment</h3></article></div></div></div></section>
 
-    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Different audiences need clear paths into the WisConnect ecosystem.</p><div className="join-grid"><a href="mailto:hello@wisconnect.co?subject=Membership%20Interest"><span>01 · Membership</span><strong>Become a Member</strong><p>Start the membership conversation.</p><b>↗</b></a><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b>↗</b></a><a href="#members"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b>↗</b></a></div></div></section>
+    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Different audiences need clear paths into the WisConnect ecosystem.</p><div className="join-grid"><a href="mailto:hello@wisconnect.co?subject=Membership%20Interest"><span>01 · Membership</span><strong>Become a Member</strong><p>Start the membership conversation.</p><b><ArrowUpRightIcon/></b></a><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="#members"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
 
     <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src="assets/logo-horizontal.webp" alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>Explore</strong><a href="#about">About</a><a href="#what-we-do">What We Do</a><a href="#members">Members</a><a href="#impact">Impact</a></div><div><strong>Connect</strong><a href="#join">Join</a><a href="#stories">Stories & Events</a><a href="mailto:hello@wisconnect.co">Contact</a><span>EN / FR</span></div><div><strong>Next phase</strong><span>Marketplace</span><span>Member Portal</span><span>Mobile App</span></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><span>Privacy · Terms</span></div></footer>
   </main>
