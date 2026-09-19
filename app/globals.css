@@ -1668,3 +1668,121 @@ main::after{
     display:none !important;
   }
 }
+
+
+/* Hero scroll bridge visibility fix — 2026-09-19 */
+.hero{
+  overflow:visible;
+  position:relative;
+  z-index:3;
+}
+
+.hero-grid{
+  overflow:visible;
+}
+
+.hero-art{
+  overflow:visible;
+}
+
+.hero-portrait{
+  z-index:5;
+  pointer-events:none;
+}
+
+.hero-flow-line{
+  z-index:4;
+  right:18px;
+  top:28%;
+  height:390px;
+  width:2px;
+  opacity:calc(var(--hero-line-opacity) * .9);
+  background:linear-gradient(
+    180deg,
+    rgba(86,53,120,0) 0%,
+    rgba(86,53,120,.14) 14%,
+    rgba(118,92,135,.55) 48%,
+    rgba(185,149,90,.48) 78%,
+    rgba(185,149,90,0) 100%
+  );
+}
+
+.hero-art::before{
+  right:-34px;
+  top:20%;
+  width:126px;
+  height:390px;
+  opacity:calc(var(--hero-glow-opacity) * .95);
+}
+
+.manifesto{
+  position:relative;
+  z-index:1;
+  overflow:visible;
+  isolation:isolate;
+}
+
+.manifesto::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:0;
+  right:0;
+  top:-96px;
+  height:150px;
+  pointer-events:none;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(250,248,245,.62) 58%,
+    var(--sand) 100%
+  );
+}
+
+.manifesto-grid{
+  position:relative;
+  z-index:2;
+}
+
+/* Let the portrait visibly bridge the boundary instead of disappearing at it */
+@media(min-width:701px){
+  .hero-portrait{
+    transform:
+      translate3d(0,var(--hero-image-shift),0)
+      scale(var(--hero-image-scale));
+  }
+}
+
+/* More obvious, but still restrained, on touch/tablet scrolling */
+@media(max-width:980px) and (min-width:701px){
+  .hero-flow-line{
+    right:-2px;
+    height:320px;
+  }
+  .hero-art::before{
+    right:-66px;
+    height:320px;
+  }
+}
+
+/* On phones keep the transition short so it doesn't cover the next section */
+@media(max-width:700px){
+  .hero{
+    overflow:hidden;
+  }
+  .hero-flow-line{
+    height:180px;
+  }
+  .manifesto::after{
+    display:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero{
+    overflow:hidden;
+  }
+  .manifesto::after{
+    display:none;
+  }
+}
