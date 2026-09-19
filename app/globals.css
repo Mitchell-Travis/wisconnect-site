@@ -1806,3 +1806,10 @@ main::after{
     transform:translate3d(2%,-50%,0) scale(1.28);
   }
 }
+
+
+/* Remove remaining hero ring — 2026-09-19 */
+.hero:before{
+  content:none !important;
+  display:none !important;
+}
