@@ -1627,3 +1627,9 @@ main::after{
     letter-spacing:-.04em;
   }
 }
+
+
+/* Header logo black treatment — 2026-09-19 */
+.site-header .brand img{
+  filter:grayscale(1) brightness(0);
+}
