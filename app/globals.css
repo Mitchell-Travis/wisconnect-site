@@ -1135,3 +1135,97 @@ h1{
 .menu-button span{
   background:#4B2E83;
 }
+
+
+/* Global container rails system — 2026-09-19 */
+:root{
+  --content-max:1220px;
+  --rail-max:1280px;
+  --rail-color:rgba(41,24,51,.10);
+  --rail-strong:rgba(41,24,51,.14);
+}
+
+/* Persistent outer frame */
+main{
+  position:relative;
+}
+main::before,
+main::after{
+  content:"";
+  position:fixed;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:var(--rail-color);
+  pointer-events:none;
+  z-index:88;
+}
+main::before{
+  left:max(24px,calc((100vw - var(--rail-max))/2));
+}
+main::after{
+  right:max(24px,calc((100vw - var(--rail-max))/2));
+}
+
+/* Navigation rule intersects the vertical rails */
+.site-header{
+  border-bottom:1px solid var(--rail-strong);
+}
+.site-header.scrolled{
+  border-bottom-color:var(--rail-strong);
+}
+
+/* Keep real content comfortably inside the frame */
+.shell{
+  width:min(var(--content-max),calc(100% - 80px));
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* Small rail ticks make the nav/frame intersection feel intentional */
+.nav-shell{
+  position:relative;
+}
+.nav-shell::before,
+.nav-shell::after{
+  content:"";
+  position:absolute;
+  bottom:-1px;
+  width:1px;
+  height:10px;
+  background:var(--rail-strong);
+}
+.nav-shell::before{left:-30px}
+.nav-shell::after{right:-30px}
+
+/* Tablet */
+@media(max-width:980px){
+  :root{
+    --rail-max:100%;
+  }
+  main::before{left:18px}
+  main::after{right:18px}
+  .shell{
+    width:calc(100% - 52px);
+  }
+  .nav-shell::before{left:-8px}
+  .nav-shell::after{right:-8px}
+}
+
+/* Mobile */
+@media(max-width:620px){
+  main::before{left:12px}
+  main::after{right:12px}
+  .shell{
+    width:calc(100% - 36px);
+  }
+  .nav-shell::before{left:-6px}
+  .nav-shell::after{right:-6px}
+}
+
+/* Dark areas keep the rails subtle, never dominant */
+.impact-section,
+.site-footer{
+  position:relative;
+  z-index:1;
+}
