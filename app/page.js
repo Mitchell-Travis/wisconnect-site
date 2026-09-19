@@ -27,7 +27,7 @@ export default function Home(){
   const close=()=>setMenuOpen(false);
   return <main>
     <header className={`site-header ${scrolled?'scrolled':''} ${navHidden&&!menuOpen?'nav-hidden':''}`}><div className="shell nav-shell">
-      <a className="brand" href="#top" onClick={close}><img src="assets/logo-horizontal.webp" alt="WisConnect"/></a>
+      <a className="brand brand-lockup" href="#top" onClick={close} aria-label="WisConnect home"><img className="brand-symbol" src="assets/logo-symbol.webp" alt=""/><span className="brand-copy"><strong>WisConnect</strong><small>People · Resources · Shared Prosperity</small></span></a>
       <nav className={`desktop-nav ${menuOpen?'open':''}`} aria-label="Primary navigation">
         <a href="#about" onClick={close}>About</a><a href="#what-we-do" onClick={close}>What We Do</a><a href="#cooperative" onClick={close}>Our Cooperative</a><a href="#members" onClick={close}>Members</a><a href="#impact" onClick={close}>Impact</a><a href="#stories" onClick={close}>Stories</a><span className="language">EN / FR</span><a className="button button-small" href="#join" onClick={close}>Join Us</a>
       </nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}><span></span><span></span><span></span></button>
