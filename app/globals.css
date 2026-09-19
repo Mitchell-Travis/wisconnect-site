@@ -1696,7 +1696,7 @@ main::after{
   top:28%;
   height:390px;
   width:2px;
-  opacity:calc(var(--hero-line-opacity) * .9);
+  opacity:var(--hero-line-opacity);
   background:linear-gradient(
     180deg,
     rgba(86,53,120,0) 0%,
@@ -1712,7 +1712,7 @@ main::after{
   top:20%;
   width:126px;
   height:390px;
-  opacity:calc(var(--hero-glow-opacity) * .95);
+  opacity:var(--hero-glow-opacity);
 }
 
 .manifesto{
