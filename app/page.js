@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const sectors = ['Food & Beverages','Consulting Services','Agriculture','Textiles & Apparel','Handmade Crafts','Training'];
 const regions = {
@@ -23,7 +23,41 @@ export default function Home(){
   const [region,setRegion]=useState('Africa');
   const [scrolled,setScrolled]=useState(false);
   const [navHidden,setNavHidden]=useState(false);
+  const heroRef=useRef(null);
   useEffect(()=>{const fn=()=>{const y=window.scrollY;setScrolled(y>40);setNavHidden(y>90)};fn();window.addEventListener('scroll',fn,{passive:true});return()=>window.removeEventListener('scroll',fn)},[]);
+  useEffect(()=>{
+    const hero=heroRef.current;
+    if(!hero) return;
+    const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame=0;
+    const update=()=>{
+      frame=0;
+      if(reduceMotion.matches){
+        hero.style.setProperty('--hero-text-y','0px');
+        hero.style.setProperty('--hero-text-opacity','1');
+        hero.style.setProperty('--hero-current-opacity','1');
+        hero.style.setProperty('--hero-current-y','0px');
+        hero.style.setProperty('--hero-smile-opacity','0');
+        hero.style.setProperty('--hero-smile-y','10px');
+        return;
+      }
+      const rect=hero.getBoundingClientRect();
+      const travelled=Math.max(0,-rect.top);
+      const distance=Math.min(360,Math.max(250,hero.offsetHeight*.52));
+      const p=Math.min(1,travelled/distance);
+      hero.style.setProperty('--hero-text-y',`${(-44*p).toFixed(2)}px`);
+      hero.style.setProperty('--hero-text-opacity',`${(1-.30*p).toFixed(3)}`);
+      hero.style.setProperty('--hero-current-opacity',`${(1-p).toFixed(3)}`);
+      hero.style.setProperty('--hero-current-y',`${(-7*p).toFixed(2)}px`);
+      hero.style.setProperty('--hero-smile-opacity',`${p.toFixed(3)}`);
+      hero.style.setProperty('--hero-smile-y',`${(10*(1-p)).toFixed(2)}px`);
+    };
+    const onScroll=()=>{if(!frame) frame=requestAnimationFrame(update)};
+    update();
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll);
+    return()=>{window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',onScroll);if(frame)cancelAnimationFrame(frame)};
+  },[]);
   const close=()=>setMenuOpen(false);
   return <main>
     <header className={`site-header ${scrolled?'scrolled':''} ${navHidden&&!menuOpen?'nav-hidden':''}`}><div className="shell nav-shell">
@@ -33,9 +67,9 @@ export default function Home(){
       </nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}><span></span><span></span><span></span></button>
     </div></header>
 
-    <section id="top" className="hero light-surface"><div className="shell hero-grid">
+    <section ref={heroRef} id="top" className="hero light-surface"><div className="shell hero-grid">
       <div className="hero-copy"><h1 className="hero-title-long">Black Women Business Development &amp; Resource Center</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
-      <div className="hero-art"><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
+      <div className="hero-art"><img className="hero-portrait hero-portrait-current" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/><img className="hero-portrait hero-portrait-smiling" src="assets/hero-smiling.webp" alt="" aria-hidden="true"/></div>
     </div></section>
 
     <section id="about" className="manifesto section section-roomy"><div className="shell manifesto-grid"><div><p className="eyebrow">The belief behind the cooperative</p><h2>When women own,<br/>communities grow.</h2></div><div className="manifesto-copy"><p>WisConnect brings people, capital, businesses and community assets into a cooperative model designed to create opportunity that can be shared.</p><p>It is about ownership, dignity, professional growth and economic participation that strengthens the wider community.</p></div></div></section>
