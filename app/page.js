@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import heroImage from './heroData';
 
 const sectors = ['Food & Beverages','Consulting Services','Agriculture','Textiles & Apparel','Handmade Crafts','Training'];
 const regions = {
