@@ -1213,3 +1213,25 @@ h1{
   height:2px;
   background:#4B2E83;
 }
+
+
+/* Hamburger white corner shell — 2026-09-19 */
+.menu-button{
+  width:44px;
+  height:44px;
+  padding:0;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:none;
+}
+.menu-button:hover{
+  background:#fff;
+  border:0;
+  box-shadow:none;
+}
+.menu-button span{
+  width:20px;
+  height:2px;
+  background:#4B2E83;
+}
