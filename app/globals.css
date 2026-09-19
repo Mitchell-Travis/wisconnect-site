@@ -1165,3 +1165,29 @@ h1{
 @media(max-width:980px){
   .menu-button{display:flex}
 }
+
+
+/* Hamburger minimal reset — 2026-09-19 */
+.menu-button{
+  width:44px;
+  height:44px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.menu-button:hover{
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none;
+}
+.menu-button:focus-visible{
+  outline:2px solid rgba(75,46,131,.18);
+  outline-offset:3px;
+}
+.menu-button span{
+  width:20px;
+  height:2px;
+  background:#4B2E83;
+}
