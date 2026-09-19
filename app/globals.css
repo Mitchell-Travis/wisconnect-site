@@ -1323,121 +1323,19 @@ main::after{
   }
 }
 
-
-/* WisConnect typography + hero art direction — 2026-09-19 */
-:root{
-  --type-sans:var(--font-sans), "Segoe UI", Arial, sans-serif;
-  --type-display:var(--font-display), Georgia, "Times New Roman", serif;
+/* Preserve compact hero artwork — 2026-09-19 */
+.inline-icon{
+  width:16px;
+  height:16px;
+  flex:0 0 auto;
+  display:inline-block;
+  vertical-align:middle;
+}
+.join-grid b .inline-icon{
+  width:18px;
+  height:18px;
 }
 
-body,
-button,
-input,
-textarea,
-select{
-  font-family:var(--type-sans);
-}
-
-body{
-  font-size:16px;
-  line-height:1.65;
-  letter-spacing:-.008em;
-}
-
-h1,
-h2{
-  font-family:var(--type-display);
-  font-weight:500;
-  letter-spacing:-.036em;
-  text-wrap:balance;
-}
-
-h3{
-  font-family:var(--type-sans);
-  font-weight:600;
-  letter-spacing:-.03em;
-}
-
-.eyebrow{
-  font-family:var(--type-sans);
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.15em;
-  line-height:1.4;
-}
-
-.desktop-nav{
-  font-family:var(--type-sans);
-  font-size:13.5px;
-  font-weight:600;
-  letter-spacing:-.01em;
-}
-
-.button,
-.text-link{
-  font-family:var(--type-sans);
-  font-weight:650;
-  letter-spacing:-.01em;
-}
-
-.manifesto h2,
-.section-heading h2,
-.global-copy h2,
-.join-section h2{
-  font-family:var(--type-display);
-  font-size:clamp(46px,4.45vw,66px);
-  font-weight:500;
-  line-height:1.02;
-  letter-spacing:-.035em;
-}
-
-.manifesto-copy,
-.split-heading>p,
-.global-copy>p:not(.eyebrow),
-.business-copy p,
-.program-list p{
-  letter-spacing:-.01em;
-}
-
-.model-card h3,
-.program-list h3{
-  font-family:var(--type-sans);
-  font-weight:600;
-}
-
-.model-card h3{
-  font-size:36px;
-}
-
-.program-list h3{
-  font-size:36px;
-  line-height:1.14;
-}
-
-.business-copy h3{
-  font-family:var(--type-display);
-  font-size:50px;
-  font-weight:500;
-  letter-spacing:-.03em;
-  line-height:1.02;
-}
-
-.placeholder-copy strong,
-.member-mini strong,
-.join-grid strong,
-.impact-grid strong{
-  font-family:var(--type-display);
-  font-weight:500;
-  letter-spacing:-.025em;
-}
-
-.stories-grid h3{
-  font-family:var(--type-sans);
-  font-weight:600;
-  letter-spacing:-.025em;
-}
-
-/* Hero: quieter image, stronger editorial voice */
 .hero{
   min-height:660px;
   padding-top:72px;
@@ -1445,58 +1343,19 @@ h3{
     radial-gradient(circle at 84% 42%,rgba(220,207,228,.22),transparent 28%),
     linear-gradient(180deg,#fff 0%,#fff 84%,#fbf9fc 100%);
 }
-
 .hero:after{
   background:linear-gradient(90deg,rgba(255,255,255,.99),rgba(255,255,255,.88) 47%,rgba(255,255,255,.16) 78%,rgba(255,255,255,.02));
 }
-
 .hero-grid{
   min-height:588px;
   grid-template-columns:minmax(0,1.18fr) minmax(330px,.82fr);
   gap:48px;
   align-items:center;
 }
-
 .hero-copy{
   max-width:690px;
   padding:54px 0 62px;
 }
-
-.hero-copy .eyebrow{
-  max-width:420px;
-  color:#765C87;
-}
-
-h1{
-  max-width:690px;
-  margin-top:18px;
-  font-family:var(--type-display);
-  font-size:clamp(58px,5.15vw,76px);
-  font-weight:500;
-  line-height:.955;
-  letter-spacing:-.042em;
-  color:#291833;
-}
-
-.hero-emphasis{
-  color:#563578;
-}
-
-.hero-lede{
-  max-width:575px;
-  margin-top:28px;
-  font-family:var(--type-sans);
-  font-size:17px;
-  line-height:1.68;
-  letter-spacing:-.012em;
-  color:#655E68;
-}
-
-.hero-actions{
-  margin-top:32px;
-  gap:22px;
-}
-
 .hero-art{
   position:relative;
   align-self:stretch;
@@ -1504,7 +1363,6 @@ h1{
   margin:0;
   overflow:visible;
 }
-
 .hero-portrait{
   position:absolute;
   left:auto;
@@ -1518,7 +1376,6 @@ h1{
   object-position:bottom right;
   filter:drop-shadow(0 20px 28px rgba(41,24,51,.08));
 }
-
 .orbit-a{
   width:410px;
   height:410px;
@@ -1526,7 +1383,6 @@ h1{
   top:115px;
   border-color:rgba(118,92,135,.11);
 }
-
 .orbit-b{
   width:285px;
   height:435px;
@@ -1535,22 +1391,14 @@ h1{
   border-color:rgba(185,149,90,.14);
 }
 
-/* Compact desktop */
 @media(max-width:1120px) and (min-width:981px){
-  .hero{
-    min-height:640px;
-  }
+  .hero{min-height:640px}
   .hero-grid{
     min-height:568px;
     grid-template-columns:minmax(0,1.2fr) minmax(305px,.8fr);
     gap:24px;
   }
-  .hero-copy{
-    padding:48px 0 56px;
-  }
-  h1{
-    font-size:clamp(54px,5.45vw,66px);
-  }
+  .hero-copy{padding:48px 0 56px}
   .hero-portrait{
     width:min(410px,36vw);
     right:-28px;
@@ -1568,7 +1416,6 @@ h1{
   }
 }
 
-/* Tablet portrait remains side-by-side */
 @media(max-width:980px) and (min-width:701px){
   .hero{
     min-height:620px;
@@ -1579,27 +1426,8 @@ h1{
     grid-template-columns:minmax(0,1.18fr) minmax(235px,.82fr);
     gap:6px;
   }
-  .hero-copy{
-    padding:38px 0 46px;
-  }
-  h1{
-    margin-top:16px;
-    font-size:clamp(46px,6vw,55px);
-    line-height:.97;
-  }
-  .hero-lede{
-    max-width:480px;
-    margin-top:22px;
-    font-size:15.5px;
-    line-height:1.65;
-  }
-  .hero-actions{
-    margin-top:24px;
-    gap:14px;
-  }
-  .hero-art{
-    min-height:552px;
-  }
+  .hero-copy{padding:38px 0 46px}
+  .hero-art{min-height:552px}
   .hero-portrait{
     width:min(350px,42vw);
     right:-48px;
@@ -1619,7 +1447,6 @@ h1{
   }
 }
 
-/* Phone */
 @media(max-width:700px){
   .hero{
     min-height:auto;
@@ -1632,22 +1459,6 @@ h1{
   .hero-copy{
     max-width:100%;
     padding:40px 0 8px;
-  }
-  h1{
-    max-width:100%;
-    margin-top:15px;
-    font-size:clamp(43px,11.7vw,52px);
-    line-height:.96;
-    letter-spacing:-.04em;
-  }
-  .hero-lede{
-    max-width:100%;
-    margin-top:22px;
-    font-size:16px;
-    line-height:1.65;
-  }
-  .hero-actions{
-    margin-top:24px;
   }
   .hero-art{
     min-height:clamp(390px,105vw,470px);
@@ -1666,18 +1477,5 @@ h1{
     right:-135px;
     top:58px;
   }
-  .orbit-b{
-    display:none;
-  }
-  .manifesto h2,
-  .section-heading h2,
-  .global-copy h2,
-  .join-section h2{
-    font-size:clamp(42px,11vw,50px);
-    line-height:1.02;
-  }
-  .program-list h3,
-  .model-card h3{
-    font-size:32px;
-  }
+  .orbit-b{display:none}
 }
