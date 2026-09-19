@@ -355,3 +355,23 @@ h1{
   .story-media{height:230px}
   .footer-bottom{flex-direction:column}
 }
+
+/* Button color restore — 2026-09-19 */
+.button{
+  background:#4B2E83;
+  color:#fff;
+}
+.button:hover{
+  background:#3B226E;
+}
+.text-link{
+  color:#4B2E83;
+}
+.desktop-nav a:not(.button):after{
+  background:#4B2E83;
+}
+.sector-tabs button.active,
+.region-buttons button.active{
+  background:#4B2E83;
+  border-color:#4B2E83;
+}
