@@ -1813,3 +1813,35 @@ main::after{
   content:none !important;
   display:none !important;
 }
+
+
+/* Scroll-driven hero portrait transition — 2026-09-19 */
+.hero{
+  --hero-text-y:0px;
+  --hero-text-opacity:1;
+  --hero-current-opacity:1;
+  --hero-current-y:0px;
+  --hero-smile-opacity:0;
+  --hero-smile-y:10px;
+}
+.hero .hero-copy{
+  transform:translate3d(0,var(--hero-text-y),0);
+  opacity:var(--hero-text-opacity);
+  will-change:transform,opacity;
+}
+.hero .hero-art{position:relative}
+.hero .hero-portrait{will-change:opacity,transform}
+.hero .hero-portrait-current{
+  opacity:var(--hero-current-opacity);
+  transform:translate3d(0,var(--hero-current-y),0);
+  z-index:2;
+}
+.hero .hero-portrait-smiling{
+  opacity:var(--hero-smile-opacity);
+  transform:translate3d(0,var(--hero-smile-y),0);
+  z-index:3;
+}
+@media(max-width:700px){
+  .hero .hero-portrait-current{transform:translateX(-46%) translateY(var(--hero-current-y))}
+  .hero .hero-portrait-smiling{transform:translateX(-46%) translateY(var(--hero-smile-y))}
+}
