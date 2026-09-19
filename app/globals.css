@@ -966,3 +966,33 @@ h1{
 @media(max-width:700px){
   .brand{width:158px}
 }
+
+
+/* Navigation grouping refinement — 2026-09-19 */
+@media(min-width:981px){
+  .desktop-nav{
+    margin-left:28px;
+    width:100%;
+    gap:20px;
+    font-weight:600;
+  }
+  .desktop-nav a:not(.button){
+    font-weight:600;
+  }
+  .desktop-nav .language{
+    margin-left:auto;
+    font-weight:600;
+    color:#6F6872;
+  }
+  .desktop-nav .button{
+    margin-left:0;
+  }
+}
+
+@media(max-width:1120px) and (min-width:981px){
+  .desktop-nav{
+    margin-left:20px;
+    gap:16px;
+    font-size:13px;
+  }
+}
