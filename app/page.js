@@ -22,10 +22,11 @@ export default function Home(){
   const [sector,setSector]=useState(sectors[0]);
   const [region,setRegion]=useState('Africa');
   const [scrolled,setScrolled]=useState(false);
-  useEffect(()=>{const fn=()=>setScrolled(window.scrollY>40);fn();window.addEventListener('scroll',fn,{passive:true});return()=>window.removeEventListener('scroll',fn)},[]);
+  const [navHidden,setNavHidden]=useState(false);
+  useEffect(()=>{const fn=()=>{const y=window.scrollY;setScrolled(y>40);setNavHidden(y>90)};fn();window.addEventListener('scroll',fn,{passive:true});return()=>window.removeEventListener('scroll',fn)},[]);
   const close=()=>setMenuOpen(false);
   return <main>
-    <header className={`site-header ${scrolled?'scrolled':''}`}><div className="shell nav-shell">
+    <header className={`site-header ${scrolled?'scrolled':''} ${navHidden&&!menuOpen?'nav-hidden':''}`}><div className="shell nav-shell">
       <a className="brand" href="#top" onClick={close}><img src="assets/logo-horizontal.webp" alt="WisConnect"/></a>
       <nav className={`desktop-nav ${menuOpen?'open':''}`} aria-label="Primary navigation">
         <a href="#about" onClick={close}>About</a><a href="#what-we-do" onClick={close}>What We Do</a><a href="#cooperative" onClick={close}>Our Cooperative</a><a href="#members" onClick={close}>Members</a><a href="#impact" onClick={close}>Impact</a><a href="#stories" onClick={close}>Stories</a><span className="language">EN / FR</span><a className="button button-small" href="#join" onClick={close}>Join Us</a>
