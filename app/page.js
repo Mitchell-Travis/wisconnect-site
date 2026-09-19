@@ -35,7 +35,7 @@ export default function Home(){
 
     <section id="top" className="hero light-surface"><div className="shell hero-grid">
       <div className="hero-copy"><h1 className="hero-title-long">Black Women Business Development &amp; Resource Center</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
-      <div className="hero-art"><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
+      <div className="hero-art"><div className="orbit orbit-a"></div><div className="orbit orbit-b"></div><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
     </div></section>
 
     <section id="about" className="manifesto section section-roomy"><div className="shell manifesto-grid"><div><p className="eyebrow">The belief behind the cooperative</p><h2>When women own,<br/>communities grow.</h2></div><div className="manifesto-copy"><p>WisConnect brings people, capital, businesses and community assets into a cooperative model designed to create opportunity that can be shared.</p><p>It is about ownership, dignity, professional growth and economic participation that strengthens the wider community.</p></div></div></section>
