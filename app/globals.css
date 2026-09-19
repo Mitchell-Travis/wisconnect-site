@@ -996,3 +996,40 @@ h1{
     font-size:13px;
   }
 }
+
+
+/* Header logo + nav proximity — 2026-09-19 */
+@media(min-width:981px){
+  .brand{
+    width:190px;
+  }
+  .desktop-nav{
+    margin-left:12px;
+    gap:18px;
+  }
+  .desktop-nav .language{
+    margin-left:auto;
+  }
+}
+
+@media(max-width:1120px) and (min-width:981px){
+  .brand{
+    width:182px;
+  }
+  .desktop-nav{
+    margin-left:8px;
+    gap:14px;
+  }
+}
+
+@media(max-width:980px) and (min-width:701px){
+  .brand{
+    width:176px;
+  }
+}
+
+@media(max-width:700px){
+  .brand{
+    width:154px;
+  }
+}
