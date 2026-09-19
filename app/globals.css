@@ -1663,3 +1663,17 @@ main::after{
     transition:none;
   }
 }
+
+
+/* Navigation text contrast refinement — 2026-09-19 */
+.desktop-nav{
+  color:#2D2630;
+}
+
+.desktop-nav a:not(.button){
+  color:#2D2630;
+}
+
+.desktop-nav .language{
+  color:#5B545E;
+}
