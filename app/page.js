@@ -23,63 +23,6 @@ export default function Home(){
   const [region,setRegion]=useState('Africa');
   const [scrolled,setScrolled]=useState(false);
   useEffect(()=>{const fn=()=>setScrolled(window.scrollY>40);fn();window.addEventListener('scroll',fn,{passive:true});return()=>window.removeEventListener('scroll',fn)},[]);
-  useEffect(()=>{
-    const root=document.documentElement;
-    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-    let raf=0;
-
-    const resetMotion=()=>{
-      root.style.setProperty('--hero-image-shift','0px');
-      root.style.setProperty('--hero-image-scale','1');
-      root.style.setProperty('--hero-image-opacity','1');
-      root.style.setProperty('--hero-copy-shift','0px');
-      root.style.setProperty('--hero-copy-opacity','1');
-      root.style.setProperty('--hero-line-scale','0');
-      root.style.setProperty('--hero-line-opacity','0');
-      root.style.setProperty('--hero-glow-opacity','0');
-      root.style.setProperty('--manifesto-shift','0px');
-      root.style.setProperty('--manifesto-opacity','1');
-    };
-
-    const update=()=>{
-      raf=0;
-      if(reduce.matches){ resetMotion(); return; }
-
-      const hero=document.getElementById('top');
-      if(!hero) return;
-
-      const start=hero.offsetTop+(hero.offsetHeight*.12);
-      const end=hero.offsetTop+(hero.offsetHeight*.92);
-      const raw=(window.scrollY-start)/(end-start);
-      const progress=Math.max(0,Math.min(1,raw));
-      const lineProgress=Math.max(0,Math.min(1,(progress-.12)/.88));
-
-      root.style.setProperty('--hero-image-shift',`${(progress*72).toFixed(1)}px`);
-      root.style.setProperty('--hero-image-scale',(1-(progress*.022)).toFixed(4));
-      root.style.setProperty('--hero-image-opacity',(1-(progress*.065)).toFixed(3));
-      root.style.setProperty('--hero-copy-shift',`${(-progress*7).toFixed(1)}px`);
-      root.style.setProperty('--hero-copy-opacity',(1-(progress*.035)).toFixed(3));
-      root.style.setProperty('--hero-line-scale',(0.08+(lineProgress*.92)).toFixed(3));
-      root.style.setProperty('--hero-line-opacity',(lineProgress*.62).toFixed(3));
-      root.style.setProperty('--hero-glow-opacity',(lineProgress*.34).toFixed(3));
-      root.style.setProperty('--manifesto-shift',`${((1-progress)*16).toFixed(1)}px`);
-      root.style.setProperty('--manifesto-opacity',(.965+(progress*.035)).toFixed(3));
-    };
-
-    const schedule=()=>{ if(!raf) raf=requestAnimationFrame(update); };
-    update();
-    window.addEventListener('scroll',schedule,{passive:true});
-    window.addEventListener('resize',schedule);
-    reduce.addEventListener?.('change',schedule);
-
-    return()=>{
-      window.removeEventListener('scroll',schedule);
-      window.removeEventListener('resize',schedule);
-      reduce.removeEventListener?.('change',schedule);
-      if(raf) cancelAnimationFrame(raf);
-      resetMotion();
-    };
-  },[]);
   const close=()=>setMenuOpen(false);
   return <main>
     <header className={`site-header ${scrolled?'scrolled':''}`}><div className="shell nav-shell">
@@ -91,7 +34,7 @@ export default function Home(){
 
     <section id="top" className="hero light-surface"><div className="shell hero-grid">
       <div className="hero-copy"><p className="eyebrow">Local roots. Global reach.</p><h1>Connected women.<br/>Shared ownership.<br/>Stronger communities.</h1><p className="hero-lede">WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</p><div className="hero-actions"><a className="button" href="#join">Join the Cooperative <ArrowUpRightIcon/></a><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></div></div>
-      <div className="hero-art"><div className="orbit orbit-a"></div><div className="orbit orbit-b"></div><span className="hero-flow-line" aria-hidden="true"></span><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
+      <div className="hero-art"><div className="orbit orbit-a"></div><div className="orbit orbit-b"></div><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
     </div></section>
 
     <section id="about" className="manifesto section section-roomy"><div className="shell manifesto-grid"><div><p className="eyebrow">The belief behind the cooperative</p><h2>When women own,<br/>communities grow.</h2></div><div className="manifesto-copy"><p>WisConnect brings people, capital, businesses and community assets into a cooperative model designed to create opportunity that can be shared.</p><p>It is about ownership, dignity, professional growth and economic participation that strengthens the wider community.</p></div></div></section>
