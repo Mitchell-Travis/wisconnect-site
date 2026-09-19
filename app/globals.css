@@ -1518,3 +1518,49 @@ main::after{
     width:150px;
   }
 }
+
+
+/* Manifesto gradient emphasis — 2026-09-19 */
+.manifesto{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(220,207,228,.72), transparent 34%),
+    radial-gradient(circle at 88% 72%, rgba(185,149,90,.16), transparent 28%),
+    linear-gradient(135deg, #FBF9FC 0%, #F3EDF6 48%, #FAF7F2 100%);
+}
+
+.manifesto::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255,255,255,.36) 42%, transparent 68%);
+  opacity:.72;
+}
+
+.manifesto .shell{
+  position:relative;
+  z-index:1;
+}
+
+.manifesto .eyebrow{
+  color:#6F4F82;
+}
+
+.manifesto h2{
+  color:#291833;
+}
+
+.manifesto-copy{
+  color:#655E68;
+}
+
+@media(max-width:700px){
+  .manifesto{
+    background:
+      radial-gradient(circle at 16% 16%, rgba(220,207,228,.58), transparent 36%),
+      linear-gradient(145deg, #FBF9FC 0%, #F5EFF7 56%, #FAF8F5 100%);
+  }
+}
