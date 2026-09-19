@@ -1518,3 +1518,47 @@ main::after{
     width:150px;
   }
 }
+
+
+/* Mobile hero image spacing fix — 2026-09-19 */
+@media(max-width:700px){
+  .hero-copy{
+    padding-bottom:0;
+  }
+
+  .hero-actions{
+    margin-bottom:30px;
+  }
+
+  .hero-art{
+    min-height:clamp(470px,118vw,540px);
+    margin-top:0;
+    overflow:hidden;
+  }
+
+  .hero-portrait{
+    width:min(430px,98vw);
+    left:50%;
+    right:auto;
+    bottom:0;
+    transform:translateX(-46%);
+  }
+
+  .orbit-a{
+    top:86px;
+  }
+}
+
+@media(max-width:380px){
+  .hero-actions{
+    margin-bottom:24px;
+  }
+
+  .hero-art{
+    min-height:455px;
+  }
+
+  .hero-portrait{
+    width:100vw;
+  }
+}
