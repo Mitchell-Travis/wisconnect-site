@@ -38,28 +38,7 @@ export default function Home(){
       <div className="hero-art"><img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/></div>
     </div></section>
 
-    <section id="about" className="section section-roomy manifesto-section">
-      <div className="shell manifesto-editorial">
-        <div className="manifesto-label-wrap"><span className="section-kicker">01 — THE BELIEF</span></div>
-        <div className="manifesto-main">
-          <div className="manifesto-left"><h2 className="manifesto-title">When women own,<br/>communities grow.</h2></div>
-          <div className="manifesto-right">
-            <p className="manifesto-body">WisConnect is building a cooperative model where women are not just participants in the economy, but owners of it. By connecting people, capital and community opportunity, we help create shared prosperity that grows across borders.</p>
-            <p className="manifesto-body manifesto-body-secondary">This is not just business support. It is infrastructure for ownership, access and long-term collective power.</p>
-          </div>
-        </div>
-        <div className="manifesto-visual-wrap" aria-hidden="true">
-          <div className="ownership-sculpture">
-            <div className="ownership-orb"></div>
-            <div className="ownership-ring ownership-ring-one"></div>
-            <div className="ownership-ring ownership-ring-two"></div>
-            <div className="ownership-weave"></div>
-            <div className="ownership-dot ownership-dot-one"></div>
-            <div className="ownership-dot ownership-dot-two"></div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section id="about" className="manifesto section section-roomy"><div className="shell manifesto-grid"><div><p className="eyebrow">The belief behind the cooperative</p><h2>When women own,<br/>communities grow.</h2></div><div className="manifesto-copy"><p>WisConnect brings people, capital, businesses and community assets into a cooperative model designed to create opportunity that can be shared.</p><p>It is about ownership, dignity, professional growth and economic participation that strengthens the wider community.</p></div></div></section>
 
     <section id="cooperative" className="section cooperative-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">How the cooperative works</p><h2>People. Capital. Communities.</h2></div><p>The WisConnect model connects ambitious women entrepreneurs with resources, opportunity and a community designed for shared success.</p></div><div className="model-grid">
       <article className="model-card"><span className="number">01</span><h3>People</h3><p>Women entrepreneurs, cooperative members, professionals and community leaders.</p></article>
