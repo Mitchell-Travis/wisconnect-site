@@ -26,6 +26,16 @@ export default function Home(){
   useEffect(()=>{const fn=()=>{const y=window.scrollY;setScrolled(y>40);setNavHidden(y>90)};fn();window.addEventListener('scroll',fn,{passive:true});return()=>window.removeEventListener('scroll',fn)},[]);
   const close=()=>setMenuOpen(false);
   return <main>
+    <svg className="hero-filter-defs" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="hero-remove-black" x="-20%" y="-20%" width="140%" height="140%" colorInterpolationFilters="sRGB">
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  1 1 1 0 0" result="blackToAlpha"/>
+          <feComponentTransfer in="blackToAlpha" result="cutout">
+            <feFuncA type="linear" slope="4.2" intercept="-0.11"/>
+          </feComponentTransfer>
+        </filter>
+      </defs>
+    </svg>
     <header className={`site-header ${scrolled?'scrolled':''} ${navHidden&&!menuOpen?'nav-hidden':''}`}><div className="shell nav-shell">
       <a className="brand" href="#top" onClick={close}><img src="assets/logo-horizontal.webp" alt="WisConnect"/></a>
       <nav className={`desktop-nav ${menuOpen?'open':''}`} aria-label="Primary navigation">
