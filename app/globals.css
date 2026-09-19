@@ -1813,3 +1813,44 @@ main::after{
   content:none !important;
   display:none !important;
 }
+
+
+/* Hero 3D artwork scale correction — match previous hero visual footprint */
+.hero-portrait[src$="hero-3d.png"]{
+  width:min(610px,46vw);
+  max-height:650px;
+  right:-28px;
+}
+
+@media(max-width:1120px) and (min-width:981px){
+  .hero-portrait[src$="hero-3d.png"]{
+    width:min(550px,48vw);
+    max-height:620px;
+    right:-42px;
+  }
+}
+
+@media(max-width:980px) and (min-width:701px){
+  .hero-portrait[src$="hero-3d.png"]{
+    width:min(470px,55vw);
+    max-height:550px;
+    right:-58px;
+  }
+}
+
+@media(max-width:700px){
+  .hero-portrait[src$="hero-3d.png"]{
+    width:min(540px,122vw);
+    max-height:none;
+    left:50%;
+    right:auto;
+    bottom:0;
+    transform:translateX(-46%);
+  }
+}
+
+@media(max-width:380px){
+  .hero-portrait[src$="hero-3d.png"]{
+    width:122vw;
+  }
+}
