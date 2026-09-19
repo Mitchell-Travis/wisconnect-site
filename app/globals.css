@@ -1119,3 +1119,13 @@ h1{
 @media(max-width:980px){
   .menu-button{display:flex}
 }
+
+
+/* Hamburger corner + weight refinement — 2026-09-19 */
+.menu-button{
+  border-radius:8px;
+}
+.menu-button span{
+  width:21px;
+  height:3px;
+}
