@@ -110,7 +110,7 @@ export default function Home(){
           <span className="orbit-node orbit-node-two"></span>
           <span className="orbit-node orbit-node-three"></span>
           <div className="hero-image-stage">
-            <img className="hero-portrait" src="assets/hero-visionary.webp" alt="WisConnect editorial portrait"/>
+            <img className="hero-portrait" src="assets/hero-premium.png" alt="WisConnect editorial portrait"/>
           </div>
           <div className="hero-side-note">
             <span>Local roots.</span><span>Global reach.</span><span>Greater together.</span>
