@@ -22,7 +22,7 @@ export default function Home(){
       <a className="brand" href="#top" onClick={close}><img src="assets/logo-horizontal.webp" alt="WisConnect"/></a>
       <nav className={`desktop-nav ${menuOpen?'open':''}`} aria-label="Primary navigation">
         <a href="#about" onClick={close}>About</a><a href="#what-we-do" onClick={close}>What We Do</a><a href="#cooperative" onClick={close}>Our Cooperative</a><a href="#members" onClick={close}>Members</a><a href="#impact" onClick={close}>Impact</a><a href="#stories" onClick={close}>Stories</a><span className="language">EN / FR</span><a className="button button-small" href="#join" onClick={close}>Join Us</a>
-      </nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle navigation"><span></span><span></span></button>
+      </nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}><span></span><span></span><span></span></button>
     </div></header>
 
     <section id="top" className="hero light-surface"><div className="shell hero-grid">
