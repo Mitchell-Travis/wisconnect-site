@@ -1,6 +1,12 @@
 node_modules
 .next
 out
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.playwright-mcp/
+*.tsbuildinfo
 .env
 .env.local
 .DS_Store

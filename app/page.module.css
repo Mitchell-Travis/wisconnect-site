@@ -1,0 +1,22 @@
+.page {
+  isolation: isolate;
+  overflow: clip;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: 17% -5% 8% 5%;
+  z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(123 90 166 / 22%) 0%, rgb(212 175 124 / 11%) 38%, transparent 70%);
+  opacity: .46;
+  filter: blur(16px);
+  pointer-events: none;
+}
+
+.portraitFloat {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
