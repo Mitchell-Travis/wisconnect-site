@@ -1838,7 +1838,7 @@ main::after{
   border:0;
   background:
     linear-gradient(90deg,rgba(255,255,255,.92),rgba(255,255,255,.78) 58%,rgba(255,255,255,.66)),
-    url('/assets/bg-light.webp') center/cover no-repeat;
+    var(--belief-background) center/cover no-repeat;
   color:var(--plum);
 }
 .hero-textile-ribbon,
@@ -1848,7 +1848,7 @@ main::after{
   height:clamp(34px,3vw,46px);
   background:
     linear-gradient(90deg,rgba(33,20,45,.24),rgba(75,46,131,.04),rgba(33,20,45,.24)),
-    url('/assets/Royal Purple and Gold Ornamental Textile.png') center 46%/cover no-repeat;
+    var(--textile-background) center 46%/cover no-repeat;
   border-block:1px solid rgba(212,175,124,.42);
   box-shadow:inset 0 -14px 24px rgba(33,20,45,.14);
 }
@@ -2407,7 +2407,7 @@ main::after{
   z-index:2;
   inset:0 0 auto;
   height:6px;
-  background:url('/assets/Royal Purple and Gold Ornamental Textile.png') center 45%/cover no-repeat;
+  background:var(--textile-background) center 45%/cover no-repeat;
 }
 .member-dialog-portrait{
   position:relative;

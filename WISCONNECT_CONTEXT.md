@@ -178,6 +178,7 @@ Latest verification:
 - `npm run typecheck` passed
 - `npm run build` passed using the repository's `next build --webpack` script
 - The static routes `/` and `/join` were prerendered successfully, including with the GitHub Pages base path
+- Public images and CSS artwork use the configured base path and load from `/wisconnect-site/assets/` on GitHub Pages
 - The frontend and API health endpoint both returned HTTP 200 during the local verification pass
 - PostgreSQL was healthy and the API reported `database: connected`
 

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
+import { assetPath } from '../assets';
 import styles from './page.module.css';
 
 const benefits = [
@@ -48,7 +49,7 @@ export default function JoinPage(){
   return <main className={styles.page}>
     <header className={styles.header}>
       <div className={styles.shell}>
-        <Link className={styles.brand} href="/" aria-label="WisConnect home"><img src="../assets/logo-horizontal.webp" alt="WisConnect"/></Link>
+        <Link className={styles.brand} href="/" aria-label="WisConnect home"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/></Link>
         <Link className={styles.back} href="/">Back to WisConnect <ArrowIcon/></Link>
       </div>
     </header>
