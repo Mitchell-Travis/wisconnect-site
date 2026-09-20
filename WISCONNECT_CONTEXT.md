@@ -1,6 +1,32 @@
 # WisConnect master context
 
-Last consolidated: 2026-09-20 after the `/join` membership experience implementation
+Last consolidated: 2026-09-20 after the first homepage experience delivery
+
+## Latest delivery — hero, navigation, and people
+
+Mitchell approved implementing the first slice of the homepage improvement proposal: hero, navigation, and member profiles.
+
+- The hero now leads with “Build your business. Share in what grows.” The full organization name remains above it, and the existing purple-and-gold portrait is preserved.
+- Mitchell clarified that the Stripe-inspired vertical rails are an outer frame: content must have visible breathing room inside them. The hero now uses a 20–56px inset from those rails, smaller type and portrait sizing, and a more compact overall height. Keep artwork and captions inside that inset. Responsive Chrome checks and desktop/mobile screenshot review passed after this adjustment.
+- Mitchell reversed the rail-through-navigation experiment: the existing full-height rails render behind the navigation again, visually stopping at the textile rather than extending up through the header. Their placement, subtle color, and non-interactive behavior are unchanged.
+- The hero circle is a subtle, unrotated ring contained behind the portrait. Its soft background tint belongs to the entire hero, avoiding a visibly clipped image-panel edge. Do not extend the ring into the text column. Desktop/mobile screenshots and the responsive Chrome checks passed after this refinement.
+- Mitchell requested restoring the original purple-and-gold textile ribbon beneath navigation, spanning the full page width across the frame. The ribbon is intentionally full-bleed; hero text and portrait retain their inset spacing. The 14–20px experiment was rejected: restore the original 34–46px thickness (30px on mobile). The EN/FR dropdown and later textile divider remain unchanged.
+- Desktop hero refinement: at 960px and above, leave 28px below the textile, cap the portrait at 560px, and slightly reduce the headline and circle. Mobile sizing remains unchanged. Desktop screenshot review and responsive Chrome checks passed.
+- The people section still follows the hero. Mitchell requested restoring the scroll-open portrait composition here: on viewports at least 760px wide and 720px tall, the portraits start stacked, gradually fan outward, and reveal centered copy in a sticky stage. Subtle background rings restore the earlier visual treatment. Phones, short windows, reduced-motion preferences, and pre-hydration rendering use the compact/static cards.
+- Keyboard focus immediately opens the portrait arrangement, and it stays open while a profile dialog is active. Names and profile actions remain on the cards. Existing dialogs, image mappings, and optimized images are preserved. Native Chrome checks verify scroll movement/reversal, unobstructed copy, profile interaction/focus, and the reduced-motion fallback; desktop/tablet screenshots were reviewed.
+- The original member-to-portrait mapping, biographies, and expertise remain unchanged.
+- On phones (620px and below), “How the cooperative works” no longer puts its photos inside a second white frame: the editorial wrapper has no padding, background, corner radius, or shadow. Individual photos/captions, their spacing, and desktop/tablet styling remain intact.
+- Latest mobile cleanup (620px and below): member, cooperative, and business photo cards share the cooperative's inset width, 340–430px responsive minimum height, 8px corners, and 16px gaps. Member names/actions and business descriptions sit on readable image overlays; member image `sizes` now accounts for the full-width cards. Cards can grow for larger text rather than clipping it. Desktop scroll-open profiles and layouts are unchanged.
+- Mobile section spacing and type are calmer; sector tabs stay inside the rails with a simple active underline. Repeated business labels and the empty story-image placeholder are hidden on phones. Stories/participation cards have consistent sizing within their groups, service rows are tighter, and empty impact metrics use compact rows without fabricated values. All original content, images, profile dialogs, sector selections, and participation destinations remain intact.
+- Profiles use a labelled native dialog, styled as a mobile bottom sheet, with a sticky close control, Escape dismissal, focus restoration, and background scroll locking.
+- Navigation returns on upward scrolling and keyboard focus. The mobile menu closes on Escape, navigation, outside interaction, or resizing to desktop. Join remains visible beside the menu control.
+- Navigation is slightly shorter: 76px desktop, 68px tablet, 64px phone, plus its 1px border. A shared CSS height keeps the hero/textile offset and mobile menu height synchronized. Buttons retain 44px tap targets; logo size, rails, and textile thickness are unchanged.
+- Navigation and the business participation link now point to `#businesses` for business discovery. The EN / FR native dropdown sits immediately after Join us on desktop. Mitchell found the mobile header crowded, so below 960px the same dropdown now lives inside the expandable navigation, beneath the links. The mobile header retains only the logo, Join us, and menu button. English is selected; French is disabled and explicitly marked “Coming soon” because translated content does not exist yet. Escape closes the language dropdown first, then the mobile menu, restoring focus appropriately; outside interaction, selection, and focus leaving also dismiss it. No translation library was added.
+- New styles for this slice live in `app/page.module.css`. The obsolete global member choreography styles were removed; unrelated global style layers remain.
+- Responsive WebP derivatives for the hero and members, plus a smaller header logo, are generated by `node scripts/optimize-home-images.mjs`. Original image files are retained.
+- A repeatable native Chrome check lives at `scripts/check-home.mjs`: start an isolated headless Chrome instance with remote debugging on port 9222, then run `node scripts/check-home.mjs [site URL]`. It covers seven widths from 320px to 1920px, card-width/height consistency and unclipped copy, all six sector selections on phones, profile-dialog focus and scrolling, mobile navigation, upward-scroll navigation, reduced motion, the original full-width ribbon sizing, and language-dropdown placement/dismissal. Screenshots are written to `/tmp/wisconnect-*.png`.
+- No Playwright was used. Real-device and Safari/Firefox validation remain outstanding. Membership submission, remaining homepage content, and the backend are outside this delivery.
+- Verification passed: TypeScript; normal and GitHub Pages production builds; exported base-path assets and links; native Chrome checks at 320, 390, 620, 768, 1024, 1440, and 1920 pixels. Desktop/mobile hero, member, profile, and cleaned-up section screenshots were inspected. Mitchell requested publishing this delivery through the existing main-branch GitHub Pages workflow.
 
 ## Source-of-truth rule
 
@@ -33,7 +59,7 @@ Current visual implementation to preserve:
 - The hero uses `public/assets/hero-visionary.webp`. `image-gen-2(4).png` was briefly tested and rejected because the globe composition did not feel clean; the file remains available but is not used.
 - The belief section presents “When women own, communities grow.” on the light supplied background treatment.
 - The cooperative section uses editorial photography for People, Capital, and Communities, followed by the purple-and-gold textile divider.
-- The members section is a compact scroll-driven portrait composition with centered copy. Profiles open in a desktop dialog and a mobile bottom sheet.
+- The members section uses the labelled responsive cards described in the latest delivery above. Profiles open in a desktop dialog and a mobile bottom sheet.
 - Member-image mapping is deliberate: Chipo Nyambuya uses the shaved-head blue portrait, Elizabeth L. Carter uses the red-blouse portrait, and Priscilla Cadette uses the yellow-headwrap portrait.
 - The member-enterprises section has six interactive sector views with real stock photography and concise sector-specific copy.
 - Card corners and borders were reduced across the cooperative and business sections for a sharper, more modern mobile treatment.
@@ -63,7 +89,7 @@ Current implementation:
 - Redis and Celery or RQ are explicitly deferred until a real background-job requirement exists
 - Static export configured for GitHub Pages
 - GitHub Actions deployment on pushes to `main`, using Node 22 and `npm ci`
-- Sticky navigation that hides after scrolling
+- Navigation that hides when scrolling down and returns when scrolling up or receiving keyboard focus
 - Desktop, tablet, and mobile layouts
 - Mobile navigation
 - Real WisConnect logo and supplied/generated visual assets
@@ -75,9 +101,9 @@ Current implementation:
 Current page story:
 
 1. WisConnect institution and identity
-2. Belief: “When women own, communities grow.”
-3. Cooperative model: People, Capital, Communities
-4. Members
+2. Members
+3. Belief: “When women own, communities grow.”
+4. Cooperative model: People, Capital, Communities
 5. Member businesses
 6. Programs and services
 7. Impact and proof
@@ -89,11 +115,12 @@ Current page story:
 Current hero:
 
 - Organization name: `Black Women Business Development & Resource Center`
+- Headline: `Build your business. Share in what grows.`
 - Positioning: a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital, and communities
 - Primary action: Join the Cooperative
 - Secondary action: Discover WisConnect
-- Motion treatment: staggered copy reveal, gentle portrait float, pulsing purple/gold glow, and hover/tap feedback on the primary call to action
-- Accessibility: continuous and interactive hero motion respects the user's reduced-motion preference
+- Motion treatment: brief desktop entrance movement, a gold connection motif, and hover/tap feedback; content is visible from the first frame
+- Accessibility: reduced-motion styling, a skip link, visible focus indicators, and touch-friendly actions
 
 Current site messaging:
 

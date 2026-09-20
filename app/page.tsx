@@ -2,24 +2,15 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
-import { motion, MotionConfig, useScroll, useTransform, type Variants } from 'motion/react';
+import { motion, MotionConfig, useScroll, useTransform, type MotionStyle } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 
-const heroCopy: Variants = {
-  hidden: {},
-  visible: { transition: { delayChildren: .12, staggerChildren: .12 } }
-};
-const heroItem: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  visible: { opacity: 1, y: 0, transition: { duration: .58, ease: [.22, 1, .36, 1] } }
-};
-
 const sectors = ['Food & Beverages','Consulting Services','Agriculture','Textiles & Apparel','Handmade Crafts','Training'] as const;
 const memberProfiles = [
-  {name:'Chipo Nyambuya, Esq',role:'International Legal, Governance, and Economic Development Leader',bio:'Her areas of leadership bring together international law, governance and economic development.',expertise:['International law','Governance','Economic development'],image:assetPath('Smiling shaved-head portrait with colorful jewelry.png')},
-  {name:'Elizabeth L. Carter, Esq',role:'Business and Corporate Securities Attorney, Legal & Business',bio:'Her work connects business law, corporate securities and the legal foundations that support enterprise.',expertise:['Business law','Corporate securities','Legal & business'],image:assetPath('Red-bloused portrait on a warm ivory backdrop.png')},
-  {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:assetPath('Yellow headwrap portrait with gold neck rings.png')}
+  {name:'Chipo Nyambuya, Esq',role:'International Legal, Governance, and Economic Development Leader',bio:'Her areas of leadership bring together international law, governance and economic development.',expertise:['International law','Governance','Economic development'],image:'chipo'},
+  {name:'Elizabeth L. Carter, Esq',role:'Business and Corporate Securities Attorney, Legal & Business',bio:'Her work connects business law, corporate securities and the legal foundations that support enterprise.',expertise:['Business law','Corporate securities','Legal & business'],image:'elizabeth'},
+  {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'}
 ] as const;
 const regions = {
   Africa: 'WisConnect’s cultural and strategic root — where local businesses, communities and cooperative opportunity connect.',
@@ -91,41 +82,149 @@ export default function Home(){
   const [selectedMember,setSelectedMember]=useState<number|null>(null);
   const activeSector=sectorStories[sector];
   const activeSectorNumber=String(sectors.indexOf(sector)+1).padStart(2,'0');
-  const membersSection=useRef<HTMLElement>(null);
+  const header=useRef<HTMLElement>(null);
+  const menuButton=useRef<HTMLButtonElement>(null);
+  const languagePicker=useRef<HTMLDetailsElement>(null);
   const profileDialog=useRef<HTMLDialogElement>(null);
+  const membersSection=useRef<HTMLElement>(null);
+  const [membersAnimated,setMembersAnimated]=useState(false);
   const {scrollYProgress:memberProgress}=useScroll({target:membersSection,offset:['start start','end end']});
-  const profileScale=useTransform(memberProgress,[0,.14,.36,.58,1],[.68,.76,.88,1,1]);
-  const firstX=useTransform(memberProgress,[0,.14,.36,.58,1],['0vw','-2vw','-7vw','-32vw','-32vw']);
-  const firstY=useTransform(memberProgress,[0,.14,.36,.58,1],['0vh','0vh','-2vh','-20vh','-20vh']);
-  const firstRotate=useTransform(memberProgress,[0,.14,.36,.58,1],[0,-3,-7,-2,-2]);
-  const secondX=useTransform(memberProgress,[0,.14,.36,.58,1],['0vw','2vw','7vw','32vw','32vw']);
-  const secondY=useTransform(memberProgress,[0,.14,.36,.58,1],['0vh','-1vh','-2vh','-20vh','-20vh']);
-  const secondRotate=useTransform(memberProgress,[0,.14,.36,.58,1],[0,3,7,2,2]);
-  const thirdY=useTransform(memberProgress,[0,.14,.36,.58,1],['0vh','2vh','7vh','32vh','32vh']);
-  const thirdRotate=useTransform(memberProgress,[0,.14,.36,.58,1],[0,1,3,0,0]);
-  const memberCopyOpacity=useTransform(memberProgress,[.48,.62,.72],[0,1,1]);
-  const memberCopyScale=useTransform(memberProgress,[.48,.66],[.96,1]);
-  const profileLabelOpacity=useTransform(memberProgress,[.56,.7],[0,1]);
-  const profileStyles=[
-    {x:firstX,y:firstY,rotate:firstRotate,scale:profileScale},
-    {x:secondX,y:secondY,rotate:secondRotate,scale:profileScale},
-    {x:'0vw',y:thirdY,rotate:thirdRotate,scale:profileScale}
-  ];
-  useEffect(()=>{const fn=()=>{const y=window.scrollY;setScrolled(y>40);setNavHidden(y>90)};fn();window.addEventListener('scroll',fn,{passive:true});return()=>window.removeEventListener('scroll',fn)},[]);
-  useEffect(()=>{if(selectedMember!==null&&!profileDialog.current?.open)profileDialog.current?.showModal()},[selectedMember]);
-  const close=()=>setMenuOpen(false);
-  return <MotionConfig reducedMotion="user"><main className={`${styles.page} min-h-screen`} style={backgroundAssets}>
-    <header className={`site-header ${scrolled?'scrolled':''} ${navHidden&&!menuOpen?'nav-hidden':''}`}><div className="shell nav-shell">
-      <a className="brand" href="#top" onClick={close}><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/></a>
-      <nav className={`desktop-nav ${menuOpen?'open':''}`} aria-label="Primary navigation">
-        <a href="#about" onClick={close}>About</a><a href="#what-we-do" onClick={close}>What We Do</a><a href="#cooperative" onClick={close}>Our Cooperative</a><a href="#members" onClick={close}>Members</a><a href="#impact" onClick={close}>Impact</a><a href="#stories" onClick={close}>Stories</a><span className="language">EN / FR</span><Link className="button button-small" href="/join" onClick={close}>Join Us</Link>
-      </nav><button className="menu-button" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}><span></span><span></span><span></span></button>
-    </div></header>
+  const memberSpread=useTransform(memberProgress,[0,.1,.78,1],[0,0,1,1]);
+  useEffect(()=>{
+    const media=window.matchMedia('(min-width: 760px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)');
+    const update=()=>setMembersAnimated(media.matches);
+    update();
+    media.addEventListener('change',update);
+    return()=>media.removeEventListener('change',update);
+  },[]);
+  useEffect(()=>{
+    let previousY=Math.max(0,window.scrollY);
+    const onScroll=()=>{
+      const y=Math.max(0,window.scrollY);
+      setScrolled(y>24);
+      if(y<96){setNavHidden(false);previousY=y;return}
+      if(Math.abs(y-previousY)<12)return;
+      setNavHidden(y>previousY);
+      previousY=y;
+    };
+    onScroll();
+    window.addEventListener('scroll',onScroll,{passive:true});
+    return()=>window.removeEventListener('scroll',onScroll);
+  },[]);
+  useEffect(()=>{
+    if(!menuOpen){if(languagePicker.current)languagePicker.current.open=false;return}
+    const desktop=window.matchMedia('(min-width: 960px)');
+    const closeOnDesktop=()=>{if(desktop.matches)setMenuOpen(false)};
+    const closeOutside=(event:PointerEvent)=>{
+      if(event.target instanceof Node&&!header.current?.contains(event.target))setMenuOpen(false);
+    };
+    desktop.addEventListener('change',closeOnDesktop);
+    document.addEventListener('pointerdown',closeOutside);
+    return()=>{
+      desktop.removeEventListener('change',closeOnDesktop);
+      document.removeEventListener('pointerdown',closeOutside);
+    };
+  },[menuOpen]);
+  useEffect(()=>{
+    const closeLanguageOutside=(event:PointerEvent)=>{
+      if(languagePicker.current&&event.target instanceof Node&&!languagePicker.current.contains(event.target))languagePicker.current.open=false;
+    };
+    document.addEventListener('pointerdown',closeLanguageOutside);
+    return()=>document.removeEventListener('pointerdown',closeLanguageOutside);
+  },[]);
+  useEffect(()=>{
+    if(selectedMember===null)return;
+    const dialog=profileDialog.current;
+    if(!dialog?.open)dialog?.showModal();
+    const previousOverflow=document.documentElement.style.overflow;
+    document.documentElement.style.overflow='hidden';
+    return()=>{
+      document.documentElement.style.overflow=previousOverflow;
+      if(dialog?.open)dialog.close();
+    };
+  },[selectedMember]);
+  const close=()=>{setMenuOpen(false);if(languagePicker.current)languagePicker.current.open=false};
+  return <MotionConfig reducedMotion="user"><div className={styles.page} style={backgroundAssets}>
+    <a className={styles.skipLink} href="#main-content">Skip to content</a>
+    <header ref={header} className={styles.header} data-scrolled={scrolled} data-hidden={navHidden&&!menuOpen}
+      onFocusCapture={()=>setNavHidden(false)}
+      onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))close()}}
+      onKeyDown={event=>{if(event.key==='Escape'&&menuOpen){close();menuButton.current?.focus()}}}>
+      <div className={styles.navShell}>
+        <a className={styles.brand} href="#top" aria-label="WisConnect home" onClick={close}><img src={assetPath('logo-nav.webp')} alt="WisConnect" width="480" height="160"/></a>
+        <button ref={menuButton} className={styles.menuToggle} type="button" onClick={()=>setMenuOpen(!menuOpen)} aria-controls="primary-navigation" aria-expanded={menuOpen} aria-label={menuOpen?'Close navigation':'Open navigation'}><span aria-hidden="true"/><span aria-hidden="true"/></button>
+        <div id="primary-navigation" className={styles.navPanel} data-open={menuOpen}>
+        <nav className={styles.navigation} aria-label="Primary navigation">
+          <a href="#about" onClick={close}>Our story</a>
+          <a href="#cooperative" onClick={close}>The cooperative</a>
+          <a href="#members" onClick={close}>Our people</a>
+          <a href="#businesses" onClick={close}>Businesses</a>
+        </nav>
+        <details ref={languagePicker} className={styles.languagePicker}
+          onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))event.currentTarget.open=false}}
+          onKeyDown={event=>{if(event.key==='Escape'&&event.currentTarget.open){event.stopPropagation();event.currentTarget.open=false;event.currentTarget.querySelector('summary')?.focus()}}}>
+          <summary aria-label="Choose language" className={styles.languageTrigger}>EN / FR <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></summary>
+          <div className={styles.languageDropdown}>
+            <p>Language</p>
+            <button type="button" lang="en" aria-current="true" onClick={()=>{if(languagePicker.current){languagePicker.current.open=false;languagePicker.current.querySelector('summary')?.focus()}}}>English <span>Selected</span></button>
+            <button type="button" lang="fr" disabled>Français <span lang="en">Coming soon</span></button>
+          </div>
+        </details>
+        </div>
+        <Link className={styles.navJoin} href="/join" onClick={close}>Join us <ArrowUpRightIcon/></Link>
+      </div>
+    </header>
 
-    <section id="top" className="hero light-surface"><div className="hero-textile-ribbon" aria-hidden="true"/><div className="shell hero-grid">
-      <motion.div className="hero-copy" variants={heroCopy} initial="hidden" animate="visible"><motion.h1 className="hero-title-long" variants={heroItem}>Black Women Business Development &amp; Resource Center</motion.h1><motion.p className="hero-lede" variants={heroItem}>WisConnect is a worker-owned cooperative connecting women entrepreneurs, business opportunity, capital and communities to build shared prosperity across borders.</motion.p><motion.div className="hero-actions" variants={heroItem}><Link className="button" href="/join">Join the Cooperative <ArrowUpRightIcon/></Link><a className="text-link" href="#cooperative">Discover WisConnect <ArrowDownIcon/></a></motion.div></motion.div>
-      <motion.div className="hero-art" initial={{opacity:0,x:28,scale:.98}} animate={{opacity:1,x:0,scale:1}} transition={{duration:.85,delay:.18,ease:[.22,1,.36,1]}}><motion.div className={styles.heroGlow} aria-hidden="true" animate={{scale:[.96,1.04,.96]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}/><motion.div className={styles.portraitFloat} animate={{y:[0,-9,0]}} transition={{duration:6.5,repeat:Infinity,ease:'easeInOut'}}><img className="hero-portrait" src={assetPath('hero-visionary.webp')} alt="WisConnect editorial portrait"/></motion.div></motion.div>
-    </div></section>
+    <main id="main-content" tabIndex={-1}>
+    <section id="top" className={styles.hero} aria-labelledby="hero-title">
+      <div className="hero-textile-ribbon" aria-hidden="true"/>
+      <div className={styles.heroGrid}>
+        <div className={styles.heroCopy}>
+          <p className={styles.identity}>Black Women Business Development<br/>&amp; Resource Center</p>
+          <h1 id="hero-title">Build your business.<br/><em>Share in <br/>what grows.</em></h1>
+          <p className={styles.heroLede}>A cooperative connecting women entrepreneurs to shared ownership, business opportunity, and each other.</p>
+          <div className={styles.heroActions}>
+            <Link className={styles.primaryAction} href="/join">Join the Cooperative <ArrowUpRightIcon/></Link>
+            <a className={styles.secondaryAction} href="#cooperative">Discover WisConnect <ArrowDownIcon/></a>
+          </div>
+        </div>
+        <div className={styles.heroArt}>
+          <span className={styles.heroThread} aria-hidden="true"/>
+          <img className={styles.heroPortrait} src={assetPath('hero-visionary-960.webp')} srcSet={`${assetPath('hero-visionary-640.webp')} 640w, ${assetPath('hero-visionary-960.webp')} 960w`} sizes="(max-width: 699px) 90vw, 50vw" width="1122" height="1402" fetchPriority="high" alt="Portrait of a woman in a purple and gold headwrap, looking ahead"/>
+          <p className={styles.heroCaption}><span aria-hidden="true"/>Rooted in community.<br/>Growing together.</p>
+        </div>
+      </div>
+      <div className={styles.heroFoot}>
+        <p>People. Capital. Communities.</p>
+        <a href="#members">Meet the women behind WisConnect <ArrowDownIcon/></a>
+      </div>
+    </section>
+
+    <section id="members" ref={membersSection} className={styles.members} data-animated={membersAnimated} data-profile-open={selectedMember!==null} aria-labelledby="members-title">
+      <motion.div className={styles.memberStage} style={{'--member-spread':memberSpread} as MotionStyle}>
+      <div className={styles.membersHeading}>
+        <div><p className="eyebrow">Meet the visionaries</p><h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2></div>
+        <p>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative. Every connection starts with a person.</p>
+      </div>
+      <div className={styles.memberGrid}>
+        {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} key={member.name} onClick={()=>setSelectedMember(index)} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
+          <span className={styles.memberImage}><img src={assetPath(`${member.image}-480.webp`)} srcSet={`${assetPath(`${member.image}-480.webp`)} 480w, ${assetPath(`${member.image}-800.webp`)} 800w`} sizes="(max-width: 620px) calc(100vw - 56px), (max-width: 699px) 34vw, (max-width: 1279px) 30vw, 390px" alt="" width="1254" height="1254" loading="lazy" decoding="async"/><span className={styles.memberNumber} aria-hidden="true">0{index+1}</span></span>
+          <span className={styles.memberInfo}><strong>{member.name}</strong><span>{member.expertise.slice(0,2).join(' · ')}</span><span className={styles.profileAction}>View profile <ArrowUpRightIcon/></span></span>
+        </button>)}
+      </div>
+      <p className={styles.membersFoot}>Different expertise. One cooperative vision.</p>
+      </motion.div>
+    </section>
+
+    <dialog className={styles.profileDialog} ref={profileDialog} aria-labelledby="profile-name" aria-describedby="profile-role" onClose={()=>setSelectedMember(null)}>
+      {selectedMember!==null&&<>
+        <div className={styles.dialogToolbar}><span>Meet the visionaries · 0{selectedMember+1} / 03</span><button className={styles.dialogClose} type="button" onClick={()=>profileDialog.current?.close()} autoFocus>Close <span aria-hidden="true">×</span></button></div>
+        <div className={styles.dialogGrid}>
+          <img className={styles.dialogPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
+          <div className={styles.dialogContent}><p className="eyebrow">Woman behind the dream</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.profileRole}>{memberProfiles[selectedMember].role}</p><p>{memberProfiles[selectedMember].bio}</p><ul>{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.secondaryAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
+        </div>
+      </>}
+    </dialog>
 
     <section id="about" className="manifesto section section-roomy"><div className="shell manifesto-stage">
       <motion.div className="manifesto-content" initial={{y:28}} whileInView={{y:0}} viewport={{once:true,amount:.35}} transition={{duration:.7,ease:[.22,1,.36,1]}}>
@@ -147,23 +246,7 @@ export default function Home(){
     </div></section>
     <div className="section-textile-divider" aria-hidden="true"/>
 
-    <section id="members" className="members-section" ref={membersSection}><div className="member-stage">
-      <motion.div className="member-stage-copy" style={{opacity:memberCopyOpacity,scale:memberCopyScale,x:'-50%',y:'-50%'}}><p className="eyebrow">Meet the visionaries</p><h2>Women behind the dream.</h2><p>Legal, business and entrepreneurial leadership united around one cooperative vision.</p></motion.div>
-      <div className="member-portrait-orbit">
-        {memberProfiles.map((member,index)=><motion.button type="button" className="member-portrait-card" style={profileStyles[index]} key={member.name} onClick={()=>setSelectedMember(index)} aria-label={`View profile for ${member.name}`} whileHover={{scale:1.035}} whileTap={{scale:.98}}>
-          <img src={member.image} alt="" width="1254" height="1254" loading="lazy"/>
-          <motion.span style={{opacity:profileLabelOpacity}}><strong>{member.name}</strong><small>View profile</small></motion.span>
-        </motion.button>)}
-      </div>
-    </div></section>
-
-    <dialog className="member-dialog" ref={profileDialog} onClose={()=>setSelectedMember(null)}>{selectedMember!==null&&<div className="member-dialog-card">
-      <button className="member-dialog-close" type="button" onClick={()=>profileDialog.current?.close()} aria-label="Close profile">×</button>
-      <div className="member-dialog-portrait"><img src={memberProfiles[selectedMember].image} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="1254" height="1254"/><span>{String(selectedMember+1).padStart(2,'0')} / 03</span></div>
-      <div className="member-dialog-content"><p className="eyebrow">Woman behind the dream</p><h3>{memberProfiles[selectedMember].name}</h3><p className="member-dialog-role">{memberProfiles[selectedMember].role}</p><span className="member-dialog-rule" aria-hidden="true"/><p className="member-dialog-bio">{memberProfiles[selectedMember].bio}</p><ul>{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul></div>
-    </div>}</dialog>
-
-    <section className="section businesses-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Member enterprises</p><h2>Built by members. Backed by the cooperative.</h2></div><p>Across six practical sectors, members are turning professional skill, cultural knowledge and local resources into enterprises with room to grow.</p></div>
+    <section id="businesses" className="section businesses-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Member enterprises</p><h2>Built by members. Backed by the cooperative.</h2></div><p>Across six practical sectors, members are turning professional skill, cultural knowledge and local resources into enterprises with room to grow.</p></div>
       <div className="sector-tabs" role="tablist" aria-label="Member business sectors">{sectors.map(s=><button type="button" role="tab" aria-selected={sector===s} key={s} className={sector===s?'active':''} onClick={()=>setSector(s)}>{s}</button>)}</div>
       <motion.div className="business-showcase" key={sector} role="tabpanel" aria-live="polite" initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:.45,ease:[.22,1,.36,1]}}>
         <div className="business-visual"><img src={activeSector.image} alt={activeSector.alt} loading="lazy"/><span className="business-count">{activeSectorNumber} / 06</span><span className="business-image-caption">{activeSector.kicker}</span></div>
@@ -184,8 +267,8 @@ export default function Home(){
 
     <section id="stories" className="section stories-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Stories from the network</p><h2>Make the institution feel alive.</h2></div><p>Member stories, cooperative updates and events should show real work and real outcomes.</p></div><div className="stories-grid"><article className="story-feature"><div className="story-media"></div><span>Featured story</span><h3>How a WisConnect member is building opportunity through her business.</h3><p>Real member story and verified outcome will appear here.</p></article><div className="story-stack"><article><span>News</span><h3>Cooperative update</h3></article><article><span>Event</span><h3>Upcoming event</h3></article><article><span>Gallery</span><h3>Community moment</h3></article></div></div></div></section>
 
-    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Different audiences need clear paths into the WisConnect ecosystem.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Become a Member</strong><p>Learn about membership and apply.</p><b><ArrowUpRightIcon/></b></Link><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="#members"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
+    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Different audiences need clear paths into the WisConnect ecosystem.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Become a Member</strong><p>Learn about membership and apply.</p><b><ArrowUpRightIcon/></b></Link><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="#businesses"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
 
     <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>Explore</strong><a href="#about">About</a><a href="#what-we-do">What We Do</a><a href="#members">Members</a><a href="#impact">Impact</a></div><div><strong>Connect</strong><Link href="/join">Join</Link><a href="#stories">Stories & Events</a><a href="mailto:hello@wisconnect.co">Contact</a><span>EN / FR</span></div><div><strong>Next phase</strong><span>Marketplace</span><span>Member Portal</span><span>Mobile App</span></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><span>Privacy · Terms</span></div></footer>
-  </main></MotionConfig>
+  </main></div></MotionConfig>
 }
