@@ -1,6 +1,87 @@
 # WisConnect master context
 
-Last consolidated: 2026-09-20 after the first homepage experience delivery
+Last consolidated: 2026-09-20; release snapshot for the carousels and Impact & proof redesign.
+
+## Current publication — 2026-09-20
+
+- Mitchell explicitly requested publishing all current homepage changes to GitHub Pages. The delivery includes both carousels, smaller enterprise heading, desktop enterprise hover/focus animation, the white Impact & proof section with the country map and illustrative metrics, and removal of the standalone global-reach section.
+- Release commit subject: `Publish interactive carousels and impact map`. Use `git log` for its hash and check the matching `Deploy WisConnect to GitHub Pages` Actions run for deployment status. The existing workflow builds and publishes on pushes to `main`; no deployment configuration was changed.
+- Pre-push verification: the seven-width Chrome regression, enterprise hover/focus/touch/reduced-motion checks, normal production build, and GitHub Pages production build passed. Exported map, CSS, and membership URLs use `/wisconnect-site/`; the SVG and `/join/` export exist. Browser checks were run locally; live verification is a separate step after deployment.
+- Impact figures are explicitly illustrative, not verified results. Country locations show a connection vision, not confirmed offices or operations. These labels must remain until verified content replaces the samples.
+- The “local/uncommitted/not deployed” statements and `de36ee6` release links below are pre-publication history, not the current release status. Do not undo the approved changes based on those older notes. Recheck `git status` and the current Actions run when resuming.
+
+## Latest local update — Impact & proof
+
+- Mitchell requested removal of the standalone “Local roots. Global reach.” section. Its copy, orbit graphic, and duplicate region controls are removed from the homepage; Stories now follows Impact & proof directly. Keep the interactive country map, its region state/copy, and country controls inside Impact & proof. The production build and exported-HTML assertions passed for this removal. Earlier notes below about preserving the neighboring global section are historical.
+- Mitchell supplied a Stripe proof-band reference, then rejected the ice-white/blue glow, sans-serif typography, and abstract wireframe globe. He approved the serif typography and interactive map, but requested another background refinement. The current version uses clean white with no warm radial glow, retaining the site's Georgia serif heading with an italic purple second line, purple serif numbers, fine horizontal rules, and four evenly spaced metric cells. Phones retain an equal-height two-by-two layout, without nested card borders. Map label halos and marker outlines match the white surface.
+- A recognizable dotted world map replaces the abstract globe. `public/assets/impact-world.svg` is a local, simplified Natural Earth 1:110m land asset (public domain; source and license URLs are retained in the SVG). It uses an equirectangular projection, with Antarctica omitted. No map service, runtime geographic library, or new dependency was added.
+- Gold illustrative connections draw in once on scroll using the existing Motion library; reduced-motion users get an immediate reveal. Four accessible region buttons highlight routes and update a live description. They reuse the existing global-region state and copy. The map is expressly labelled as a vision, not verified operations; its decorative SVG is hidden from assistive technology while the controls and description remain accessible.
+- Mitchell requested specific country names and locations: the impact map now labels Liberia, United States (his “America”), Brazil, and Vietnam. Its approximate country anchors replace the broad regional pins, with all three connection curves originating in Liberia. Country labels are visible on phones too. The existing region keys remain internal so the neighboring global section and its content are preserved; these pins do not claim verified office locations.
+- Mitchell subsequently requested temporary numbers for the design. Existing categories now show clearly labelled illustrative samples: Members 250+, Member businesses 60+, Projects & programs 12, Community outcomes 30+. The visible note says “Illustrative figures for design preview only—not verified results.” These are not verified counts or approved targets; replace them with verified data before presenting them as real results.
+- Styles are scoped in `app/page.module.css`. The neighboring global-reach layout, desktop member animation, and both carousels are unchanged. Geographic outlines are prebuilt into the asset; no trigonometric rendering remains in the component.
+- Seven-width native Chrome checks passed, including equal metric cells, unclipped sample values, local map loading, all region controls/route highlights, existing interactions, and no console/hydration errors. Full-section desktop/mobile screenshots were inspected. The production build and TypeScript passed. These changes remain local, uncommitted, and not deployed.
+
+## Latest local update — mobile visionary carousel
+
+- Mitchell requested sideways sliding for “Meet the visionaries” on mobile. At 620px and below, the three existing portraits now form a native horizontal scroll-snap row with previous/next arrows. Matching cooperative-width cards, photo heights, names, and profile dialogs are preserved.
+- Arrow keys and Home/End move focus between portrait cards; reduced-motion preferences disable smooth scrolling. Boundary tracking and arrow scrolling are shared with the existing enterprise carousel, with no new dependency.
+- Desktop scroll-open choreography and non-phone layouts are unchanged. Seven-width native Chrome checks passed, including mobile navigation, profile focus restoration, enterprise controls, and desktop portrait spreading. Mobile/desktop screenshots were inspected; TypeScript and the production build passed.
+- Changes remain local and uncommitted; no new deployment was requested. Real-device touch and Safari/Firefox validation remain outstanding.
+
+## Latest local update — Member enterprises carousel
+
+- Mitchell requested desktop hover animation. At 960px and above with a fine, hover-capable pointer and no reduced-motion preference, each card's photo lifts 3px with a soft shadow, the image zooms gently, the title rises, and the membership arrow moves diagonally. Keyboard focus receives the same feedback; the existing membership link has a small press response. This is CSS-only, with no layout shifts, additional click destinations, or changes to touch scrolling. Touch devices and reduced-motion users retain static cards.
+- Hover delivery verification passed: native Chrome lift/zoom/arrow/reset checks, keyboard focus, touch-pointer and reduced-motion fallbacks, the seven-width homepage regression, TypeScript, and production build. Desktop hover screenshot inspected. Still local and not deployed.
+- After the break handoff, Mitchell supplied a Stripe card-row screenshot and requested that layout for Member enterprises.
+- The previous dark, tab-selected spotlight is replaced locally by a light horizontal row of all six existing sector photos. Tall, equal-sized images carry sector names, with descriptions and membership links underneath. No business stories or destinations were invented: “Explore membership” links to the existing `/join` page.
+- Desktop shows three full cards and a peek at the next; tablet shows two and a peek. Phones show one cooperative-width card at a time, retaining the shared mobile photo height. Native horizontal scrolling and CSS scroll snap support touch/trackpad input without a carousel dependency or autoplay.
+- Mitchell requested a smaller “Built by members. Backed by the cooperative.” heading. It now uses a section-only 32–52px responsive scale and balanced wrapping; wording, other headings, and carousel cards are unchanged.
+- Previous/next controls reflect the scroll boundaries and resize state. The focusable list supports Left/Right and Home/End, and respects reduced-motion preferences. Card links remain keyboard-accessible.
+- Implementation is in `app/page.tsx` and `app/page.module.css`; old spotlight-specific global styles are no longer used by this section. Other sections and earlier design decisions are unchanged.
+- `scripts/check-home.mjs` now checks carousel arrows, keyboard navigation, end boundaries, all six cards, membership destinations, and mobile image/card dimensions instead of the old sector tabs. Seven-width browser checks, desktop/mobile screenshot review, TypeScript, and the production build passed.
+- This update and the preceding handoff are **local, uncommitted, and not deployed**. The live release is still `de36ee6`. Do not push again without Mitchell requesting publication.
+
+## Start here — next-session handoff
+
+### Release and working state
+
+- Live site: https://mitchell-travis.github.io/wisconnect-site/
+- Branch: `main`; deployed commit: `de36ee6bdf6e4d6f1d2a10ea9c6921ec0a20635a` — `Refine homepage and unify mobile card layouts`.
+- Deployment succeeded: https://github.com/Mitchell-Travis/wisconnect-site/actions/runs/35509230005
+- The published homepage, latest mobile CSS, `/join/`, and optimized images were checked successfully over HTTP. The local browser checks described below were not rerun against the live URL.
+- Working tree was clean immediately after deployment. The handoff and subsequent carousel update above are local and uncommitted; they have not been pushed or redeployed. Recheck `git status` at the start of the next session.
+- The earlier migration is now committed (`13e4def`), followed by the Pages asset-path fix (`01abe67`) and this design release (`de36ee6`). Older notes describing an uncommitted migration are historical, not instructions to recreate or undo it.
+- The requested carousel implementation is complete locally. Wait for Mitchell’s next direction; do not launch a new redesign, backend implementation, or deployment automatically.
+
+### Design decisions to preserve
+
+- Keep the supplied purple-and-gold hero portrait and textile. The textile spans the entire page, crossing the outer rails, at its original thickness (34–46px desktop, 30px phone). A thinner version was tried and rejected.
+- Vertical rails visually stop at the textile; they must **not** run up through the navigation. That experiment was explicitly reversed. Hero content stays comfortably inset from the rails, and its ring must not intrude into the text.
+- Keep the compact header: 76px desktop, 68px tablet, 64px phone, plus a 1px border. EN/FR is next to Join us on desktop but inside the expanded mobile menu. French is honestly labelled “Coming soon,” not a working translation.
+- Keep the desktop scroll-open member portraits and accessible profile dialogs. On phones, use the newly aligned image cards and visible profile actions.
+- Mobile cards use the cooperative section as the reference: consistent inset widths, matching photo-card minimum heights, 8px corners, 16px gaps, and no white frame around another frame. Text-card heights match within each family; do not force arbitrary content into clipped fixed-height boxes.
+- The latest cleanup also reduced mobile section spacing, turned the business spotlight into one photo-and-copy card, simplified sector tabs, hid redundant business labels and the empty story-image block on phones, and tightened service/impact/participation layouts. Desktop layouts were retained.
+- Preserve the deliberate portrait mapping: Chipo = shaved-head blue portrait; Elizabeth = red blouse; Priscilla = yellow headwrap. Do not swap images based on filenames or guesswork.
+
+### Files and verification
+
+- `app/page.tsx`: homepage sections, navigation/language picker, sector filters, member scroll state and native profile dialog.
+- `app/page.module.css`: header, hero, member cards/dialogs, desktop choreography, and phone member-card styling.
+- `app/globals.css`: existing section styling; the final mobile-card rhythm block handles cooperative/business/story/participation cards and compact rows. This file has layered historical overrides—inspect the cascade before editing; avoid unrelated cleanup.
+- `scripts/check-home.mjs`: dependency-free Chrome DevTools smoke check, using an isolated Chrome instance with remote debugging on port `9222`. Run `node scripts/check-home.mjs [site URL]`; default is `http://localhost:3000`. Screenshots go to `/tmp/wisconnect-*.png` and are temporary, not repository assets.
+- `scripts/optimize-home-images.mjs`: produces committed WebP derivatives; original images remain untouched. No need to regenerate unless imagery changes.
+- Passed: `npm run typecheck`, `npm run build`, and `GITHUB_ACTIONS=true npm run build`, plus exported Pages asset/link assertions.
+- Browser checks passed at 320, 390, 620, 768, 1024, 1440, and 1920px: mobile card alignment/height/text bounds, all six sector selections on phones, menu/language dismissal, dialogs/focus/scroll locking, desktop portrait spreading/reversal, and reduced motion. Relevant desktop/mobile screenshots were reviewed.
+- No Playwright: Mitchell has asked not to use it unless he explicitly requests it again. Safari, Firefox, real-device touch, and enlarged-text/zoom verification are still outstanding; do not represent the Chrome checks as all-browser coverage.
+- Local development used `npm run dev` on port `3000`. Check whether it is already running before starting another server. Temporary browser sessions may not survive between sessions.
+- `.github/workflows/deploy-pages.yml` builds and deploys on pushes to `main`, using Node 22. `next.config.js` exports static files and enables `/wisconnect-site` as the base path when `GITHUB_ACTIONS=true`; continue using `assetPath()` for assets. Generated `out/` and `.next/` must not be committed. Build-generated `next-env.d.ts` changes were restored before committing.
+
+### Open product work — not automatically authorized
+
+- `/join` prepares an email for the applicant to review/send. It does not store or submit applications to a backend. A real submission endpoint and review workflow need approved requirements.
+- French translations, verified impact metrics, real stories/events, legal/privacy content, and confirmation of public organizational/geographic claims remain outstanding. Do not invent figures, testimonials, translations, or operational coverage.
+- Backend/API/database foundations exist; the contracted administration dashboard and its application workflows are not implemented. Publishing this public-site update does not complete the full platform scope.
+- Preserve unrelated edits, read local Next.js documentation before coding, and keep further changes focused on Mitchell’s next request. Ask before changing deployment/domain setup or expanding into new services.
 
 ## Latest delivery — hero, navigation, and people
 
@@ -30,13 +111,13 @@ Mitchell approved implementing the first slice of the homepage improvement propo
 
 ## Source-of-truth rule
 
-The current `wisconnect-site` working tree is the active website direction. It is based on `main` at commit `4564be7`, with an uncommitted stack migration and design work in progress. The working tree's current content, visual system, assets, structure, and interaction choices take priority over older concepts discussed in prior sessions.
+The current `wisconnect-site` working tree is the active website direction. The migration and latest design work are committed on `main`, with release `de36ee6` deployed to GitHub Pages. The working tree's current content, visual system, assets, structure, and interaction choices take priority over older concepts discussed in prior sessions.
 
 Historical proposals, discovery notes, brand explorations, and plans below are retained as background and traceability. They must not be used to replace or revert the current site unless Mitchell explicitly asks for that change.
 
-Before changing the project, inspect `git status`, read this file, and preserve the current uncommitted migration. Do not reset, revert, or discard it.
+Before changing the project, inspect `git status`, read this file, and preserve any new uncommitted work. Do not reset, revert, or discard it.
 
-## Next-session handoff — 2026-09-20
+## Membership journey context — retained from earlier handoff
 
 The first version of the WisConnect membership journey is implemented at `/join`.
 
@@ -56,7 +137,7 @@ Product direction agreed with Mitchell:
 
 Current visual implementation to preserve:
 
-- The hero uses `public/assets/hero-visionary.webp`. `image-gen-2(4).png` was briefly tested and rejected because the globe composition did not feel clean; the file remains available but is not used.
+- The hero uses optimized 640px/960px derivatives of `public/assets/hero-visionary.webp`. `image-gen-2(4).png` was briefly tested and rejected because the globe composition did not feel clean; the file remains available but is not used.
 - The belief section presents “When women own, communities grow.” on the light supplied background treatment.
 - The cooperative section uses editorial photography for People, Capital, and Communities, followed by the purple-and-gold textile divider.
 - The members section uses the labelled responsive cards described in the latest delivery above. Profiles open in a desktop dialog and a mobile bottom sheet.
@@ -68,7 +149,7 @@ Current visual implementation to preserve:
 Working preference for the next session:
 
 - Do not use Playwright unless Mitchell explicitly asks to use it again.
-- Keep the current uncommitted working tree intact and make the smallest scoped changes needed for the join experience.
+- Preserve any new uncommitted work and make focused changes for Mitchell’s current request.
 
 ## Current working product
 
@@ -77,8 +158,9 @@ Repository: `https://github.com/Mitchell-Travis/wisconnect-site.git`
 Current branch and commit:
 
 - Branch: `main`
-- Base commit: `4564be7` — `Remove editorial manifesto experiment`
-- Working tree: intentionally modified and uncommitted; it contains the active JavaScript-to-TypeScript migration, frontend dependency updates, backend foundation, PostgreSQL setup, documentation, and hero animation work
+- Latest deployed commit: `de36ee6` — `Refine homepage and unify mobile card layouts`
+- Migration/backend foundation: committed in `13e4def`; Pages asset-path correction: `01abe67`.
+- Working tree: clean after deployment; only this handoff update is newly uncommitted at session close. Verify again next session.
 
 Current implementation:
 

@@ -13,6 +13,7 @@ const errors = [];
 socket.onmessage = ({ data }) => {
   const message = JSON.parse(data);
   if (message.method === 'Runtime.exceptionThrown') errors.push(message.params.exceptionDetails.text);
+  if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') errors.push(message.params.args.map(arg => arg.value ?? arg.description).join(' '));
   const callback = pending.get(message.id);
   if (callback) { pending.delete(message.id); callback(message); }
 };
@@ -44,21 +45,24 @@ async function until(expression) {
   })`);
 }
 async function key(key, code = key) {
-  const windowsVirtualKeyCode = key === 'Escape' ? 27 : 9;
+  const windowsVirtualKeyCode = { Escape: 27, Tab: 9, ArrowLeft: 37, ArrowRight: 39, Home: 36, End: 35 }[key];
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode });
   await send('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode });
 }
-async function screenshot(name) {
+async function screenshot(name, selector) {
   await evaluate('Promise.all(document.getAnimations().filter(a => a.timeline instanceof DocumentTimeline && a.effect.getTiming().iterations !== Infinity).map(a => a.finished.catch(() => {})))');
-  const { data } = await send('Page.captureScreenshot', { format: 'png' });
+  const clip = selector ? await evaluate(`(() => { const r=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return {x:r.left+scrollX,y:r.top+scrollY,width:r.width,height:r.height,scale:1}; })()`) : undefined;
+  const { data } = await send('Page.captureScreenshot', { format: 'png', ...(clip ? {clip, captureBeyondViewport:true} : {}) });
   await writeFile(`/tmp/wisconnect-${name}.png`, Buffer.from(data, 'base64'));
 }
 
 try {
   await send('Page.enable');
+  await send('Runtime.discardConsoleEntries');
   await send('Runtime.enable');
   await send('Page.navigate', { url });
   await until('document.querySelector("#hero-title") && document.readyState === "complete"');
+  assert(await evaluate('!document.querySelector(".global-section") && document.querySelector("#impact").nextElementSibling.id === "stories"'), 'Standalone global-reach section is removed; stories follow the impact map');
   for (const width of [320, 390, 620, 768, 1024, 1440, 1920]) {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: false });
     await evaluate('window.scrollTo({top:0,behavior:"instant"})');
@@ -70,12 +74,13 @@ try {
       return {
         overflow: document.documentElement.scrollWidth > innerWidth,
         hero: visible(document.querySelector('#hero-title')),
-        members: [...document.querySelectorAll('#members button')].every(visible),
-        labels: [...document.querySelectorAll('#members button strong')].every(visible),
+        members: [...document.querySelectorAll('#member-cards > button')].filter((_, i) => innerWidth > 620 || i === 0).every(visible),
+        labels: [...document.querySelectorAll('#member-cards > button strong')].filter((_, i) => innerWidth > 620 || i === 0).every(visible),
         join: visible(document.querySelector('header a[href$="/join/"]') || document.querySelector('header a[href$="/join"]')),
       };
     })()`);
     assert.deepEqual(layout, { overflow: false, hero: true, members: true, labels: true, join: true }, `Layout at ${width}px: ${JSON.stringify(layout)}`);
+    assert(await evaluate(`Math.abs(parseFloat(getComputedStyle(document.querySelector('#enterprises-title')).fontSize) - Math.min(52, Math.max(32, innerWidth * .036))) < .1`), 'Enterprise heading uses the reduced responsive type size');
     assert(await evaluate(`(() => {
       const frame = getComputedStyle(document.querySelector('.cooperative-editorial'));
       return innerWidth <= 620
@@ -85,9 +90,9 @@ try {
     if (width <= 620) {
       const cards = await evaluate(`(() => {
         const reference = document.querySelector('.cooperative-photo').getBoundingClientRect();
-        const selectors = '.cooperative-photo, #members button, .business-showcase, .stories-grid article, .join-grid a, .program-list article, .impact-grid > div';
+        const selectors = '.cooperative-photo, #member-cards > button, #enterprise-cards > li, .stories-grid article, .join-grid a, .program-list article';
         const sameWidth = [...document.querySelectorAll(selectors)].every(card => Math.abs(card.getBoundingClientRect().width - reference.width) < 1);
-        const matchingHeights = ['.cooperative-photo, #members button, .business-showcase', '.stories-grid article', '.join-grid a', '.program-list article', '.impact-grid > div'].every(group => {
+        const matchingHeights = ['.cooperative-photo, #member-cards > button, #enterprise-cards > li > div', '#enterprise-cards > li', '.stories-grid article', '.join-grid a', '.program-list article'].every(group => {
           const heights = [...document.querySelectorAll(group)].map(card => card.getBoundingClientRect().height);
           return Math.max(...heights) - Math.min(...heights) < 1;
         });
@@ -101,18 +106,53 @@ try {
         return {sameWidth, matchingHeights, copyFits};
       })()`);
       assert.deepEqual(cards, {sameWidth: true, matchingHeights: true, copyFits: true}, 'Mobile cards align, have matching heights within each family, and do not clip text');
-      for (let index = 0; index < 6; index++) {
-        await evaluate(`document.querySelectorAll('.sector-tabs button')[${index}].click()`);
-        await until(`document.querySelectorAll('.sector-tabs button')[${index}].getAttribute('aria-selected') === 'true'`);
-        assert(await evaluate(`(() => {
-          const card = document.querySelector('.business-showcase').getBoundingClientRect();
-          return [...document.querySelectorAll('.business-copy h3, .business-copy > p:not(.eyebrow)')].every(el => {
-            const text = el.getBoundingClientRect(); return text.left >= card.left && text.right <= card.right && text.bottom <= card.bottom;
-          });
-        })()`), 'Every sector keeps its copy inside the card');
-      }
-      await evaluate('document.querySelector(".sector-tabs button").click()');
     }
+    assert(await evaluate(`(() => {
+      const metrics = document.querySelector('#impact-metrics');
+      const cards = [...metrics.children];
+      const bounds = cards.map(card => card.getBoundingClientRect());
+      const columns = getComputedStyle(metrics).gridTemplateColumns.split(' ').length;
+      return columns === (innerWidth <= 620 ? 2 : 4) && cards.length === 4 &&
+        Math.max(...bounds.map(r => r.height)) - Math.min(...bounds.map(r => r.height)) < 1 &&
+        cards.every((card, i) => {
+          const label = card.querySelector('dt').getBoundingClientRect();
+          const value = card.querySelector('dd');
+          const valueBounds = value.getBoundingClientRect();
+          return bounds[i].left >= 0 && bounds[i].right <= innerWidth && label.left >= bounds[i].left && label.right <= bounds[i].right &&
+            label.bottom <= bounds[i].bottom && valueBounds.left >= bounds[i].left && valueBounds.right <= bounds[i].right &&
+            value.textContent === ['250+','60+','12','30+'][i] && value.getAttribute('aria-label') === 'Illustrative sample: ' + value.textContent;
+        }) && document.querySelector('#impact svg').getAttribute('aria-hidden') === 'true' &&
+        document.querySelector('#impact-note').textContent.includes('design preview only—not verified results');
+    })()`), 'Impact proof band has equal responsive cells, unclipped sample numbers, and an explicit preview disclaimer');
+    await evaluate('document.querySelector("#impact").scrollIntoView({behavior:"instant"})');
+    assert(await evaluate('getComputedStyle(document.querySelector("#impact-title")).fontFamily.includes("Georgia")'), 'Impact uses the site serif typography');
+    assert(await evaluate(`getComputedStyle(document.querySelector('#impact')).backgroundColor === 'rgb(255, 255, 255)' && getComputedStyle(document.querySelector('#impact svg').parentElement).backgroundImage === 'none'`), 'Impact has a clean white background without a map glow');
+    assert(await evaluate('fetch(document.querySelector("#impact svg image").getAttribute("href")).then(r => r.ok)'), 'Local geographic map asset loads');
+    assert.deepEqual(await evaluate('[...document.querySelectorAll("#impact button")].map(button=>button.textContent)'), ['Liberia','United States','Brazil','Vietnam'], 'Map lists the four requested countries');
+    assert(await evaluate(`(() => {
+      const labels=[...document.querySelectorAll('#impact svg text')];
+      const expected=[[474,220],[228,129],[356,277],[800,199]];
+      return labels.length === 4 && labels.every((label,i)=>{
+        const pin=label.parentElement.querySelector('circle');
+        const bounds=label.getBoundingClientRect();
+        return Number(pin.getAttribute('cx')) === expected[i][0] && Number(pin.getAttribute('cy')) === expected[i][1] &&
+          bounds.width > 0 && bounds.height >= 9 && bounds.left >= 0 && bounds.right <= innerWidth;
+      });
+    })()`), 'Country markers are positioned correctly and labels remain visible on phones');
+    for (let index = 0; index < 4; index++) {
+      await evaluate(`document.querySelectorAll('#impact button')[${index}].click()`);
+      await until(`document.querySelectorAll('#impact button')[${index}].getAttribute('aria-pressed') === 'true'`);
+      assert(await evaluate(`(() => {
+        const buttons=[...document.querySelectorAll('#impact button')];
+        return buttons.filter(b=>b.getAttribute('aria-pressed')==='true').length === 1 &&
+          buttons.every(b=>b.getBoundingClientRect().height >= 44) &&
+          document.querySelectorAll('#impact svg g[data-active=true] > path:last-child').length === (${index} === 0 ? 3 : 1) &&
+          document.querySelector('#impact-region-detail').textContent.length > 30;
+      })()`), 'Map controls select and highlight each region with accessible touch targets');
+    }
+    await evaluate('document.querySelector("#impact button").click(); window.scrollTo({top:0,behavior:"instant"})');
+    await until('Math.abs(document.querySelector("header").getBoundingClientRect().top) < .1');
+    console.log(`PASS ${width}px: serif impact band, map asset, region selections and route highlights`);
     assert(await evaluate(`(() => {
       const header = document.querySelector('header').getBoundingClientRect();
       const ribbon = document.querySelector('.hero-textile-ribbon').getBoundingClientRect();
@@ -169,16 +209,16 @@ try {
     if (width >= 760) {
       await evaluate(`document.activeElement.blur(); document.querySelector('#members').scrollIntoView({behavior:'instant',block:'start'})`);
       await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) < .1`);
-      const closedDistance = await evaluate(`Math.abs(document.querySelectorAll('#members button')[0].getBoundingClientRect().left - document.querySelectorAll('#members button')[1].getBoundingClientRect().left)`);
+      const closedDistance = await evaluate(`Math.abs(document.querySelectorAll('#member-cards > button')[0].getBoundingClientRect().left - document.querySelectorAll('#member-cards > button')[1].getBoundingClientRect().left)`);
       await evaluate(`(() => {const section=document.querySelector('#members');window.scrollTo({top:scrollY+section.getBoundingClientRect().top+(section.offsetHeight-innerHeight)*.9,behavior:'instant'})})()`);
       await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) > .99`);
-      const openDistance = await evaluate(`Math.abs(document.querySelectorAll('#members button')[0].getBoundingClientRect().left - document.querySelectorAll('#members button')[1].getBoundingClientRect().left)`);
+      const openDistance = await evaluate(`Math.abs(document.querySelectorAll('#member-cards > button')[0].getBoundingClientRect().left - document.querySelectorAll('#member-cards > button')[1].getBoundingClientRect().left)`);
       assert(openDistance > closedDistance + 200, 'Portraits spread apart with scroll');
       await screenshot(`${width}-members-open`);
       assert(await evaluate(`(() => {
         const heading=document.querySelector('#members h2').parentElement.parentElement;
         const h=heading.getBoundingClientRect();
-        return getComputedStyle(heading).opacity === '1' && [...document.querySelectorAll('#members button')].every(button=>{
+        return getComputedStyle(heading).opacity === '1' && [...document.querySelectorAll('#member-cards > button')].every(button=>{
           const r=button.getBoundingClientRect();
           return r.top>=0 && r.bottom<=innerHeight && (r.right<=h.left || r.left>=h.right || r.bottom<=h.top || r.top>=h.bottom);
         });
@@ -190,10 +230,10 @@ try {
     if (width === 390 || width === 1440) {
       await screenshot(`${width}-hero`);
       await evaluate('document.querySelector("#members").scrollIntoView({behavior:"instant"})');
-      await until('[...document.querySelectorAll("#members img")].every(img => img.complete && img.naturalWidth > 0)');
+      await until('document.querySelector("#member-cards img").complete && document.querySelector("#member-cards img").naturalWidth > 0');
       await screenshot(`${width}-members`);
     }
-    await evaluate('document.querySelector("#members button").focus(); document.querySelector("#members button").click()');
+    await evaluate('document.querySelector("#member-cards > button").focus(); document.querySelector("#member-cards > button").click()');
     await until('document.querySelector("dialog").open');
     assert.equal(await evaluate('document.documentElement.style.overflow'), 'hidden');
     assert(await evaluate('document.querySelector("dialog").contains(document.activeElement)'));
@@ -208,8 +248,65 @@ try {
     }
     await key('Escape');
     await until('!document.querySelector("dialog").open && document.documentElement.style.overflow !== "hidden"');
-    assert(await evaluate('document.activeElement === document.querySelector("#members button")'), 'Dialog restores focus');
+    assert(await evaluate('document.activeElement === document.querySelector("#member-cards > button")'), 'Dialog restores focus');
     console.log(`PASS ${width}px: layout, labels, dialog, keyboard, scroll lock`);
+    if (width <= 620) {
+      await evaluate('document.activeElement.blur(); document.querySelector("#members").scrollIntoView({behavior:"instant"})');
+      assert(await evaluate(`(() => {
+        const track = document.querySelector('#member-cards');
+        const cards = [...track.children].map(card => card.getBoundingClientRect());
+        return cards.length === 3 && track.scrollWidth > track.clientWidth &&
+          cards.every(card => Math.abs(card.top - cards[0].top) < 1);
+      })()`), 'Mobile portraits form a horizontal row');
+      await until('document.querySelector("#members button[aria-label^=Previous]").disabled');
+      await evaluate('document.querySelector("#members button[aria-label^=Next]").click()');
+      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[1].offsetLeft) < 2');
+      await evaluate('document.querySelector("#member-cards").children[1].focus(); document.activeElement.click()');
+      await until('document.querySelector("dialog").open');
+      await key('Escape');
+      await until('!document.querySelector("dialog").open');
+      assert(await evaluate('document.activeElement === document.querySelector("#member-cards").children[1]'), 'Second profile restores focus to its card');
+      if (width === 390) await screenshot('390-members-slide');
+      await key('End');
+      await until('document.querySelector("#members button[aria-label^=Next]").disabled');
+      assert(await evaluate('document.activeElement === document.querySelector("#member-cards").lastElementChild'), 'End focuses the last portrait');
+      await key('ArrowLeft');
+      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[1].offsetLeft) < 2');
+      await key('Home');
+      await until('document.querySelector("#members button[aria-label^=Previous]").disabled');
+      await key('ArrowRight');
+      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[1].offsetLeft) < 2');
+      await key('Home');
+      await until('document.querySelector("#member-cards").scrollLeft < 2');
+      console.log(`PASS ${width}px: mobile visionary row, arrows, keyboard, profile focus restoration`);
+    } else {
+      assert(await evaluate('document.querySelector("#members button[aria-label^=Next]").getClientRects().length === 0'), 'Member carousel controls stay mobile-only');
+    }
+    await evaluate('document.activeElement.blur(); document.querySelector("#enterprise-cards").scrollIntoView({behavior:"instant",block:"start"}); document.querySelector("#enterprise-cards").scrollTo({left:0,behavior:"instant"})');
+    await until('document.querySelector("#businesses button[aria-label^=Previous]").disabled');
+    assert.equal(await evaluate('document.querySelectorAll("#enterprise-cards > li").length'), 6);
+    assert(await evaluate('[...document.querySelectorAll("#enterprise-cards a")].every(a => /\\/join\\/?$/.test(a.getAttribute("href")))'), 'Each card links to real membership page');
+    await evaluate('document.querySelector("#businesses button[aria-label^=Next]").click()');
+    await until('document.querySelector("#enterprise-cards").scrollLeft > 20 && !document.querySelector("#businesses button[aria-label^=Previous]").disabled');
+    await evaluate('document.querySelector("#enterprise-cards").focus()');
+    await key('End');
+    await until('document.querySelector("#businesses button[aria-label^=Next]").disabled');
+    assert(await evaluate(`(() => {
+      const track=document.querySelector('#enterprise-cards');
+      return track.lastElementChild.getBoundingClientRect().right <= track.getBoundingClientRect().right + 1;
+    })()`), 'Last sector is fully reachable');
+    await key('Home');
+    await until('document.querySelector("#enterprise-cards").scrollLeft < 2');
+    await key('ArrowRight');
+    await until('document.querySelector("#enterprise-cards").scrollLeft > 20');
+    await key('Home');
+    await until('document.querySelector("#enterprise-cards").scrollLeft < 2');
+    console.log(`PASS ${width}px: enterprise carousel arrows, keyboard, boundaries, membership links`);
+    if (width === 390 || width === 1440) {
+      await evaluate('document.activeElement.blur(); window.scrollTo({top:scrollY+document.querySelector("#businesses button").parentElement.getBoundingClientRect().top-100,behavior:"instant"})');
+      await until('document.querySelector("#enterprise-cards img").complete && document.querySelector("#enterprise-cards img").naturalWidth > 0');
+      await screenshot(`${width}-business-card`);
+    }
     if (width === 390 || width === 1440) {
       await evaluate('document.activeElement.blur(); document.querySelector(".cooperative-editorial").scrollIntoView({behavior:"instant",block:"start"})');
       await until('document.querySelector(".cooperative-photo-main img").complete && document.querySelector(".cooperative-photo-main img").naturalWidth > 0');
@@ -217,19 +314,35 @@ try {
         const rect = photo.getBoundingClientRect(); return rect.top >= 0 && rect.bottom <= innerHeight;
       }).every(photo => getComputedStyle(photo).opacity === '1' && photo.querySelector('img').complete && photo.querySelector('img').naturalWidth > 0)`);
       await screenshot(`${width}-cooperative`);
+      await evaluate('document.activeElement.blur(); document.querySelector("#impact").scrollIntoView({behavior:"instant",block:"start"})');
+      await screenshot(`${width}-impact`, '#impact');
       if (width === 390) {
         for (const section of ['businesses', 'what-we-do', 'impact', 'stories', 'join']) {
           await evaluate(`document.querySelector('#${section}').scrollIntoView({behavior:'instant',block:'start'})`);
-          await screenshot(`${width}-${section}`);
-          if (section === 'businesses') {
-            await evaluate('document.querySelector(".business-showcase").scrollIntoView({behavior:"instant",block:"start"})');
-            await until('document.querySelector(".business-visual img").complete && document.querySelector(".business-visual img").naturalWidth > 0');
-            await screenshot(`${width}-business-card`);
-          }
+          await screenshot(`${width}-${section}`, section === 'impact' ? '#impact' : undefined);
         }
       }
     }
   }
+
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await evaluate('document.activeElement.blur(); document.querySelector("#enterprise-cards").scrollIntoView({behavior:"instant"}); document.querySelector("#enterprise-cards").scrollTo({left:0,behavior:"instant"})');
+  const hoverPoint = await evaluate('(() => { const r=document.querySelector("#enterprise-cards img").getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; })()');
+  await send('Input.dispatchMouseEvent', {type:'mouseMoved', ...hoverPoint});
+  await until('new DOMMatrix(getComputedStyle(document.querySelector("#enterprise-cards img")).transform).a > 1.04');
+  assert(await evaluate('new DOMMatrix(getComputedStyle(document.querySelector("#enterprise-cards > li > div")).transform).f < -2.9'), 'Hovered enterprise image lifts');
+  assert(await evaluate('new DOMMatrix(getComputedStyle(document.querySelector("#enterprise-cards a svg")).transform).e > 2.9'), 'Hovered enterprise arrow moves');
+  assert(await evaluate('getComputedStyle(document.querySelectorAll("#enterprise-cards img")[1]).transform === "none"'), 'Neighboring cards stay still');
+  await screenshot('1440-enterprise-hover', '#businesses');
+  await send('Input.dispatchMouseEvent', {type:'mouseMoved', x:0, y:0});
+  await until('getComputedStyle(document.querySelector("#enterprise-cards img")).transform === "none"');
+  await evaluate('document.querySelector("#enterprise-cards a").focus()');
+  await until('new DOMMatrix(getComputedStyle(document.querySelector("#enterprise-cards img")).transform).a > 1.04');
+  await send('Emulation.setTouchEmulationEnabled', {enabled:true,maxTouchPoints:1});
+  assert(await evaluate('getComputedStyle(document.querySelector("#enterprise-cards img")).transform === "none"'), 'Touch pointers do not get desktop hover motion');
+  await send('Emulation.setTouchEmulationEnabled', {enabled:false});
+  await evaluate('document.activeElement.blur()');
+  console.log('PASS enterprise hover lift, zoom, arrow, reset, keyboard focus, and touch fallback');
 
   await evaluate('document.activeElement.blur(); window.scrollTo({top:0,behavior:"instant"})');
   await until('document.querySelector("header").dataset.hidden === "false"');
@@ -258,7 +371,9 @@ try {
   await until(`document.querySelector('#members').dataset.animated === 'false'`);
   assert(await evaluate(`getComputedStyle(document.querySelector('#members > div')).position !== 'sticky'`));
   assert(await evaluate('getComputedStyle(document.querySelector("#hero-title").parentElement).animationName === "none"'));
-  assert(await evaluate('[...document.querySelectorAll("#members button strong")].every(el => getComputedStyle(el).visibility === "visible")'));
+  assert(await evaluate('[...document.querySelectorAll("#member-cards > button strong")].every(el => getComputedStyle(el).visibility === "visible")'));
+  await evaluate('document.querySelector("#enterprise-cards a").focus()');
+  assert(await evaluate('getComputedStyle(document.querySelector("#enterprise-cards img")).transform === "none" && getComputedStyle(document.querySelector("#enterprise-cards > li > div")).transform === "none"'), 'Enterprise movement is disabled with reduced motion');
   await send('Emulation.setEmulatedMedia', { features: [] });
   assert.deepEqual(errors, [], 'No uncaught browser errors');
   console.log('PASS reduced motion; no uncaught browser errors');

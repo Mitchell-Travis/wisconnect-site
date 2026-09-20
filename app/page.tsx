@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
-import { motion, MotionConfig, useScroll, useTransform, type MotionStyle } from 'motion/react';
+import { motion, MotionConfig, useReducedMotion, useScroll, useTransform, type MotionStyle } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 
@@ -21,6 +21,14 @@ const regions = {
 
 type Sector = (typeof sectors)[number];
 type Region = keyof typeof regions;
+
+const impactPlaces: {region:Region;label:string;x:number;y:number;route?:string}[] = [
+  // Approximate country anchors in the map's equirectangular projection, not office locations.
+  {region:'Africa',label:'Liberia',x:474,y:220},
+  {region:'United States',label:'United States',x:228,y:129,route:'M474 220 Q355 20 228 129'},
+  {region:'Brazil / South America',label:'Brazil',x:356,y:277,route:'M474 220 Q388 167 356 277'},
+  {region:'Vietnam / Southeast Asia',label:'Vietnam',x:800,y:199,route:'M474 220 Q658 40 800 199'}
+];
 
 const sectorStories: Record<Sector,{image:string;alt:string;kicker:string;description:string}> = {
   'Food & Beverages': {
@@ -73,15 +81,43 @@ const backgroundAssets = {
   '--textile-background': `url("${assetPath('Royal Purple and Gold Ornamental Textile.png')}")`
 } as CSSProperties;
 
+function useScrollEdges(ref:RefObject<HTMLElement|null>){
+  const [edges,setEdges]=useState({start:true,end:false});
+  useEffect(()=>{
+    const track=ref.current;
+    if(!track)return;
+    const update=()=>{
+      const start=track.scrollLeft<=2;
+      const end=track.scrollLeft+track.clientWidth>=track.scrollWidth-2;
+      setEdges(previous=>previous.start===start&&previous.end===end?previous:{start,end});
+    };
+    const observer=new ResizeObserver(update);
+    observer.observe(track);
+    track.addEventListener('scroll',update,{passive:true});
+    update();
+    return()=>{observer.disconnect();track.removeEventListener('scroll',update)};
+  },[ref]);
+  return edges;
+}
+
+function browseCards(track:HTMLElement|null,direction:number|'start'|'end'){
+  if(!track?.firstElementChild)return;
+  const step=track.firstElementChild.getBoundingClientRect().width+parseFloat(getComputedStyle(track).columnGap);
+  const left=direction==='start'?0:direction==='end'?track.scrollWidth:track.scrollLeft+direction*step;
+  track.scrollTo({left,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+}
+
 export default function Home(){
+  const reducedMotion=useReducedMotion();
   const [menuOpen,setMenuOpen]=useState(false);
-  const [sector,setSector]=useState<Sector>(sectors[0]);
   const [region,setRegion]=useState<Region>('Africa');
   const [scrolled,setScrolled]=useState(false);
   const [navHidden,setNavHidden]=useState(false);
   const [selectedMember,setSelectedMember]=useState<number|null>(null);
-  const activeSector=sectorStories[sector];
-  const activeSectorNumber=String(sectors.indexOf(sector)+1).padStart(2,'0');
+  const enterpriseTrack=useRef<HTMLUListElement>(null);
+  const enterpriseEdges=useScrollEdges(enterpriseTrack);
+  const memberTrack=useRef<HTMLDivElement>(null);
+  const memberEdges=useScrollEdges(memberTrack);
   const header=useRef<HTMLElement>(null);
   const menuButton=useRef<HTMLButtonElement>(null);
   const languagePicker=useRef<HTMLDetailsElement>(null);
@@ -206,7 +242,23 @@ export default function Home(){
         <div><p className="eyebrow">Meet the visionaries</p><h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2></div>
         <p>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative. Every connection starts with a person.</p>
       </div>
-      <div className={styles.memberGrid}>
+      <div className={`${styles.enterpriseControls} ${styles.memberControls}`}>
+        <p>Meet our three visionaries</p>
+        <button type="button" aria-label="Previous visionary" aria-controls="member-cards" disabled={memberEdges.start} onClick={()=>browseCards(memberTrack.current,-1)}><ArrowDownIcon/></button>
+        <button type="button" aria-label="Next visionary" aria-controls="member-cards" disabled={memberEdges.end} onClick={()=>browseCards(memberTrack.current,1)}><ArrowDownIcon/></button>
+      </div>
+      <div id="member-cards" ref={memberTrack} className={styles.memberGrid} role="group" aria-label="Visionary profiles"
+        onKeyDown={event=>{
+          if(!window.matchMedia('(max-width: 620px)').matches)return;
+          if(event.key==='ArrowLeft'||event.key==='ArrowRight'||event.key==='Home'||event.key==='End'){
+            event.preventDefault();
+            const index=Array.from(event.currentTarget.children).indexOf(document.activeElement as Element);
+            const next=event.key==='Home'?0:event.key==='End'?memberProfiles.length-1:Math.max(0,Math.min(memberProfiles.length-1,index+(event.key==='ArrowLeft'?-1:1)));
+            (event.currentTarget.children[next] as HTMLButtonElement).focus({preventScroll:true});
+            const step=event.currentTarget.children[next] as HTMLElement;
+            event.currentTarget.scrollTo({left:step.offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+          }
+        }}>
         {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} key={member.name} onClick={()=>setSelectedMember(index)} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
           <span className={styles.memberImage}><img src={assetPath(`${member.image}-480.webp`)} srcSet={`${assetPath(`${member.image}-480.webp`)} 480w, ${assetPath(`${member.image}-800.webp`)} 800w`} sizes="(max-width: 620px) calc(100vw - 56px), (max-width: 699px) 34vw, (max-width: 1279px) 30vw, 390px" alt="" width="1254" height="1254" loading="lazy" decoding="async"/><span className={styles.memberNumber} aria-hidden="true">0{index+1}</span></span>
           <span className={styles.memberInfo}><strong>{member.name}</strong><span>{member.expertise.slice(0,2).join(' · ')}</span><span className={styles.profileAction}>View profile <ArrowUpRightIcon/></span></span>
@@ -246,12 +298,24 @@ export default function Home(){
     </div></section>
     <div className="section-textile-divider" aria-hidden="true"/>
 
-    <section id="businesses" className="section businesses-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Member enterprises</p><h2>Built by members. Backed by the cooperative.</h2></div><p>Across six practical sectors, members are turning professional skill, cultural knowledge and local resources into enterprises with room to grow.</p></div>
-      <div className="sector-tabs" role="tablist" aria-label="Member business sectors">{sectors.map(s=><button type="button" role="tab" aria-selected={sector===s} key={s} className={sector===s?'active':''} onClick={()=>setSector(s)}>{s}</button>)}</div>
-      <motion.div className="business-showcase" key={sector} role="tabpanel" aria-live="polite" initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:.45,ease:[.22,1,.36,1]}}>
-        <div className="business-visual"><img src={activeSector.image} alt={activeSector.alt} loading="lazy"/><span className="business-count">{activeSectorNumber} / 06</span><span className="business-image-caption">{activeSector.kicker}</span></div>
-        <div className="business-copy"><p className="eyebrow">Sector spotlight</p><h3>{sector}</h3><span className="business-copy-rule" aria-hidden="true"/><p>{activeSector.description}</p><span className="business-sector-mark">WisConnect member enterprise</span></div>
-      </motion.div>
+    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Member enterprises</p><h2 id="enterprises-title">Built by members. Backed by the cooperative.</h2></div><p>Across six practical sectors, members are turning professional skill, cultural knowledge and local resources into enterprises with room to grow.</p></div>
+      <div className={styles.enterpriseControls}>
+        <p>Explore our six sectors</p>
+        <button type="button" aria-label="Previous enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.start} onClick={()=>browseCards(enterpriseTrack.current,-1)}><ArrowDownIcon/></button>
+        <button type="button" aria-label="Next enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.end} onClick={()=>browseCards(enterpriseTrack.current,1)}><ArrowDownIcon/></button>
+      </div>
+      <ul id="enterprise-cards" ref={enterpriseTrack} className={styles.enterpriseTrack} tabIndex={0} aria-label="Member enterprise sectors, scroll to browse"
+        onKeyDown={event=>{
+          if(event.target!==event.currentTarget)return;
+          if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();browseCards(enterpriseTrack.current,event.key==='ArrowLeft'?-1:1)}
+          if(event.key==='Home'||event.key==='End'){event.preventDefault();browseCards(enterpriseTrack.current,event.key==='Home'?'start':'end')}
+        }}>
+        {sectors.map(sector=><li className={styles.enterpriseCard} key={sector}>
+          <div className={styles.enterpriseImage}><img src={sectorStories[sector].image} alt={sectorStories[sector].alt} loading="lazy"/><h3>{sector}</h3></div>
+          <p>{sectorStories[sector].description}</p>
+          <Link href="/join" aria-label={`Explore membership in ${sector}`}>Explore membership <ArrowUpRightIcon/></Link>
+        </li>)}
+      </ul>
     </div></section>
 
     <section id="what-we-do" className="section what-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">What WisConnect does</p><h2>Turn shared ownership into shared progress.</h2></div><p>WisConnect connects members to the resources, relationships and practical support that help enterprises grow.</p></div><div className="program-list">
@@ -261,9 +325,37 @@ export default function Home(){
       <article><span>04</span><div><h3>Keep value moving through communities</h3><p>Link business growth to stronger local networks, livelihoods and opportunity that stays in the community.</p></div></article>
     </div></div></section>
 
-    <section id="impact" className="section impact-section dark-surface"><div className="shell impact-inner"><div className="section-heading split-heading light-copy"><div><p className="eyebrow">Impact & proof</p><h2>Evidence before impressive-looking numbers.</h2></div><p>Public metrics should only appear after WisConnect verifies them.</p></div><div className="impact-grid"><div><span>Members</span><strong>—</strong><p>Verified count</p></div><div><span>Member businesses</span><strong>—</strong><p>Verified count</p></div><div><span>Projects & programs</span><strong>—</strong><p>Verified activity</p></div><div><span>Community outcomes</span><strong>—</strong><p>Measured impact</p></div></div></div></section>
-
-    <section className="section global-section"><div className="shell global-grid"><div className="global-copy"><p className="eyebrow">Local roots. Global reach.</p><h2>The orbit becomes the story.</h2><p>WisConnect’s network is rooted in Africa and extends toward relationships and opportunities across regions.</p><div className="region-buttons">{(Object.keys(regions) as Region[]).map(r=><button key={r} className={region===r?'active':''} onClick={()=>setRegion(r)}>{r}</button>)}</div><div className="region-detail"><strong>{region}</strong><p>{regions[region]}</p></div></div><div className="global-orbit"><div className="ring ring-1"></div><div className="ring ring-2"></div><div className="ring ring-3"></div><img className="orbit-logo" src={assetPath('logo-symbol.webp')} alt="WisConnect orbit symbol"/><span className="node node-us">US</span><span className="node node-br">BR</span><span className="node node-vn">VN</span><span className="node node-af">AF</span></div></div></section>
+    <section id="impact" className={styles.impact} aria-labelledby="impact-title">
+      <div className={styles.impactFrame}>
+        <div className={styles.impactHeading}>
+          <p className="eyebrow">Impact & proof</p>
+          <h2 id="impact-title">The power of<br/><em>shared ownership.</em></h2>
+        </div>
+        <dl id="impact-metrics" className={styles.impactMetrics} aria-describedby="impact-note">
+          {[['Members','250+'],['Member businesses','60+'],['Projects & programs','12'],['Community outcomes','30+']].map(([label,value])=><div key={label}><dt>{label}</dt><dd aria-label={`Illustrative sample: ${value}`}>{value}</dd></div>)}
+        </dl>
+        <p id="impact-note" className={styles.impactNote}>Illustrative figures for design preview only—not verified results.</p>
+        <div className={styles.impactVisual}>
+          <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>A vision of connection, not verified operations.</span></div>
+          <motion.svg className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false" initial="rest" whileInView="visible" viewport={{once:true,amount:.3}}>
+            <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
+            {impactPlaces.filter(place=>place.route).map(place=><g key={place.region} className={styles.impactRoute} data-active={region==='Africa'||region===place.region}>
+              <path d={place.route} stroke="currentColor" strokeOpacity=".18"/>
+              <motion.path d={place.route} stroke="currentColor" strokeWidth="2" strokeLinecap="round" variants={{rest:{pathLength:0},visible:{pathLength:1}}} transition={{duration:reducedMotion?0:1.4,ease:'easeOut'}}/>
+            </g>)}
+            {impactPlaces.map(place=><g key={place.region} className={styles.impactPin} data-active={region===place.region}>
+              <circle cx={place.x} cy={place.y} r="15" fill="currentColor" opacity=".12"/>
+              <circle cx={place.x} cy={place.y} r="6" fill="currentColor" stroke="#fff" strokeWidth="3"/>
+              <text x={place.x} y={place.y+32} textAnchor="middle" fill="currentColor">{place.label}</text>
+            </g>)}
+          </motion.svg>
+          <div className={styles.impactRegions} role="group" aria-label="Countries in the connection vision">
+            {impactPlaces.map(place=><button key={place.region} type="button" aria-pressed={region===place.region} aria-controls="impact-region-detail" onClick={()=>setRegion(place.region)}>{place.label}</button>)}
+          </div>
+          <p id="impact-region-detail" className={styles.impactRegionDetail} aria-live="polite">{regions[region]}</p>
+        </div>
+      </div>
+    </section>
 
     <section id="stories" className="section stories-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Stories from the network</p><h2>Make the institution feel alive.</h2></div><p>Member stories, cooperative updates and events should show real work and real outcomes.</p></div><div className="stories-grid"><article className="story-feature"><div className="story-media"></div><span>Featured story</span><h3>How a WisConnect member is building opportunity through her business.</h3><p>Real member story and verified outcome will appear here.</p></article><div className="story-stack"><article><span>News</span><h3>Cooperative update</h3></article><article><span>Event</span><h3>Upcoming event</h3></article><article><span>Gallery</span><h3>Community moment</h3></article></div></div></div></section>
 
