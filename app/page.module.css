@@ -75,29 +75,53 @@
 .heroFoot p { margin: 0; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .14em; color: #6b5876; }
 .heroFoot a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 13px; color: var(--plum); }
 
-/* Editorial portraits on large screens; compact, labelled cards on phones. */
-.members { position: relative; width: min(var(--content-width), calc(100% - 2 * var(--gutter))); margin: auto; padding-block: clamp(72px, 8vw, 120px); }
-@media (min-width: 761px) {
-  .members { isolation: isolate; }
-  .members::before { content: ''; position: absolute; z-index: -1; inset: 0 auto 0 50%; width: 100vw; transform: translateX(-50%); background: var(--mist); pointer-events: none; }
+/* Scroll-driven portraits: six reusable positions, shared by desktop and mobile. */
+.page section.members { width: 100%; margin: 0; padding: 0; background: #fff; scroll-margin-top: 0; }
+.members[data-animated="true"] { height: 200svh; }
+.memberStage { --portrait-vh: max(7.2px, 1svh); position: relative; height: max(720px, 100svh); overflow: hidden; isolation: isolate; display: grid; place-items: center; }
+.members[data-animated="true"] .memberStage { position: sticky; top: 0; }
+.members[data-animated="false"] .memberStage,
+.memberStage:has(.memberGrid:focus-within, .membersHeading:focus-within),
+.members[data-profile-open="true"] .memberStage { --member-spread: 1 !important; --member-reveal: 1 !important; --member-pointer: auto !important; }
+.memberThreads { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .13; pointer-events: none; }
+.membersHeading { position: relative; z-index: 2; width: min(640px, 54vw); text-align: center; opacity: var(--member-reveal, 1); pointer-events: var(--member-pointer, auto); }
+.membersHeading :global(.eyebrow) { margin: 0 0 22px; font-size: 12px; color: var(--purple); }
+.membersHeading h2 { margin: 0; color: var(--plum); font-size: clamp(38px, 4.5vw, 64px); line-height: 1.04; letter-spacing: -.035em; }
+.memberLede { max-width: 380px; margin: 22px auto 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.memberJoin { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 54px; margin-top: 24px; padding: 14px 26px; border: 1px solid var(--purple); border-radius: 999px; background: var(--purple); color: #fff; font-size: 14px; font-weight: 600; transition: background .3s, color .3s; }
+.memberJoin:hover { background: #fff; color: var(--purple); }
+.memberJoin svg { width: 17px; height: 17px; }
+.memberHint { margin: 12px 0 0; color: var(--muted); font-size: 11px; }
+.memberGrid { position: absolute; inset: 0; pointer-events: none; }
+.memberCard { position: absolute; top: 50%; left: 50%; width: clamp(140px, 19vw, 280px); aspect-ratio: 1; padding: 0; border: 0; border-radius: clamp(20px, 2vw, 30px); overflow: hidden; background: #e9e3f1; color: #fff; cursor: pointer; pointer-events: auto; transform: translate(calc(-50% + var(--portrait-x) * 1vw * var(--member-spread, 1)), calc(-50% + var(--portrait-y) * var(--portrait-vh) * var(--member-spread, 1))) scale(calc(1 + (var(--portrait-scale) - 1) * var(--member-spread, 1))); }
+.memberCard[hidden] { display: none; }
+.members[data-animated="true"] .memberCard { opacity: clamp(0, var(--member-spread) * 5, 1); transition: opacity .55s ease; }
+.members[data-animated="true"] .memberCard[data-featured="true"] { z-index: 1; opacity: 1; }
+.portraitPlayback { position: absolute; z-index: 3; top: 20px; right: max(20px, var(--gutter)); min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 24px; background: #fff; color: var(--purple); font: inherit; font-size: 12px; cursor: pointer; }
+.memberCard > img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+.memberCard:focus-visible { outline-offset: -4px; }
+.memberInfo { position: absolute; inset: auto 0 0; display: flex; flex-direction: column; gap: 4px; padding: 28px 12px 12px; background: linear-gradient(transparent, rgb(42 27 61 / 85%)); opacity: 0; transform: translateY(15px); transition: opacity .2s, transform .2s; text-align: left; }
+.memberInfo strong { font-size: 13px; line-height: 1.25; font-weight: 500; }
+.memberInfo > span { font-size: 10px; }
+.memberCard:is(:hover,:focus-visible) .memberInfo { opacity: 1; transform: none; }
+.memberScenes { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--purple); }
+.memberScenes button { width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: inherit; cursor: pointer; }
+.memberScenes button:disabled { opacity: .35; cursor: default; }
+@media (max-width: 699px) {
+  .membersHeading { width: calc(100% - 40px); }
+  .membersHeading h2 { font-size: clamp(32px, 8vw, 42px); }
+  .membersHeading :global(.eyebrow) { margin-bottom: 16px; font-size: 10px; }
+  .memberLede { max-width: 280px; margin-top: 16px; font-size: 13px; }
+  .memberJoin { min-height: 48px; margin-top: 20px; padding: 12px 22px; font-size: 13px; }
+  .memberCard { width: min(120px, 29vw); }
+  .memberCard[data-slot="1"] { --portrait-y: 30 !important; }
+  .memberCard[data-slot="4"] { --portrait-y: -36 !important; }
+  .memberCard[data-slot="5"] { --portrait-y: 38 !important; }
+  .memberInfo { padding: 22px 8px 8px; }
+  .memberInfo strong { font-size: 10px; }
 }
-.membersHeading { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; }
-.membersHeading :global(.eyebrow) { margin: 0 0 18px; }
-.membersHeading h2 { color: var(--plum); font-size: clamp(42px, 4.5vw, 62px); line-height: 1.06; }
-.membersHeading > p { max-width: 340px; margin: 0 0 4px; color: #655b69; font-size: 15px; line-height: 1.8; }
-.memberGrid { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-top: 48px; }
-.memberCard { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 0; border: 0; background: transparent; text-align: left; color: var(--plum); cursor: pointer; }
-.memberImage { position: relative; display: block; width: 100%; overflow: hidden; background: #ece4ed; border-radius: 4px; }
-.memberImage img { width: 100%; height: auto; aspect-ratio: 1 / 1.08; object-fit: cover; transition: transform .6s var(--ease); }
-.memberNumber { position: absolute; top: 16px; left: 16px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #fcfaf7; color: var(--plum); font-size: 10px; letter-spacing: .08em; }
-.memberInfo { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 22px 0 0; }
-.memberInfo strong { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(23px, 2.25vw, 30px); font-weight: 500; line-height: 1.15; letter-spacing: -.035em; }
-.memberInfo > span:not(.profileAction) { margin-top: 9px; color: #6f6374; font-size: 12px; line-height: 1.6; }
-.profileAction { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 12px; font-size: 12px; font-weight: 650; color: var(--purple); }
-.membersFoot { display: flex; align-items: center; gap: 20px; margin: 36px 0 0; color: #76637c; font-size: 11px; letter-spacing: .04em; }
-.membersFoot::before { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold), var(--line)); }
 
-/* Stripe-inspired portrait cards; native touch scrolling and keyboard access remain. */
+/* Stripe-inspired enterprise cards; native touch scrolling and keyboard access remain. */
 .enterprises { background: #fff; }
 .enterprises :global(.section-heading) h2 { font-size: clamp(32px, 3.6vw, 52px); line-height: 1.1; text-wrap: balance; }
 .enterpriseControls { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 40px; margin-bottom: 16px; }
@@ -107,7 +131,6 @@
 .enterpriseControls button:not(:disabled):hover { background: #e0d4eb; }
 .enterpriseControls svg { width: 22px; height: 22px; transform: rotate(-90deg); }
 .enterpriseControls button:first-of-type svg { transform: rotate(90deg); }
-.memberControls { display: none; }
 .enterprises .enterpriseControls { gap: 8px; margin-top: 24px; margin-bottom: 24px; }
 .enterprises .enterpriseControls button { border-radius: 4px; }
 .enterprises .enterpriseControls svg { width: 16px; height: 16px; }
@@ -253,8 +276,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .navJoin:hover, .primaryAction:hover { background: var(--plum); transform: translateY(-2px); }
-  .navJoin:hover svg, .primaryAction:hover svg, .memberCard:hover .profileAction svg { transform: translate(2px, -2px); }
-  .memberCard:hover .memberImage img { transform: scale(1.035); }
+  .navJoin:hover svg, .primaryAction:hover svg { transform: translate(2px, -2px); }
 }
 @media (min-width: 960px) {
   .heroGrid { padding-top: 28px; }
@@ -268,9 +290,7 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .profileDialog[open] { animation: dialog-in .3s var(--ease); }
-  @supports (animation-timeline: view()) {
-    .memberImage { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
-  }
+
 }
 @keyframes settle { from { transform: translateY(18px); } to { transform: none; } }
 @keyframes dialog-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
@@ -328,10 +348,6 @@
   .heroCaption { bottom: 24px; font-size: 11px; }
   .heroFoot { gap: 16px; }
   .heroFoot p { max-width: 180px; line-height: 1.8; }
-  .membersHeading { gap: 28px; }
-  .membersHeading > p { max-width: 270px; font-size: 14px; }
-  .memberGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .memberInfo strong { font-size: 24px; }
 }
 @media (max-width: 699px) {
   .page { --nav-height: 66px; }
@@ -355,20 +371,6 @@
   .heroFoot { padding-block: 14px; }
   .heroFoot p { display: none; }
   .heroFoot a { width: 100%; justify-content: space-between; font-size: 12px; gap: 12px; }
-  .membersHeading { display: block; }
-  .membersHeading h2 { font-size: clamp(38px, 9vw, 52px); }
-  .membersHeading > p { max-width: 420px; margin-top: 22px; font-size: 14px; }
-  .memberGrid { grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 32px; }
-  .memberCard { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-  .memberCard:nth-child(2) { margin-top: 0; }
-  .memberImage { align-self: start; }
-  .memberImage img { aspect-ratio: 1 / 1.12; }
-  .memberNumber { width: 24px; height: 24px; top: 8px; left: 8px; font-size: 9px; }
-  .memberInfo { align-self: center; padding: 0; }
-  .memberInfo strong { max-width: 250px; font-size: clamp(21px, 5vw, 28px); }
-  .memberInfo > span:not(.profileAction) { font-size: 11px; }
-  .profileAction { margin-top: 6px; font-size: 11px; }
-  .membersFoot { gap: 12px; margin-top: 24px; font-size: 10px; }
   .profileDialog { inset: auto 0 0; width: 100%; max-height: calc(100dvh - 16px); margin: 0; border-radius: 16px 16px 0 0; }
   .dialogToolbar { padding: 10px 20px; }
   .dialogGrid { display: block; padding: 16px 20px max(28px, env(safe-area-inset-bottom)); }
@@ -384,21 +386,7 @@
   .navJoin svg { display: none; }
 }
 
-@media (max-width: 620px) {
-  .members { width: calc(100% - 56px); padding-block: var(--section-space-y); }
-  .memberControls { display: flex; }
-  .memberGrid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--mobile-card-gap); margin-top: 0; padding-block: 6px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
-  .memberGrid::-webkit-scrollbar { display: none; }
-  .memberCard { display: flex; min-height: var(--mobile-card-height); padding: 100px 0 0; border: 0; border-radius: var(--mobile-card-radius); overflow: hidden; justify-content: flex-end; scroll-snap-align: start; }
-  .memberCard:focus-visible { outline-offset: -3px; }
-  .memberImage { position: absolute; inset: 0; height: 100%; border-radius: 0; }
-  .memberImage img { height: 100%; aspect-ratio: auto; object-position: center 30%; }
-  .memberNumber { display: none; }
-  .memberInfo { position: relative; z-index: 1; flex: 0; width: 100%; padding: 70px var(--mobile-card-padding) 14px; background: linear-gradient(transparent, rgb(20 8 28 / 90%) 40%); }
-  .memberInfo strong { max-width: none; color: white; font-size: 28px; }
-  .memberInfo > span:not(.profileAction) { color: rgb(255 255 255 / 85%); font-size: 12px; }
-  .profileAction { color: white; font-size: 12px; }
-}
+
 
 /* WisConnect purple, gold, and lilac inside the existing page rails. */
 .beliefSection { padding-block: 48px 80px; scroll-margin-top: 96px; }
@@ -463,40 +451,9 @@
   .beliefActions { flex-direction: column; }
 }
 
-/* Restore the scroll-open portrait composition where the viewport has room. */
-.members[data-animated="true"] { height: 200svh; padding-block: 0; }
-.members[data-animated="true"] .memberStage { position: sticky; top: 0; height: 100svh; isolation: isolate; }
-.members[data-animated="true"] .membersHeading { position: absolute; top: 43%; left: 50%; display: block; width: min(440px, 42vw); text-align: center; transform: translate(-50%, -50%); opacity: clamp(0, (var(--member-spread) - .3) * 2, 1); pointer-events: none; }
-.members[data-animated="true"] .membersHeading h2 { font-size: clamp(34px, 3.4vw, 46px); }
-.members[data-animated="true"] .membersHeading > p { max-width: 360px; margin: 18px auto 0; font-size: 14px; }
-.members[data-animated="true"] .memberGrid { position: absolute; inset: 0; display: block; margin: 0; pointer-events: none; }
-.members[data-animated="true"] .memberCard {
-  --end-x: calc(-1 * min(34vw, 360px)); --end-y: -20svh;
-  position: absolute; z-index: 3; top: 50%; left: 50%; width: clamp(160px, min(18vw, 25svh), 230px); margin: 0; padding: 0; border: 0; border-radius: 16px; background: white; box-shadow: 0 16px 42px rgb(41 24 51 / 13%); pointer-events: auto;
-  opacity: clamp(0, var(--member-spread) * 5, 1); transition: opacity .55s ease;
-  transform: translate(calc(-50% + var(--end-x) * var(--member-spread)), calc(-50% + var(--end-y) * var(--member-spread))) scale(calc(.78 + .22 * var(--member-spread)));
-}
-.members[data-animated="true"] .memberCard:nth-child(2) { --end-x: min(34vw, 360px); z-index: 2; }
-.members[data-animated="true"] .memberCard:nth-child(3) { --end-y: 24svh; z-index: 1; }
-.members[data-animated="true"] .memberCard:nth-child(4) { --end-x: min(34vw, 360px); --end-y: 24svh; z-index: 1; }
-.members[data-animated="true"] .memberCard[data-featured="true"] { z-index: 4; opacity: 1; }
-.members[data-animated="true"] .memberImage { border-radius: 16px 16px calc(16px * (1 - var(--member-spread))) calc(16px * (1 - var(--member-spread))); animation: none; }
-.members[data-animated="true"] .memberImage img { aspect-ratio: 1 / 1; }
-.members[data-animated="true"] .memberInfo { flex: none; min-height: calc(104px * var(--member-spread)); max-height: calc(132px * var(--member-spread)); padding: calc(12px * var(--member-spread)) 14px; overflow: hidden; }
-.members[data-animated="true"] .memberInfo > *,
-.members[data-animated="true"] .memberNumber { opacity: clamp(0, (var(--member-spread) - .98) * 50, 1); }
-.members[data-animated="true"] .memberInfo strong { font-size: 18px; }
-.members[data-animated="true"] .memberInfo > span:not(.profileAction) { display: none; }
-.members[data-animated="true"] .profileAction { min-height: 26px; margin-top: 4px; font-size: 11px; }
-.members[data-animated="true"] .membersFoot { position: absolute; right: 0; bottom: 24px; left: 0; justify-content: center; margin: 0; font-size: 11px; }
-.members[data-animated="true"] .membersFoot::before { flex: 0 1 80px; }
-.portraitPlayback { position: absolute; top: 24px; right: 0; min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 24px; background: transparent; color: var(--purple); font: inherit; font-size: 12px; cursor: pointer; }
-.members[data-animated="true"] .memberStage:has(.memberGrid:focus-within),
-.members[data-profile-open="true"] .memberStage { --member-spread: 1 !important; }
-
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; }
-  .memberCard:hover .memberImage img, .primaryAction:hover, .navJoin:hover { transform: none; }
+  .primaryAction:hover, .navJoin:hover { transform: none; }
 }
 
 /* Expanding story gallery, with native horizontal snapping on phones. */

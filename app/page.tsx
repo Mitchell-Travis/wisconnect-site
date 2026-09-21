@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
-import { animate, motion, MotionConfig, useInView, useScroll, useTransform, type MotionStyle } from 'motion/react';
+import { animate, motion, MotionConfig, useInView, useScroll, useSpring, useTransform, type MotionStyle } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 
@@ -61,6 +61,12 @@ const memberProfiles = [
   {name:'Elizabeth L. Carter, Esq',role:'Business and Corporate Securities Attorney, Legal & Business',bio:'Her work connects business law, corporate securities and the legal foundations that support enterprise.',expertise:['Business law','Corporate securities','Legal & business'],image:'elizabeth'},
   {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'},
   {name:'Ade Wede Wee-Wee Kekuleh',role:'Advocate, legal professional and chartered accountant',bio:'Ade Wede Wee-Wee Kekuleh is a Liberian advocate, legal professional, chartered accountant, journalist, lecturer and published author. Her work focuses on gender, human rights, peacebuilding and social justice, with particular attention to women, children and underserved communities. She is a Partner at ZE’AD Advisors and Consultants and teaches Managerial Accounting and Legal Aspects of Business at the United Methodist University Graduate School.',expertise:['Gender & human rights','Peacebuilding','Social justice','Law & accounting'],image:'ade-wede'}
+] as const;
+// Six portrait positions per scene; additional members get another scene.
+const portraitPositions = [
+  {x:-30,y:-28,scale:.8}, {x:30,y:24,scale:1.06},
+  {x:30,y:-30,scale:.9}, {x:-30,y:30,scale:.95},
+  {x:0,y:-36,scale:1}, {x:0,y:36,scale:.75}
 ] as const;
 const regions = {
   Africa: 'WisConnect’s cultural and strategic root — where local businesses, communities and cooperative opportunity connect.',
@@ -268,7 +274,6 @@ export default function Home(){
     return()=>{stopEnterpriseSlide();window.removeEventListener('resize',stopEnterpriseSlide);media.removeEventListener('change',finish);};
   },[]);
   const memberTrack=useRef<HTMLDivElement>(null);
-  const memberEdges=useScrollEdges(memberTrack);
   const header=useRef<HTMLElement>(null);
   const menuButton=useRef<HTMLButtonElement>(null);
   const languagePicker=useRef<HTMLDetailsElement>(null);
@@ -283,10 +288,28 @@ export default function Home(){
   }
   const membersSection=useRef<HTMLElement>(null);
   const [membersAnimated,setMembersAnimated]=useState(false);
+  const [memberScene,setMemberScene]=useState(0);
   const [featuredMember,setFeaturedMember]=useState(0);
   const [portraitsPaused,setPortraitsPaused]=useState(false);
+  const memberSceneCount=Math.ceil(memberProfiles.length/portraitPositions.length);
+  const visibleMemberCount=Math.min(portraitPositions.length,memberProfiles.length-memberScene*portraitPositions.length);
   const {scrollYProgress:memberProgress}=useScroll({target:membersSection,offset:['start start','end end']});
-  const memberSpread=useTransform(memberProgress,[0,.1,.78,1],[0,0,1,1]);
+  const memberSpring=useSpring(memberProgress,{stiffness:100,damping:30,restDelta:.001});
+  const memberSpread=useTransform(memberSpring,[.2,.95],[0,1]);
+  const memberReveal=useTransform(memberSpring,[.7,.8],[0,1]);
+  const memberPointer=useTransform(memberReveal,value=>value>.9?'auto':'none');
+  useEffect(()=>{
+    if(!membersAnimated||portraitsPaused||selectedMember!==null)return;
+    const timer=window.setInterval(()=>{
+      const track=memberTrack.current;
+      if(!track||document.hidden||memberSpread.get()>.001||track.matches(':hover, :focus-within'))return;
+      const bounds=track.getBoundingClientRect();
+      const center=bounds.top+bounds.height/2;
+      if(center<0||center>window.innerHeight)return;
+      setFeaturedMember(index=>(index+1)%visibleMemberCount);
+    },3000);
+    return()=>window.clearInterval(timer);
+  },[membersAnimated,portraitsPaused,selectedMember,memberSpread,visibleMemberCount]);
   useEffect(()=>{
     if(reducedMotion!==false||!('IntersectionObserver' in window))return;
     // Content stays readable before hydration and if motion is unavailable.
@@ -304,24 +327,12 @@ export default function Home(){
     return()=>observer.disconnect();
   },[reducedMotion]);
   useEffect(()=>{
-    const media=window.matchMedia('(min-width: 760px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)');
+    const media=window.matchMedia('(min-height: 720px) and (prefers-reduced-motion: no-preference)');
     const update=()=>setMembersAnimated(media.matches);
     update();
     media.addEventListener('change',update);
     return()=>media.removeEventListener('change',update);
   },[]);
-  useEffect(()=>{
-    if(!membersAnimated||portraitsPaused||selectedMember!==null)return;
-    const timer=window.setInterval(()=>{
-      const track=memberTrack.current;
-      if(!track||document.hidden||memberSpread.get()>0||track.matches(':hover, :focus-within'))return;
-      const bounds=track.getBoundingClientRect();
-      const center=bounds.top+bounds.height/2;
-      if(center<0||center>window.innerHeight)return;
-      setFeaturedMember(index=>(index+1)%memberProfiles.length);
-    },3000);
-    return()=>window.clearInterval(timer);
-  },[membersAnimated,portraitsPaused,selectedMember,memberSpread]);
   useEffect(()=>{
     let previousY=Math.max(0,window.scrollY);
     const onScroll=()=>{
@@ -451,35 +462,39 @@ export default function Home(){
     </section>
 
     <section id="members" ref={membersSection} className={styles.members} data-animated={membersAnimated} data-profile-open={selectedMember!==null} aria-labelledby="members-title">
-      <motion.div className={styles.memberStage} style={{'--member-spread':memberSpread} as MotionStyle}>
-      <div className={styles.membersHeading}>
-        <div><p className="eyebrow">Meet the visionaries</p><h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2></div>
-        <p>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative. Every connection starts with a person.</p>
-      </div>
-      <div className={`${styles.enterpriseControls} ${styles.memberControls}`}>
-        <p>Meet our {memberProfiles.length} visionaries</p>
-        <button type="button" aria-label="Previous visionary" aria-controls="member-cards" disabled={memberEdges.start} onClick={()=>browseCards(memberTrack.current,-1)}><ArrowDownIcon/></button>
-        <button type="button" aria-label="Next visionary" aria-controls="member-cards" disabled={memberEdges.end} onClick={()=>browseCards(memberTrack.current,1)}><ArrowDownIcon/></button>
-      </div>
-      <div id="member-cards" ref={memberTrack} className={styles.memberGrid} role="group" aria-label="Visionary profiles"
-        onKeyDown={event=>{
-          if(!window.matchMedia('(max-width: 620px)').matches)return;
-          if(event.key==='ArrowLeft'||event.key==='ArrowRight'||event.key==='Home'||event.key==='End'){
-            event.preventDefault();
-            const index=Array.from(event.currentTarget.children).indexOf(document.activeElement as Element);
-            const next=event.key==='Home'?0:event.key==='End'?memberProfiles.length-1:Math.max(0,Math.min(memberProfiles.length-1,index+(event.key==='ArrowLeft'?-1:1)));
-            (event.currentTarget.children[next] as HTMLButtonElement).focus({preventScroll:true});
-            const step=event.currentTarget.children[next] as HTMLElement;
-            event.currentTarget.scrollTo({left:step.offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
-          }
+      <motion.div className={styles.memberStage} style={{'--member-spread':memberSpread,'--member-reveal':memberReveal,'--member-pointer':memberPointer} as MotionStyle}>
+        <svg className={styles.memberThreads} viewBox="0 0 1600 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
+          {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*55-130} C430 ${i*30+90} 940 ${i*13+345} 1260 535 S1510 ${i*34+150} 1700 ${i*39+50}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
+        </svg>
+        <div className={styles.membersHeading}>
+          <p className="eyebrow">Meet the visionaries</p>
+          <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2>
+          <p className={styles.memberLede}>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative.</p>
+          <Link className={styles.memberJoin} href="/join">Join the cooperative <ArrowUpRightIcon/></Link>
+          <p className={styles.memberHint}>Select a portrait to meet her.</p>
+          {memberSceneCount>1&&<div className={styles.memberScenes} aria-label="More visionaries">
+            <button type="button" aria-label="Previous visionaries" disabled={memberScene===0} onClick={()=>setMemberScene(scene=>scene-1)}>←</button>
+            <span aria-live="polite">{memberScene+1} / {memberSceneCount}</span>
+            <button type="button" aria-label="Next visionaries" disabled={memberScene===memberSceneCount-1} onClick={()=>setMemberScene(scene=>scene+1)}>→</button>
+          </div>}
+        </div>
+        <div id="member-cards" ref={memberTrack} className={styles.memberGrid} role="group" aria-label="Visionary profiles" onKeyDown={event=>{
+          if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+          event.preventDefault();
+          const cards=Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button:not([hidden])'));
+          const index=cards.indexOf(document.activeElement as HTMLButtonElement);
+          const next=event.key==='Home'?0:event.key==='End'?cards.length-1:Math.max(0,Math.min(cards.length-1,index+(event.key==='ArrowLeft'?-1:1)));
+          cards[next]?.focus({preventScroll:true});
         }}>
-        {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} data-featured={featuredMember===index} key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
-          <span className={styles.memberImage}><img src={assetPath(`${member.image}-480.webp`)} srcSet={`${assetPath(`${member.image}-480.webp`)} 480w, ${assetPath(`${member.image}-800.webp`)} 800w`} sizes="(max-width: 620px) calc(100vw - 56px), (max-width: 699px) 34vw, (max-width: 1279px) 30vw, 390px" alt="" width="1254" height="1254" loading="lazy" decoding="async"/><span className={styles.memberNumber} aria-hidden="true">0{index+1}</span></span>
-          <span className={styles.memberInfo}><strong>{member.name}</strong><span>{member.expertise.slice(0,2).join(' · ')}</span><span className={styles.profileAction}>View profile <ArrowUpRightIcon/></span></span>
-        </button>)}
-      </div>
-      {membersAnimated&&<button type="button" className={styles.portraitPlayback} aria-controls="member-cards" aria-pressed={portraitsPaused} onClick={()=>setPortraitsPaused(paused=>!paused)}>{portraitsPaused?'Resume portraits':'Pause portraits'}</button>}
-      <p className={styles.membersFoot}>Different expertise. One cooperative vision.</p>
+          {memberProfiles.map((member,index)=>{
+            const slot=portraitPositions[index%portraitPositions.length];
+            return <button type="button" className={styles.memberCard} hidden={Math.floor(index/portraitPositions.length)!==memberScene} data-slot={index%portraitPositions.length} data-featured={index%portraitPositions.length===featuredMember%visibleMemberCount} style={{'--portrait-x':slot.x,'--portrait-y':slot.y,'--portrait-scale':slot.scale} as CSSProperties} key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
+              <img src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 699px) 30vw, (max-width: 1279px) 22vw, 280px" alt="" width="800" height="800" loading="lazy" decoding="async"/>
+              <span className={styles.memberInfo}><strong>{member.name}</strong><span>View profile ↗</span></span>
+            </button>;
+          })}
+        </div>
+        {membersAnimated&&<button className={styles.portraitPlayback} type="button" aria-controls="member-cards" aria-pressed={portraitsPaused} onClick={()=>setPortraitsPaused(paused=>!paused)}>{portraitsPaused?'Resume portraits':'Pause portraits'}</button>}
       </motion.div>
     </section>
 
@@ -492,7 +507,7 @@ export default function Home(){
         <div className={styles.sheetToolbar}><span className={styles.sheetHandle} aria-hidden="true"/><button className={styles.sheetClose} type="button" onClick={closeProfile} aria-label="Close profile" autoFocus><span aria-hidden="true">×</span></button></div>
         <div className={styles.sheetGrid}>
           <div className={styles.sheetIntro}><p className="eyebrow">Meet the visionaries · {String(selectedMember+1).padStart(2,'0')} / {String(memberProfiles.length).padStart(2,'0')}</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.sheetRole}>{memberProfiles[selectedMember].role}</p></div>
-          <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
+          <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-studio-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
           <div className={styles.sheetBio}><p>{memberProfiles[selectedMember].bio}</p><ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
         </div>
       </>}

@@ -19,7 +19,7 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
         await sheet.waitFor({state:'visible'});
         assert(await sheet.locator('h2').innerText()===name,'Correct profile opens');
         assert((await sheet.innerText()).includes(`${String(i+1).padStart(2,'0')} / 04`),'Profile count follows the data');
-        assert(await sheet.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0),'Portrait loads');
+        assert(await sheet.locator('img').evaluate(async img=>{await img.decode();return img.naturalWidth>0;}),'Portrait loads');
         assert(await sheet.evaluate(d=>d.scrollWidth<=d.clientWidth+1&&getComputedStyle(d).backgroundColor==='rgb(255, 255, 255)'),'White sheet fits the viewport');
         assert(await p.evaluate(()=>document.documentElement.style.overflow==='hidden'),'Page scroll is locked');
         await p.keyboard.press('Tab');
@@ -45,16 +45,40 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
       }
     }
     await p.emulateMedia({reducedMotion:'no-preference'});
-    for(const [width,height] of [[1440,1000],[820,1180],[768,720]]) {
+    for(const [width,height] of [[1920,1000],[1440,1000],[820,1180],[768,720],[390,844]]) {
       await p.setViewportSize({width,height});
       await p.goto(site);
       await p.waitForFunction(()=>document.querySelector('#members')?.dataset.animated==='true');
+      await p.locator('#members').evaluate(s=>s.scrollIntoView({behavior:'instant',block:'start'}));
+      await p.waitForFunction(()=>Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread'))<.001);
+      assert(await p.locator('#member-cards').evaluate(e=>{
+        const boxes=[...e.children].map(n=>n.getBoundingClientRect());
+        return boxes.every(r=>Math.abs(r.x-boxes[0].x)<1&&Math.abs(r.y-boxes[0].y)<1);
+      }),'Portraits start in a centered stack');
+      if(width===1440||width===390) {
+        await p.mouse.move(0,0);
+        const featured=()=>p.locator('#member-cards > [data-featured="true"]').getAttribute('aria-label');
+        const first=await featured();
+        await p.waitForFunction(name=>document.querySelector('#member-cards > [data-featured="true"]').getAttribute('aria-label')!==name,first);
+        await p.getByRole('button',{name:'Pause portraits',exact:true}).click();
+        const paused=await featured();
+        await p.waitForTimeout(3300);
+        assert(await featured()===paused,'Pause stops automatic portrait cycling');
+        assert(await p.locator('#member-cards > [data-featured="false"]').first().evaluate(b=>getComputedStyle(b).opacity==='0'),'Playback focus keeps portraits stacked');
+        await p.getByRole('button',{name:'Resume portraits',exact:true}).click();
+        await p.waitForFunction(name=>document.querySelector('#member-cards > [data-featured="true"]').getAttribute('aria-label')!==name,paused);
+      }
       await p.evaluate(()=>{const s=document.querySelector('#members');window.scrollTo({top:s.getBoundingClientRect().top+scrollY+s.offsetHeight-innerHeight-2,behavior:'instant'});});
-      await p.waitForTimeout(700);
+      await p.waitForFunction(()=>Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread'))>.999);
       assert(await p.locator('#member-cards').evaluate(e=>{
         const boxes=[...e.children].map(n=>n.getBoundingClientRect());
         return boxes.every((r,i)=>r.left>=0&&r.right<=innerWidth&&boxes.every((b,j)=>i===j||r.right<=b.left||r.left>=b.right||r.bottom<=b.top||r.top>=b.bottom));
       }),'All four spread portraits fit without overlap');
+      assert(await p.locator('#member-cards').evaluate(e=>{
+        const heading=document.querySelector('#members h2');
+        const copy=[heading,heading.nextElementSibling,document.querySelector('#members a[href$="/join/"]')].filter(Boolean).map(n=>n.getBoundingClientRect());
+        return [...e.children].every(n=>{const r=n.getBoundingClientRect();return copy.every(b=>r.right<=b.left||r.left>=b.right||r.bottom<=b.top||r.top>=b.bottom);});
+      }),'Portraits leave the heading, description and CTA clear');
       await p.screenshot({path:`/tmp/wisconnect-four-visionaries-${width}.png`});
       const card=p.getByRole('button',{name:'View profile for Ade Wede Wee-Wee Kekuleh',exact:true});
       await card.click();
@@ -77,6 +101,6 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
     await p.keyboard.press('Escape');
     await story.waitFor({state:'hidden'});
     assert(errors.length===0,errors.join('\n'));
-    return 'PASS: four profiles, full Ade Wede bio, responsive sheets, focus/scroll, animation, backdrop, reduced motion and story regression';
+    return 'PASS: portrait autoplay/pause/resume, scroll-open portraits on desktop/tablet/mobile, unobstructed copy, four profiles, full Ade Wede bio, responsive sheets, focus/scroll, animation, backdrop, reduced motion and story regression';
   } finally {await c.close();}
 }

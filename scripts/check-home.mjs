@@ -73,7 +73,7 @@ try {
     await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
     await send('Page.navigate',{url});
     await until('document.querySelector("#hero-title") && document.readyState === "complete"');
-    await until(`document.querySelector('#members').dataset.animated===String(innerWidth>=760)`);
+    await until(`document.querySelector('#members').dataset.animated===String(innerHeight>=720)`);
     for(const selector of ['#businesses .section-heading > div','#enterprise-cards > li','.program-list > article','#impact-title','#impact-metrics > div','#story-gallery','#join h2','.join-grid > a','.footer-grid > div']){
       await evaluate(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'center',behavior:'instant'})`);
       await until(`document.querySelector(${JSON.stringify(selector)}).dataset.scrollReveal==='visible'`);
@@ -97,7 +97,7 @@ try {
     await evaluate('window.scrollTo({top:0,behavior:"instant"})');
     await until('innerWidth === ' + width);
     await until('Math.abs(document.querySelector("header").getBoundingClientRect().top) < .1');
-    await until(`document.querySelector('#members').dataset.animated === String(innerWidth >= 760 && innerHeight >= 720)`);
+    await until(`document.querySelector('#members').dataset.animated === String(innerHeight >= 720)`);
     const layout = await evaluate(`(() => {
       const visible = el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.left >= -1 && r.right <= innerWidth + 1; };
       return {
@@ -151,10 +151,10 @@ try {
     assert(await evaluate(`Math.abs(parseFloat(getComputedStyle(document.querySelector('#enterprises-title')).fontSize) - Math.min(52, Math.max(32, innerWidth * .036))) < .1`), 'Enterprise heading uses the reduced responsive type size');
     if (width <= 620) {
       const cards = await evaluate(`(() => {
-        const reference = document.querySelector('#member-cards > button').getBoundingClientRect();
-        const selectors = '#member-cards > button, #enterprise-cards > li, #story-gallery > button, .join-grid a, .program-list article';
+        const reference = document.querySelector('#enterprise-cards > li').getBoundingClientRect();
+        const selectors = '#enterprise-cards > li, #story-gallery > button, .join-grid a, .program-list article';
         const sameWidth = [...document.querySelectorAll(selectors)].every(card => Math.abs(card.getBoundingClientRect().width - reference.width) < 1);
-        const matchingHeights = ['#member-cards > button', '#enterprise-cards > li', '#story-gallery > button', '.join-grid a', '.program-list article'].every(group => {
+        const matchingHeights = ['#enterprise-cards > li', '#story-gallery > button', '.join-grid a', '.program-list article'].every(group => {
           const heights = [...document.querySelectorAll(group)].map(card => card.getBoundingClientRect().height);
           return Math.max(...heights) - Math.min(...heights) < 1;
         });
@@ -310,54 +310,17 @@ try {
     }
     console.log(`PASS ${width}px: dropdown dimensions, all four menus, keyboard and mobile focus/scroll management`);
 
-    if (width >= 760) {
-      await evaluate(`document.activeElement.blur(); document.querySelector('#members').scrollIntoView({behavior:'instant',block:'start'})`);
-      await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) < .1`);
-      const closedDistance = await evaluate(`Math.abs(document.querySelectorAll('#member-cards > button')[0].getBoundingClientRect().left - document.querySelectorAll('#member-cards > button')[1].getBoundingClientRect().left)`);
-      await until(`[...document.querySelectorAll('#member-cards > button:not([data-featured=true])')].every(card=>getComputedStyle(card).opacity==='0')`);
-      assert(await evaluate(`(() => {
-        const cards=[...document.querySelectorAll('#member-cards > button')];
-        const first=cards[0].getBoundingClientRect();
-        return cards.every(card=>{
-          const r=card.getBoundingClientRect();
-          return Math.abs(r.x-first.x)<.1 && Math.abs(r.y-first.y)<.1 && Math.abs(r.height-first.height)<.1 &&
-            getComputedStyle(card.querySelector('strong')).opacity==='0' && card.querySelector('strong').parentElement.getBoundingClientRect().height===0;
-        }) && cards.filter(card=>getComputedStyle(card).opacity==='1').length===1;
-      })()`), 'Collapsed portraits align exactly, with one visible portrait and no name panel');
-      if(width===1440){
-        const first=await evaluate(`document.querySelector('#member-cards > [data-featured=true]').getAttribute('aria-label')`);
-        await until(`document.querySelector('#member-cards > [data-featured=true]').getAttribute('aria-label')!==${JSON.stringify(first)}`);
-        await evaluate(`document.querySelector('#members button[aria-pressed]').focus();document.activeElement.click()`);
-        await until(`document.querySelector('#members button[aria-pressed]').getAttribute('aria-pressed')==='true'`);
-        const paused=await evaluate(`document.querySelector('#member-cards > [data-featured=true]').getAttribute('aria-label')`);
-        await evaluate('new Promise(resolve=>setTimeout(resolve,3300))');
-        assert.equal(await evaluate(`document.querySelector('#member-cards > [data-featured=true]').getAttribute('aria-label')`),paused,'Pause stops portrait rotation');
-        assert.equal(await evaluate(`getComputedStyle(document.querySelector('#member-cards strong')).opacity`),'0','Playback focus does not open the stack');
-        await screenshot('1440-members-stacked');
-        await evaluate(`document.querySelector('#members button[aria-pressed]').click();document.activeElement.blur()`);
-        await until(`document.querySelector('#member-cards > [data-featured=true]').getAttribute('aria-label')!==${JSON.stringify(paused)}`);
-      }
-      await evaluate(`(() => {const section=document.querySelector('#members');window.scrollTo({top:scrollY+section.getBoundingClientRect().top+(section.offsetHeight-innerHeight)*.5,behavior:'instant'})})()`);
-      await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) > .3`);
-      assert(await evaluate(`[...document.querySelectorAll('#member-cards strong')].every(label=>getComputedStyle(label).opacity==='0')`),'Names stay hidden while portraits are opening');
-      await evaluate(`(() => {const section=document.querySelector('#members');window.scrollTo({top:scrollY+section.getBoundingClientRect().top+(section.offsetHeight-innerHeight)*.9,behavior:'instant'})})()`);
-      await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) > .99`);
-      const openDistance = await evaluate(`Math.abs(document.querySelectorAll('#member-cards > button')[0].getBoundingClientRect().left - document.querySelectorAll('#member-cards > button')[1].getBoundingClientRect().left)`);
-      assert(openDistance > closedDistance + 200, 'Portraits spread apart with scroll');
-      await screenshot(`${width}-members-open`);
-      assert(await evaluate(`[...document.querySelectorAll('#member-cards strong')].every(label=>Number(getComputedStyle(label).opacity)>.99)`),'Names appear when the scroll spread is complete');
-      assert(await evaluate(`(() => {
-        const heading=document.querySelector('#members h2').parentElement.parentElement;
-        const h=heading.getBoundingClientRect();
-        return getComputedStyle(heading).opacity === '1' && [...document.querySelectorAll('#member-cards > button')].every(button=>{
-          const r=button.getBoundingClientRect();
-          return r.top>=0 && r.bottom<=innerHeight && (r.right<=h.left || r.left>=h.right || r.bottom<=h.top || r.top>=h.bottom);
-        });
-      })()`), 'Open portraits fit the viewport and leave the copy clear');
-      console.log(`PASS ${width}px: scroll-open portraits and unobstructed copy`);
-      await evaluate('window.scrollTo({top:0,behavior:"instant"})');
-      await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) < .1`);
-    }
+    await evaluate(`document.activeElement.blur(); document.querySelector('#members').scrollIntoView({behavior:'instant',block:'start'})`);
+    await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) < .001`);
+    const closedDistance = await evaluate(`Math.abs(document.querySelectorAll('#member-cards > button')[0].getBoundingClientRect().left - document.querySelectorAll('#member-cards > button')[1].getBoundingClientRect().left)`);
+    assert(closedDistance<1,'Portraits begin in a centered stack');
+    await evaluate(`(() => {const section=document.querySelector('#members');window.scrollTo({top:scrollY+section.getBoundingClientRect().top+section.offsetHeight-innerHeight-2,behavior:'instant'})})()`);
+    await until(`Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread')) > .999`);
+    const openDistance = await evaluate(`Math.abs(document.querySelectorAll('#member-cards > button')[0].getBoundingClientRect().left - document.querySelectorAll('#member-cards > button')[1].getBoundingClientRect().left)`);
+    assert(openDistance>closedDistance+150,'Portraits spread with scroll on desktop and mobile');
+    await screenshot(`${width}-members-open`);
+    console.log(`PASS ${width}px: scroll-open portraits`);
+    await evaluate('window.scrollTo({top:0,behavior:"instant"})');
     if (width === 390 || width === 1440) {
       await screenshot(`${width}-hero`);
       await evaluate('document.querySelector("#members").scrollIntoView({behavior:"instant"})');
@@ -381,38 +344,14 @@ try {
     await until('!document.querySelector("dialog").open && document.documentElement.style.overflow !== "hidden"');
     assert(await evaluate('document.activeElement === document.querySelector("#member-cards > button")'), 'Dialog restores focus');
     console.log(`PASS ${width}px: layout, labels, dialog, keyboard, scroll lock`);
-    if (width <= 620) {
-      await evaluate('document.activeElement.blur(); document.querySelector("#members").scrollIntoView({behavior:"instant"})');
-      assert(await evaluate(`(() => {
-        const track = document.querySelector('#member-cards');
-        const cards = [...track.children].map(card => card.getBoundingClientRect());
-        return cards.length === 4 && track.scrollWidth > track.clientWidth &&
-          cards.every(card => Math.abs(card.top - cards[0].top) < 1);
-      })()`), 'Mobile portraits form a horizontal row');
-      await until('document.querySelector("#members button[aria-label^=Previous]").disabled');
-      await evaluate('document.querySelector("#members button[aria-label^=Next]").click()');
-      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[1].offsetLeft) < 2');
-      await evaluate('document.querySelector("#member-cards").children[1].focus(); document.activeElement.click()');
-      await until('document.querySelector("dialog").open');
-      await key('Escape');
-      await until('!document.querySelector("dialog").open');
-      assert(await evaluate('document.activeElement === document.querySelector("#member-cards").children[1]'), 'Second profile restores focus to its card');
-      if (width === 390) await screenshot('390-members-slide');
-      await key('End');
-      await until('document.querySelector("#members button[aria-label^=Next]").disabled');
-      assert(await evaluate('document.activeElement === document.querySelector("#member-cards").lastElementChild'), 'End focuses the last portrait');
-      await key('ArrowLeft');
-      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[2].offsetLeft) < 2');
-      await key('Home');
-      await until('document.querySelector("#members button[aria-label^=Previous]").disabled');
-      await key('ArrowRight');
-      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[1].offsetLeft) < 2');
-      await key('Home');
-      await until('document.querySelector("#member-cards").scrollLeft < 2');
-      console.log(`PASS ${width}px: mobile visionary row, arrows, keyboard, profile focus restoration`);
-    } else {
-      assert(await evaluate('document.querySelector("#members button[aria-label^=Next]").getClientRects().length === 0'), 'Member carousel controls stay mobile-only');
-    }
+    await key('End');
+    assert(await evaluate('document.activeElement === document.querySelector("#member-cards").lastElementChild'), 'End focuses the last portrait');
+    await key('ArrowLeft');
+    assert(await evaluate('document.activeElement === document.querySelector("#member-cards").children[2]'), 'Left focuses the previous portrait');
+    await key('Home');
+    await key('ArrowRight');
+    assert(await evaluate('document.activeElement === document.querySelector("#member-cards").children[1]'), 'Right focuses the next portrait');
+    console.log(`PASS ${width}px: visionary keyboard navigation`);
     await evaluate('document.activeElement.blur(); document.querySelector("#enterprise-cards").scrollIntoView({behavior:"instant",block:"start"}); document.querySelector("#enterprise-cards").scrollTo({left:0,behavior:"instant"})');
     await until('document.querySelector("#businesses button[aria-label^=Previous]").disabled');
     assert.equal(await evaluate('document.querySelectorAll("#enterprise-cards > li").length'), 6);
