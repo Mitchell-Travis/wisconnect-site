@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
-import { animate, motion, MotionConfig, useScroll, useTransform, type MotionStyle } from 'motion/react';
+import { animate, motion, MotionConfig, useInView, useScroll, useTransform, type MotionStyle } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 
@@ -209,6 +209,9 @@ export default function Home(){
   const [impactMetric,setImpactMetric]=useState(0);
   const [impactHover,setImpactHover]=useState<number|null>(null);
   const impactIndicator=impactHover??impactMetric;
+  const impactVisual=useRef<HTMLDivElement>(null);
+  const impactInView=useInView(impactVisual,{amount:.2});
+  const animateImpact=impactInView&&reducedMotion===false;
   const [scrolled,setScrolled]=useState(false);
   const [navHidden,setNavHidden]=useState(false);
   const [selectedMember,setSelectedMember]=useState<number|null>(null);
@@ -591,21 +594,21 @@ export default function Home(){
           </div>)}
         </dl>
         <p id="impact-note" className={styles.impactNote}>Illustrative figures for design preview only—not verified results.</p>
-        <div className={styles.impactVisual}>
+        <div ref={impactVisual} className={styles.impactVisual}>
           <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>A vision of connection, not verified operations.</span></div>
-          <motion.svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false" initial="rest" whileInView="visible" viewport={{once:true,amount:.3}}>
+          <svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false">
             <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
             {impactPlaces.filter(place=>place.route).map(place=><g key={place.region} className={styles.impactRoute} data-active={region==='Africa'||region===place.region}>
               <path d={place.route} stroke="currentColor" strokeOpacity=".18"/>
-              <motion.path key={`${impactMetric}-${region}`} d={place.route} stroke="currentColor" strokeWidth="2" strokeLinecap="round" variants={{rest:{pathLength:0},visible:{pathLength:1}}} initial="rest" whileInView="visible" viewport={{once:true}} transition={{duration:reducedMotion?0:1.4,ease:'easeOut'}}/>
+              <motion.path key={`${impactMetric}-${region}`} d={place.route} stroke="currentColor" strokeWidth="2" strokeLinecap="round" initial={false} animate={{pathLength:animateImpact?[0,1]:1}} transition={{duration:animateImpact?1.4:0,ease:'easeOut'}}/>
             </g>)}
-            {impactPlaces.map(place=><g key={place.region} className={styles.impactPin} data-active={region===place.region}>
+            {impactPlaces.map((place,index)=><g key={place.region} className={styles.impactPin} data-active={region===place.region}>
               <circle cx={place.x} cy={place.y} r="15" fill="currentColor" opacity=".12"/>
-              <motion.circle key={`${impactMetric}-${region}`} cx={place.x} cy={place.y} r="15" stroke="currentColor" strokeWidth="1" initial={{r:reducedMotion?15:6,opacity:reducedMotion ? .25 : 0}} whileInView={{r:reducedMotion?15:[6,28,15],opacity:reducedMotion ? .25 : [0,.7,.25]}} viewport={{once:true}} transition={{duration:reducedMotion?0:1.8,ease:'easeOut'}}/>
-              <circle cx={place.x} cy={place.y} r="6" fill="currentColor" stroke="#fff" strokeWidth="3"/>
+              <motion.circle cx={place.x} cy={place.y} r="15" opacity=".35" stroke="currentColor" strokeWidth="1.5" initial={false} animate={{r:animateImpact?[6,28]:15,opacity:animateImpact?[.7,0]:.35}} transition={{duration:animateImpact?2.4:0,repeat:animateImpact?Infinity:0,delay:animateImpact?index*.35:0,ease:'easeOut'}}/>
+              <circle cx={place.x} cy={place.y} r="7" fill="currentColor" stroke="#fff" strokeWidth="2"/>
               <text x={place.x} y={place.y+32} textAnchor="middle" fill="currentColor">{place.label}</text>
             </g>)}
-          </motion.svg>
+          </svg>
           <div className={styles.impactRegions} role="group" aria-label="Countries in the connection vision">
             {impactPlaces.map(place=><button key={place.region} type="button" aria-pressed={region===place.region} aria-controls="impact-region-detail" onClick={()=>setRegion(place.region)}>{place.label}</button>)}
           </div>

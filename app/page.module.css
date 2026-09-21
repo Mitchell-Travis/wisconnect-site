@@ -167,12 +167,11 @@
 .impactMapIntro > span:last-child { color: #061b31; font-size: 11px; }
 .impactMap { display: block; width: 100%; max-width: 1060px; height: auto; margin: 12px auto 0; }
 .impactMap > image { opacity: .7; }
-.impactRoute { color: #fff; opacity: .2; transition: opacity .35s ease; }
+.impactRoute { color: #80539f; opacity: .2; transition: opacity .35s ease; }
 .impactRoute[data-active="true"] { opacity: 1; }
-.impactRoute path:last-child { filter: drop-shadow(0 0 4px #b9b5ff); }
-.impactPin { color: #d4d5fc; transition: color .35s ease; }
-.impactPin[data-active="true"] { color: #fff; }
-.impactPin text { font-size: 13px; font-weight: 600; paint-order: stroke; stroke: #29227d; stroke-width: 5px; stroke-linejoin: round; }
+.impactPin { color: #80539f; transition: color .35s ease; }
+.impactPin[data-active="true"] { color: #542575; }
+.impactPin text { fill: #422d5b; font-size: 13px; font-weight: 600; paint-order: stroke; stroke: #f3edf7; stroke-width: 5px; stroke-linejoin: round; }
 .impactRegions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .impactRegions button { min-height: 44px; padding: 10px 18px; border: 1px solid rgb(13 23 56 / 30%); border-radius: 24px; background: rgb(255 255 255 / 82%); color: #0d1738; font-size: 12px; cursor: pointer; transition: background .2s, color .2s; }
 .impactRegions button:hover { background: #fff; }
