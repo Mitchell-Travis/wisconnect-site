@@ -5,7 +5,7 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
   const p=await c.newPage();
   const errors=[];
   p.on('pageerror',e=>errors.push(e.message));
-  const names=['Chipo Nyambuya, Esq','Elizabeth L. Carter, Esq','Priscilla Cadette','Ade Wede Wee-Wee Kekuleh'];
+  const names=['Chipo Nyambuya, Esq','Elizabeth L. Carter','Priscilla Cadette','Ade Wede Wee-Wee Kekuleh'];
   const sheet=p.locator('dialog[aria-labelledby="profile-name"]');
   try {
     for(const [width,height] of [[1440,1000],[820,1180],[390,844],[320,568]]) {
