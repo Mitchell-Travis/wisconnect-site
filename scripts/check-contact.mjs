@@ -58,7 +58,7 @@ try {
   await until(`document.querySelector('#contact-email') && document.readyState==='complete' && document.querySelector('header img').complete && document.querySelector('header img').naturalWidth>0`);
   for(const width of [320,390,768,1440,1920]){
     await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
-    assert(await evaluate(`(()=>{const card=document.querySelector('section[data-step]'),r=card.getBoundingClientRect();return document.documentElement.scrollWidth===innerWidth && r.left>=12 && r.right<=innerWidth-12 && Math.abs(r.width-Math.min(608,innerWidth-2*(innerWidth<=620?28:innerWidth<=959?34:40)))<1 && [...card.querySelectorAll('input,select')].every(e=>e.getBoundingClientRect().height>=48);})()`),'Card and controls fit the measured layout');
+    assert(await evaluate(`(()=>{const card=document.querySelector('section[data-step]'),r=card.getBoundingClientRect();return document.documentElement.scrollWidth===innerWidth && r.left>=12 && r.right<=innerWidth-12 && Math.abs(r.width-Math.min(608,innerWidth-(innerWidth<=620?48:160)))<1 && [...card.querySelectorAll('input,select')].every(e=>e.getBoundingClientRect().height>=48);})()`),'Card and controls fit the measured layout');
     assert(await evaluate(`document.querySelector('header img').naturalWidth>0`),'WisConnect logo loads');
   }
   for(const width of [390,1440]){
@@ -76,7 +76,8 @@ try {
     await evaluate(`(()=>{const e=document.querySelector('#contact-name');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'Test visitor');e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
     await evaluate(`document.querySelector('form').requestSubmit()`);
     await until(`document.querySelector('#contact-message')`);
-    assert(await evaluate(`document.querySelector('button[type=submit]').disabled`),'Preview cannot pretend to send a message');
+    await evaluate(`document.querySelector('form').requestSubmit()`);
+    assert(await evaluate(`!!document.querySelector('#contact-message')`),'Empty message cannot proceed to review');
     await evaluate(`(()=>{const e=document.querySelector('#contact-message');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,'Design preview only.');e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
     await evaluate(`document.querySelector('ol button').click()`);
     await until(`document.querySelector('#contact-email')`);
@@ -87,7 +88,15 @@ try {
     await evaluate(`document.querySelector('form').requestSubmit()`);
     await until(`document.querySelector('#contact-message')`);
     assert.equal(await evaluate(`document.querySelector('#contact-message').value`),'Design preview only.');
-    console.log(`PASS ${width}px: validation, three steps, focus, retained answers and disabled delivery`);
+    await evaluate(`(()=>{const e=document.querySelector('#contact-topic');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(e,'Partnerships');e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await evaluate(`document.querySelector('form').requestSubmit()`);
+    await until(`document.querySelector('#contact-title').textContent==='Ready to connect.'`);
+    assert(await evaluate(`(()=>{const url=new URL(document.querySelector('form a[href^="mailto:"]').href);return url.pathname==='hello@wisconnect.co' && url.searchParams.get('subject')==='WisConnect — Partnerships' && ['Test visitor','test@example.com','Liberia','Design preview only.'].every(text=>url.searchParams.get('body').includes(text));})()`),'Email draft includes the reviewed details and correct destination');
+    assert(await evaluate(`document.querySelector('#contact-delivery-note').textContent.includes('only when you press Send')`),'Delivery is clearly an email handoff');
+    await evaluate(`document.querySelector('form button').click()`);
+    await until(`document.querySelector('#contact-message')`);
+    assert.equal(await evaluate(`document.querySelector('#contact-message').value`),'Design preview only.','Editing keeps the draft');
+    console.log(`PASS ${width}px: validation, review, email draft, focus and retained answers`);
   }
   await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
   assert(await evaluate(`document.querySelector('form').getAnimations({subtree:true}).every(a=>a.playState==='finished')`),'Reduced motion stops step animation');

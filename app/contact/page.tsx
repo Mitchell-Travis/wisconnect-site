@@ -15,6 +15,7 @@ export default function ContactPage() {
         <Link className={styles.brand} href="/" aria-label="WisConnect home">
           <img src={assetPath('logo-nav.webp')} alt="WisConnect" width="480" height="160"/>
         </Link>
+        <Link className={styles.homeLink} href="/">Back to website <span aria-hidden="true">↗</span></Link>
       </div>
     </header>
     <main className={styles.main} aria-label="Contact WisConnect"><ContactForm countries={countries}/></main>

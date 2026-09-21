@@ -66,6 +66,7 @@ footer{background:var(--plum);color:white;padding:65px 0}.footer-grid{display:gr
   --plum:#291833;
   --sand:#FAF8F5;
   --mist:#F7F3F8;
+  --entry-gradient: radial-gradient(ellipse at 7% 92%, #8962ac 0%, transparent 48%), radial-gradient(ellipse at 94% 90%, #d8b780 0%, transparent 49%), radial-gradient(ellipse at 52% 22%, #fff 5%, #f7f3f8 40%, transparent 72%), linear-gradient(135deg, #eee7f2, #dbc9e7 58%, #f5e6ce);
   --ink:#211B24;
   --muted:#6F6872;
   --line:rgba(41,24,51,.11);

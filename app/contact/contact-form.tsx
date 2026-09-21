@@ -15,14 +15,16 @@ function Arrow(){
 export default function ContactForm({countries}:{countries:{code:string;name:string}[]}){
   const [step,setStep]=useState(0);
   const [answers,setAnswers]=useState({email:'',country:'',name:'',organization:'',topic:'',message:''});
+  const [prepared,setPrepared]=useState(false);
+  const [copyStatus,setCopyStatus]=useState('');
   const heading=useRef<HTMLHeadingElement>(null);
   const moveFocus=useRef(false);
 
   useEffect(()=>{
     if(moveFocus.current)heading.current?.focus({preventScroll:true});
-  },[step]);
+  },[step,prepared]);
 
-  function goToStep(next:number){moveFocus.current=true;setStep(next);}
+  function goToStep(next:number){moveFocus.current=true;setPrepared(false);setCopyStatus('');setStep(next);}
   function updateAnswer(event:ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>){
     event.currentTarget.setCustomValidity('');
     const {name,value}=event.currentTarget;
@@ -33,7 +35,16 @@ export default function ContactForm({countries}:{countries:{code:string;name:str
     for(const field of event.currentTarget.querySelectorAll<HTMLInputElement|HTMLTextAreaElement>('input[required],textarea[required]')){
       field.setCustomValidity(field.value.trim()?'':'Please add your answer before continuing.');
     }
-    if(event.currentTarget.reportValidity()&&step<2)goToStep(step+1);
+    if(!event.currentTarget.reportValidity())return;
+    if(step<2)goToStep(step+1);
+    else {moveFocus.current=true;setPrepared(true);}
+  }
+  const country=countries.find(country=>country.code===answers.country)?.name??answers.country;
+  const message=[`Name: ${answers.name.trim()}`,`Email: ${answers.email.trim()}`,`Country: ${country}`,...(answers.organization.trim()?[`Organization: ${answers.organization.trim()}`]:[]),`Topic: ${answers.topic}`,'',answers.message.trim()].join('\n');
+  const emailUrl=`mailto:hello@wisconnect.co?subject=${encodeURIComponent(`WisConnect — ${answers.topic}`)}&body=${encodeURIComponent(message)}`;
+  async function copyMessage(){
+    try {await navigator.clipboard.writeText(message);setCopyStatus('Copied. Paste into an email to hello@wisconnect.co.');}
+    catch {setCopyStatus('Open “View message text” below to select and copy your message.');}
   }
 
   return <div className={styles.formWrap}>
@@ -43,10 +54,13 @@ export default function ContactForm({countries}:{countries:{code:string;name:str
           <button type="button" disabled={index>=step} onClick={()=>goToStep(index)} aria-label={index<step?`Back to ${label}`:undefined}><span aria-hidden="true">{index<step?'✓':''}</span>{label}</button>
         </li>)}
       </ol>
-      <form onSubmit={continueForm} aria-describedby="contact-preview-note">
+      <form onSubmit={continueForm} aria-describedby="contact-delivery-note">
         <div className={styles.stepContent} key={step}>
-          <div className={styles.formHeading}><h1 id="contact-title" ref={heading} tabIndex={-1}>{titles[step]}</h1><p>{descriptions[step]}</p></div>
-          <div className={styles.fields}>
+          <div className={styles.formHeading}><h1 id="contact-title" ref={heading} tabIndex={-1}>{prepared?'Ready to connect.':titles[step]}</h1><p>{prepared?'Review your message, then send it through your email app.':descriptions[step]}</p></div>
+          {prepared?<div className={styles.review}>
+            <dl><div><dt>From</dt><dd>{answers.name.trim()}<br/>{answers.email.trim()}</dd></div><div><dt>Based in</dt><dd>{country}</dd></div>{answers.organization.trim()&&<div><dt>Organization</dt><dd>{answers.organization.trim()}</dd></div>}<div><dt>Topic</dt><dd>{answers.topic}</dd></div></dl>
+            <p>{answers.message.trim()}</p>
+          </div>:<div className={styles.fields}>
             {step===0&&<>
               <label htmlFor="contact-email">Email address</label>
               <input id="contact-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" value={answers.email} onChange={updateAnswer} maxLength={254} required/>
@@ -65,15 +79,20 @@ export default function ContactForm({countries}:{countries:{code:string;name:str
               <label htmlFor="contact-message">Your message</label>
               <textarea id="contact-message" name="message" rows={4} maxLength={3000} placeholder="Share a little about how you’d like to connect." value={answers.message} onChange={updateAnswer} required/>
             </>}
-          </div>
+          </div>}
           <div className={styles.formActions}>
-            {step>0&&<button type="button" className={styles.backButton} onClick={()=>goToStep(step-1)}><Arrow/> Back</button>}
-            <button className={styles.continueButton} type="submit" disabled={step===2}>{step===2?'Send message':'Continue'}<Arrow/></button>
+            {step>0&&<button type="button" className={styles.backButton} onClick={()=>goToStep(prepared?2:step-1)}><Arrow/> {prepared?'Edit message':'Back'}</button>}
+            {prepared?<a className={styles.continueButton} href={emailUrl}>Open email app<Arrow/></a>:<button className={styles.continueButton} type="submit">{step===2?'Review message':'Continue'}<Arrow/></button>}
           </div>
+          {prepared&&<div className={styles.emailFallback}>
+            <button type="button" onClick={copyMessage}>Copy message instead</button><p role="status">{copyStatus}</p>
+            <details><summary>View message text</summary><label htmlFor="contact-message-copy">Send this to hello@wisconnect.co.</label><textarea id="contact-message-copy" value={message} readOnly rows={7}/></details>
+          </div>}
         </div>
       </form>
     </section>
-    <p className={styles.previewNote} id="contact-preview-note">Design preview — messages aren’t sent yet.</p>
-    <noscript><p className={styles.previewNote}>Enable JavaScript to preview the form steps.</p></noscript>
+    <p className={styles.deliveryNote} id="contact-delivery-note">{prepared?'Your message is ready. It is sent only when you press Send in your email app.':'No account needed. Review your message before sending it through your email app.'}</p>
+    <p className={styles.directContact}>Prefer to write directly? <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a></p>
+    <noscript><p className={styles.deliveryNote}>Enable JavaScript to use the guided form, or email us directly using the link above.</p></noscript>
   </div>;
 }
