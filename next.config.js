@@ -3,6 +3,7 @@ const basePath = isGitHubPages ? '/wisconnect-site' : '';
 
 module.exports = {
   output: 'export',
+  devIndicators: false, // Keep the local Next.js badge clear of mobile navigation.
   trailingSlash: true,
   basePath,
   assetPrefix: basePath ? `${basePath}/` : '',

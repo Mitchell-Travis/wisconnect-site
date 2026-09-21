@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head><script id="dashboard-theme" dangerouslySetInnerHTML={{ __html: `(()=>{let theme;try{theme=localStorage.getItem('wisconnect-dashboard-theme')}catch{}document.documentElement.dataset.dashboardTheme=theme==='dark'||theme==='light'?theme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'})()` }} /></head>
       <body>{children}</body>
     </html>
   );
