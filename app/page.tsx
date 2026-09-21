@@ -470,7 +470,10 @@ export default function Home(){
           <p className="eyebrow">Meet the visionaries</p>
           <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2>
           <p className={styles.memberLede}>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative.</p>
-          <Link className={styles.memberJoin} href="/join">Join the cooperative <ArrowUpRightIcon/></Link>
+          <div className={styles.memberActions}>
+            <Link className={styles.memberJoin} href="/join">Join the cooperative <ArrowUpRightIcon/></Link>
+            <Link className={`${styles.memberJoin} ${styles.memberContact}`} href="/contact">Contact <ArrowUpRightIcon/></Link>
+          </div>
           <p className={styles.memberHint}>Select a portrait to meet her.</p>
           {memberSceneCount>1&&<div className={styles.memberScenes} aria-label="More visionaries">
             <button type="button" aria-label="Previous visionaries" disabled={memberScene===0} onClick={()=>setMemberScene(scene=>scene-1)}>←</button>
