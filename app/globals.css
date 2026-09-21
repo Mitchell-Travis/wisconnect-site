@@ -66,7 +66,7 @@ footer{background:var(--plum);color:white;padding:65px 0}.footer-grid{display:gr
   --plum:#291833;
   --sand:#FAF8F5;
   --mist:#F7F3F8;
-  --entry-gradient: radial-gradient(ellipse at 7% 92%, #8962ac 0%, transparent 48%), radial-gradient(ellipse at 94% 90%, #d8b780 0%, transparent 49%), radial-gradient(ellipse at 52% 22%, #fff 5%, #f7f3f8 40%, transparent 72%), linear-gradient(135deg, #eee7f2, #dbc9e7 58%, #f5e6ce);
+  --entry-gradient: radial-gradient(ellipse at 6% 96%, #563578 0%, #8450b4 18%, transparent 51%), radial-gradient(ellipse at 97% 80%, #d5a443 0%, #f2d49d 29%, transparent 57%), radial-gradient(ellipse at 36% 66%, #c19ae0 0%, transparent 48%), radial-gradient(ellipse at 52% 12%, #fff 8%, #faf7fc 31%, transparent 64%), linear-gradient(145deg, #eee5f4 8%, #e2ccef 44%, #b894d2 68%, #f3d196);
   --ink:#211B24;
   --muted:#6F6872;
   --line:rgba(41,24,51,.11);

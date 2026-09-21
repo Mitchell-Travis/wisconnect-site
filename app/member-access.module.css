@@ -3,10 +3,8 @@
 .frame { width: min(1280px, calc(100% - 48px)); margin: auto; padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .frame a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; gap: 8px; }
 .frame img { width: 178px; height: auto; }
-.textile { position: relative; z-index: 100; height: 36px; background-size: cover; background-position: center 46%; }
 .main { min-height: calc(100svh - 116px); }
 .content { width: min(580px, calc(100% - 128px)); margin: auto; padding-block: clamp(48px, 7vw, 96px); }
-.eyebrow { color: var(--purple); text-transform: uppercase; font-size: 11px; font-weight: 700; letter-spacing: .14em; }
 .content h1 { font-size: clamp(36px, 4vw, 54px); line-height: 1.08; margin: 18px 0 24px; overflow-wrap: anywhere; }
 .content h2 { font-size: 27px; margin: 0 0 20px; }
 .content p { color: var(--muted); overflow-wrap: anywhere; }
@@ -22,13 +20,11 @@
 .hint a, .textLink { color: var(--purple); text-decoration: underline; text-underline-offset: 4px; }
 .textLink { display: inline-flex; align-items: center; min-height: 44px; margin-block: 12px; }
 .content .notice { border-left: 3px solid var(--purple); padding: 12px 16px; background: var(--mist); color: var(--plum); }
-.content .footnote { border-top: 1px solid var(--line); margin-top: 36px; padding-top: 20px; font-size: 12px; }
 @media (max-width: 980px) { .frame { width: calc(100% - 36px); padding-inline: 28px; } }
 @media (max-width: 620px) {
   .frame { width: calc(100% - 24px); padding: 10px 20px; gap: 14px; }
   .frame img { width: 138px; }
   .frame a:last-child { max-width: 95px; font-size: 12px; }
-  .textile { height: 30px; }
   .content { width: calc(100% - 64px); padding-block: 44px; }
 }
 
@@ -44,7 +40,6 @@
 .loginPage .content > p { margin: 0; font-size: 16px; line-height: 1.6; color: #756e7c; }
 .loginPage .content form { gap: 20px; margin: 32px 0 0; text-align: left; }
 .loginPage .content label { gap: 8px; font-size: 13px; font-weight: 500; color: #534a5d; }
-.inputLabel { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .loginPage .content input { min-height: 56px; border: 1px solid #dedde0; border-radius: 28px; padding-inline: 20px; background: #fff; font-weight: 400; transition: border-color .16s; }
 .loginPage .content input::placeholder { color: #706c75; opacity: 1; }
 .loginPage .content input:not(:placeholder-shown) { border-color: var(--mauve); }
@@ -54,6 +49,18 @@
 .loginPage .content button[type=submit], .continueLink { margin-top: 8px; background: var(--purple); font-size: 15px; font-weight: 600; transition: background .16s; }
 .loginPage .content button[type=submit]:hover:not(:disabled), .continueLink:hover { background: #372160; }
 .loginPage .content .notice { margin: 20px 0; border: 0; border-radius: 10px; padding: 14px 16px; font-size: 14px; color: var(--plum); text-align: left; }
+.loginPage .content .notice[data-tone="error"] { background: #fff3f3; color: #842e42; }
+.loginPage .content .entryEyebrow { margin: 0 0 18px; color: var(--purple); font-size: 10px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.loginPage .content .invitationEmail { font-size: 14px; }
+.invitationEmail strong { overflow-wrap: anywhere; color: var(--plum); }
+.loginPage .content .passwordToggle { justify-self: end; min-height: 44px; margin: -12px 0 -16px; padding: 8px 0; border: 0; border-radius: 4px; background: transparent; color: var(--purple); font-size: 12px; }
+.loginPage .content .retryButton { margin-top: 20px; padding: 10px 20px; background: #fff; color: var(--purple); font-size: 13px; }
+.entryLinks { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 16px; margin-top: 20px; }
+.entryLinks a { display: inline-flex; align-items: center; min-height: 44px; color: var(--purple); font-size: 12px; }
+.loading { padding-block: 28px; }
+.loading::before { content: ''; display: block; width: 24px; height: 24px; margin: 0 auto 16px; border: 2px solid var(--mist); border-top-color: var(--purple); border-radius: 50%; animation: access-spin .9s linear infinite; }
+@keyframes access-spin { to { transform: rotate(360deg); } }
+.loginFooter a { color: var(--purple); text-decoration: underline; text-underline-offset: 3px; }
 .continueLink { display: flex; align-items: center; justify-content: center; padding: 14px 20px; color: #fff; margin-block: 28px 16px; }
 .loginFooter { width: min(440px, calc(100% - 64px)); margin: 0 auto; padding: 20px 0 28px; background: transparent; text-align: center; color: #756e7c; font-size: 12px; }
 .loginFooter summary { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; min-width: 76px; padding: 10px 18px; border-radius: 999px; background: #f5f3f7; color: #534a5d; list-style: none; font-size: 14px; cursor: pointer; }
@@ -70,5 +77,6 @@
   .loginFooter { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
 }
 @media (prefers-reduced-motion: reduce) {
+  .loading::before { animation: none; }
   .loginPage .content input, .loginPage .content button[type=submit], .continueLink { transition: none; }
 }

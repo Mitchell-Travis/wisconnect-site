@@ -87,19 +87,6 @@ export default function JoinPage(){
     </header>
 
     <div className={styles.layout}>
-      <aside className={styles.welcomePanel} aria-labelledby="join-title">
-        <div className={styles.welcomeCopy}>
-          <p className={styles.eyebrow}>Become part of WisConnect</p>
-          <h2 id="join-title">Bring what you know.<br/><em>Build what we share.</em></h2>
-          <p>A worker-owned cooperative connecting women, enterprise and shared possibility.</p>
-        </div>
-        <div className={styles.communityImage}>
-          <img src={assetPath('cooperative-meeting.jpg')} alt="Women bringing their ideas together during a working session" width="900" height="1100"/>
-          <p>Individual strengths.<br/><em>A shared future.</em></p>
-        </div>
-        <p className={styles.panelFoot}>People <span>·</span> Capital <span>·</span> Communities</p>
-      </aside>
-
       <section id="application" className={styles.application} aria-labelledby="step-title">
         <nav className={styles.progress} aria-label="Application progress">
           <p><span>Membership application</span><span>Step {step+1} of 4</span></p>

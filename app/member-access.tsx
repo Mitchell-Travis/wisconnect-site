@@ -23,7 +23,7 @@ async function api(path: string, method = "GET", body?: object, signal?: AbortSi
     });
   } catch (err) {
     if (signal?.aborted) throw err;
-    throw new Error("Cannot reach the local API. Start it with npm run dev:api, then reload.");
+    throw new Error("The account service is unavailable. Please try again in a moment.");
   }
   const data = response.status === 204 ? null : await response.json();
   if (!response.ok) throw new ApiError(data.detail || "Something went wrong. Please try again.", response.status);
@@ -47,7 +47,19 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [created, setCreated] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
   const token = useRef("");
+
+  useEffect(() => {
+    if (mode !== "signup") return;
+    const openInvitation = () => {
+      token.current = "";
+      setInvitedEmail(""); setCreated(false); setShowPasswords(false); setError(""); setMessage(""); setReady(false);
+      setSessionAttempt(value => value + 1);
+    };
+    window.addEventListener("hashchange", openInvitation);
+    return () => window.removeEventListener("hashchange", openInvitation);
+  }, [mode]);
 
   useEffect(() => {
     let mounted = true;
@@ -100,10 +112,17 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    if (mode === "signup") {
+      const name = form.elements.namedItem("name") as HTMLInputElement;
+      name.setCustomValidity(name.value.trim() ? "" : "Please enter your name.");
+      if (!form.reportValidity()) return;
+    }
     void action(async () => {
       if (mode === "signup") {
         if (data.get("password") !== data.get("confirm")) throw new Error("Your passwords do not match.");
-        await api("/accept", "POST", { token: token.current, name: data.get("name"), password: data.get("password") });
+        const invitation = token.current;
+        await api("/accept", "POST", { token: invitation, name: String(data.get("name")).trim(), password: data.get("password") });
+        if (token.current !== invitation) return;
         token.current = "";
         setCreated(true);
         setMessage("Your account is ready. Sign in with your email and the password you just chose.");
@@ -133,68 +152,68 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
     }} />;
   }
 
-  const isLogin = mode === "login";
-  const isAccountEntry = isLogin || mode === "signup";
-  const title = mode === "signup" ? (created ? "Welcome to WisConnect." : "Your invitation. Your next chapter.")
-    : mode === "admin" ? (user?.role === "admin" ? "Invite a member." : "Administrator access.")
-    : user ? `Welcome, ${user.name}.` : isLogin ? "Welcome to WisConnect" : "Welcome back.";
+  const isSignup = mode === "signup";
+  const invitationProblem = isSignup && ready && local && !invitedEmail && !!error;
+  const title = isSignup ? (created ? "You’re part of WisConnect." : invitationProblem ? "Let’s get you connected." : "Activate your member account.")
+    : user ? `Welcome back, ${user.name}.` : "Welcome to WisConnect";
+  const retryAccess = () => { setReady(false); setError(""); setSessionError(""); setSessionAttempt(value => value + 1); };
 
-  return <div className={`${styles.page} ${isAccountEntry ? styles.loginPage : ""}`}>
+  return <div className={`${styles.page} ${styles.loginPage}`}>
     <header className={styles.header}><div className={styles.frame}>
       <Link href="/" aria-label="WisConnect home"><img src={assetPath("logo-horizontal.webp")} alt="WisConnect" width="178" height="40" /></Link>
       <Link href="/">Back to website <span aria-hidden="true">↗</span></Link>
     </div></header>
-    {!isAccountEntry && <div className={styles.textile} style={{ backgroundImage: `url("${assetPath("Royal Purple and Gold Ornamental Textile.png")}")` }} aria-hidden="true" />}
     <main className={styles.main}>
-      <div className={styles.content}>
-        {!isAccountEntry && <p className={styles.eyebrow}>Member access · Local test</p>}
+      <div className={styles.content} aria-busy={!ready || busy}>
+        <p className={styles.entryEyebrow}>People. Capital. Communities.</p>
         <h1>{title}</h1>
-        <noscript><p>JavaScript is needed to use this local account flow.</p></noscript>
-        {!ready ? <p role="status">Checking access…</p> : !local ? <p>This account flow is only available at localhost during development. It is not open for public registration.</p> : <>
-          {(error || sessionError) && <p className={styles.notice} role="alert">{error || sessionError}</p>}
-          {message && <p className={styles.notice} role="status">{message}</p>}
-          {mode === "signup" ? <>
+        <noscript><p>Enable JavaScript to access your account, or <Link href="/contact">contact WisConnect</Link> for help.</p></noscript>
+        {!ready ? <p className={styles.loading} role="status">{isSignup ? "Checking your invitation…" : "Checking your access…"}</p> : !local ? <>
+          <p>Online member access is not available here yet. Contact the cooperative for help with your account or invitation.</p>
+          <Link className={styles.continueLink} href="/contact">Contact WisConnect</Link>
+          <Link className={styles.textLink} href="/join">Explore membership</Link>
+        </> : <>
+          {(error || sessionError) && <p className={styles.notice} data-tone="error" role="alert">{error || sessionError}</p>}
+          {message && <p className={styles.notice} data-tone="success" role="status">{message}</p>}
+          {isSignup ? <>
             {invitedEmail && !created && <>
-              <p>Invited as <strong>{invitedEmail}</strong>. This invitation is for you only.</p>
+              <p className={styles.invitationEmail}>Your invitation is for <strong>{invitedEmail}</strong>.</p>
               <form onSubmit={submit} aria-label="Create your member account">
-              <label htmlFor="member-name"><span className={styles.inputLabel}>Your name</span><input id="member-name" name="name" placeholder="Your name" autoComplete="name" required maxLength={100} /></label>
-              <label htmlFor="new-password"><span className={styles.inputLabel}>Choose a password</span><input id="new-password" name="password" type="password" placeholder="Choose a password" autoComplete="new-password" required minLength={15} maxLength={128} aria-describedby="password-help" /></label>
-              <p id="password-help" className={styles.hint}>Use 15–128 characters. A long, unique passphrase works well.</p>
-              <label htmlFor="confirm-password"><span className={styles.inputLabel}>Confirm password</span><input id="confirm-password" name="confirm" type="password" placeholder="Confirm password" autoComplete="new-password" required minLength={15} maxLength={128} /></label>
-              <button type="submit" disabled={busy}>{busy ? "Creating your account…" : "Create my account"}</button>
+                <label htmlFor="member-name">Your name<input id="member-name" name="name" placeholder="Full name" autoComplete="name" required maxLength={100} onChange={event=>event.currentTarget.setCustomValidity("")} /></label>
+                <label htmlFor="new-password">Choose a password<input id="new-password" name="password" type={showPasswords ? "text" : "password"} placeholder="Create a password" autoComplete="new-password" required minLength={15} maxLength={128} aria-describedby="password-help" /></label>
+                <p id="password-help" className={styles.hint}>Use 15–128 characters. A long, unique passphrase works well.</p>
+                <label htmlFor="confirm-password">Confirm password<input id="confirm-password" name="confirm" type={showPasswords ? "text" : "password"} placeholder="Repeat your password" autoComplete="new-password" required minLength={15} maxLength={128} /></label>
+                <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="new-password confirm-password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide passwords" : "Show passwords"}</button>
+                <button type="submit" disabled={busy}>{busy ? "Creating your account…" : "Create my account"}</button>
               </form>
             </>}
-            <Link className={styles.textLink} href="/login">{created ? "Sign in to your account →" : "Already activated your account? Sign in"}</Link>
-          </> : !user ? <>
-            <p>{mode === "admin" ? "Sign in to invite approved members. An administrator account must be created locally first." : isLogin ? "Sign in to your member account." : "Sign in with your invited member account. New accounts are created by invitation only."}</p>
-            <form onSubmit={submit} aria-label="Sign in">
-              <label htmlFor="email"><span className={isLogin ? styles.inputLabel : undefined}>Email address</span><input id="email" name="email" type="email" placeholder={isLogin ? "Email address" : undefined} autoComplete="username" required maxLength={254} /></label>
-              <label htmlFor="password"><span className={isLogin ? styles.inputLabel : undefined}>Password</span><input id="password" name="password" type="password" placeholder={isLogin ? "Password" : undefined} autoComplete="current-password" required maxLength={128} /></label>
-              <button type="submit" disabled={busy}>{busy ? "Signing in…" : isLogin ? "Sign in" : "Sign in →"}</button>
-            </form>
-            {mode === "admin" && <p className={styles.hint}>First local setup: run <code>npm run auth:admin</code> in your terminal to create your administrator account.</p>}
-            {!isLogin && <p className={styles.hint}>Need an invitation or help accessing your account? Contact your cooperative administrator.</p>}
-          </> : <>
-            {isLogin ? <>
-              <p>You’re already signed in as {user.email}.</p>
-              <Link className={styles.continueLink} href="/dashboard">Continue to your account</Link>
-            </> : <>
-              <p>You’re signed in as {user.email}. Your account access has been verified by the API.</p>
-              <p>This is the first protected account screen. Dashboard features and marketplace access are not built yet.</p>
-              {user.role === "admin" && <Link className={styles.textLink} href="/admin">Manage invitations →</Link>}
+            {invitationProblem && <>
+              <p>Open the invitation from your cooperative administrator. If it has expired or was already used, ask for a fresh link.</p>
+              {token.current && <button className={styles.retryButton} type="button" onClick={retryAccess}>Check invitation again</button>}
+              <Link className={styles.continueLink} href="/contact">Get help with your invitation</Link>
             </>}
-            <button type="button" className={styles.secondary} disabled={busy} onClick={signOut}>Sign out</button>
+            <Link className={created ? styles.continueLink : styles.textLink} href="/login">{created ? "Sign in to your account" : "Already activated? Sign in"}</Link>
+          </> : !user ? <>
+            <p>Sign in to your member account.</p>
+            {sessionError && <button className={styles.retryButton} type="button" onClick={retryAccess}>Try connecting again</button>}
+            <form onSubmit={submit} aria-label="Sign in">
+              <label htmlFor="email">Email address<input id="email" name="email" type="email" placeholder="you@example.com" autoComplete="username" required maxLength={254} /></label>
+              <label htmlFor="password">Password<input id="password" name="password" type={showPasswords ? "text" : "password"} placeholder="Your password" autoComplete="current-password" required maxLength={128} /></label>
+              <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide password" : "Show password"}</button>
+              <button type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+            </form>
+            <div className={styles.entryLinks}><Link href="/contact">Need sign-in help?</Link><Link href="/join">Explore membership</Link></div>
+          </> : <>
+            <p>You’re already signed in as {user.email}.</p>
+            <Link className={styles.continueLink} href="/dashboard">Open member workspace</Link>
+            <button type="button" className={styles.secondary} disabled={busy} onClick={signOut}>{busy ? "Signing out…" : "Sign out"}</button>
           </>}
-          {!isAccountEntry && <p className={styles.footnote}>Local development only. No real emails or public signup.</p>}
         </>}
       </div>
     </main>
-    {isAccountEntry && <footer className={styles.loginFooter}>
-      <details>
-        <summary>Help</summary>
-        <p>Accounts are invitation-only. To activate yours, open the invitation from your cooperative administrator. For sign-in help, contact your administrator.</p>
-      </details>
-      <p>Member access by invitation · Local development</p>
-    </footer>}
+    <footer className={styles.loginFooter}>
+      <details><summary>Help</summary><p>Accounts are invitation-only. To activate yours, use the link from your cooperative administrator. <Link href="/contact">Contact WisConnect</Link> if you need help.</p></details>
+      <p>Member access by invitation</p>
+    </footer>
   </div>;
 }

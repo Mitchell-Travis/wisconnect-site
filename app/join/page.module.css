@@ -1,4 +1,5 @@
-.page { min-height: 100svh; background: #fcfaf7; color: var(--plum); }
+.page::before, .page::after { display: none; }
+.page { min-height: 100svh; background: #fff; color: var(--plum); }
 .page *, .page *::before, .page *::after { box-sizing: border-box; }
 .page :is(a, button, summary, input, textarea):focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
 .page :where(button, input, textarea) { font: inherit; }
@@ -9,21 +10,9 @@
 .brand img { display: block; width: 100%; height: auto; }
 .backHome { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 13px; color: #65516e; }
 .backHome svg, .backButton svg { rotate: 180deg; }
-.layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); width: min(1320px, calc(100% - 80px)); min-height: calc(100svh - 168px); margin-inline: auto; border: 1px solid var(--line); background: white; }
-.welcomePanel { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; min-height: min(820px, calc(100svh - 136px)); padding: clamp(28px, 3.3vw, 48px); overflow: hidden; background: #34204c; color: #fff; }
+.layout { display: grid; justify-items: center; width: min(1360px, calc(100% - 80px)); min-height: calc(100svh - 168px); margin-inline: auto; padding: 72px 40px; border-radius: 64px; background: var(--entry-gradient); }
 .eyebrow { margin: 0; color: #7b5aa6; font-size: 10px; font-weight: 750; letter-spacing: .16em; line-height: 1.6; text-transform: uppercase; }
-.welcomePanel .eyebrow { color: #ddc39e; }
-.welcomePanel h2 { margin: 24px 0; color: white; font-size: clamp(36px, 3.5vw, 52px); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
-.welcomePanel h2 em { color: #e5d4bd; font-weight: inherit; }
-.welcomeCopy > p:last-child { max-width: 350px; margin: 0; color: #ded4e7; font-size: 14px; line-height: 1.75; }
-.communityImage { position: relative; flex: 1; min-height: 220px; margin-top: 36px; overflow: hidden; border-radius: 3px; }
-.communityImage::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 30%, rgb(28 14 40 / 85%)); }
-.communityImage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 38%; }
-.communityImage p { position: absolute; z-index: 1; bottom: 22px; left: 24px; margin: 0; color: white; font-family: Georgia, serif; font-size: 25px; line-height: 1.18; }
-.communityImage p em { color: #e5d4bd; }
-.panelFoot { display: flex; justify-content: space-between; gap: 8px; margin: 24px 0 0; color: #d5c6df; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
-.panelFoot span { color: var(--gold); }
-.application { min-width: 0; padding: 38px clamp(24px, 4vw, 64px) 30px; }
+.application { width: min(680px, 100%); min-width: 0; padding: 40px 48px; border-radius: 30px; background: #fff; box-shadow: 0 18px 40px -16px rgb(41 24 51 / 24%); }
 .progress { margin-bottom: 40px; }
 .progress > p { display: flex; justify-content: space-between; gap: 16px; margin: 0 0 20px; font-size: 11px; color: #76677e; }
 .progress > p > span:first-child { color: var(--plum); font-weight: 650; }
@@ -79,7 +68,7 @@
 .emailFallback summary { color: #6d6174; font-weight: 400; }
 .textLabel { display: block; margin: 8px 0 12px; color: #6d6174; font-size: 12px; line-height: 1.7; }
 .emailFallback textarea { font-size: 14px; }
-.footer { min-height: 80px; color: #7a6d81; font-size: 11px; }
+.footer { min-height: 80px; padding-block: 20px; background: transparent; color: #7a6d81; font-size: 11px; }
 .footer a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: #65516e; }
 .footer svg { width: 16px; height: 16px; }
 @media (hover: hover) and (pointer: fine) {
@@ -90,40 +79,26 @@
   .stepContent { animation: step-arrive .35s cubic-bezier(.22,1,.36,1) both; }
 }
 @keyframes step-arrive { from { opacity: .4; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-@media (max-width: 1050px) {
-  .header, .footer, .layout { width: calc(100% - 48px); }
-  .layout { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
-  .welcomePanel { padding: 30px; }
-  .application { padding-inline: 28px; }
-  .progress li { gap: 4px; font-size: 9px; }
-}
 @media (max-width: 800px) {
-  .layout { grid-template-columns: minmax(0, 1fr); max-width: 620px; }
-  .welcomePanel { position: relative; top: auto; min-height: 0; padding: 30px; }
-  .welcomePanel h2 { font-size: 38px; }
-  .communityImage, .panelFoot { display: none; }
-  .page:not([data-step="0"]) .welcomePanel { display: none; }
-  .application { padding: 28px 30px; }
-  .progress { margin-bottom: 30px; }
-  .progress li { gap: 7px; font-size: 10px; }
-  .footer { max-width: 620px; flex-wrap: wrap; gap: 0 16px; padding-block: 16px; }
+  .header, .footer { width: calc(100% - 48px); }
+  .progress li { gap: 4px; font-size: 9px; }
+  .application { padding-inline: 28px; }
+  .footer { flex-wrap: wrap; gap: 0 16px; padding-block: 16px; }
 }
-@media (max-width: 480px) {
-  .header { width: calc(100% - 40px); min-height: 72px; }
-  .brand { width: 152px; }
+@media (max-width: 620px) {
+  .page::before, .page::after { display: none; }
+  .header { min-height: 72px; }
+  .brand { width: 140px; }
   .backHome { font-size: 11px; gap: 5px; }
   .backHome span { max-width: 80px; line-height: 1.4; }
-  .layout { width: calc(100% - 24px); }
-  .welcomePanel { padding: 26px 20px; }
-  .welcomePanel h2 { font-size: 34px; margin-block: 18px; }
-  .welcomeCopy > p:last-child { font-size: 13px; }
-  .application { padding: 26px 20px; }
+  .layout { display: block; width: 100%; min-height: 0; padding: 28px 24px; border-radius: 0; background: #fff; }
+  .application { width: 100%; padding: 0; border-radius: 0; box-shadow: none; }
+  .progress { margin-bottom: 30px; }
   .progress li { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 9px; }
   .stepContent h1 { font-size: 32px; }
   .actions { gap: 10px; }
   .primaryAction { gap: 8px; padding-inline: 14px; font-size: 12px; }
   .backButton { gap: 6px; font-size: 12px; }
-  .footer { width: calc(100% - 48px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; }
