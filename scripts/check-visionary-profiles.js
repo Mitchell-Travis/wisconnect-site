@@ -9,8 +9,8 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
   const sheet=p.locator('dialog[aria-labelledby="profile-name"]');
   try {
     for(const [width,height] of [[1440,1000],[820,1180],[390,844],[320,568]]) {
+      await p.goto(site,{waitUntil:'networkidle'});
       await p.setViewportSize({width,height});
-      await p.goto(site);
       await p.waitForFunction(()=>document.querySelector('#members')?.dataset.animated==='false');
       assert(await p.locator('#member-cards > button').count()===4,'All four visionaries are in the section');
       for(const [i,name] of names.entries()) {
@@ -46,8 +46,8 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
     }
     await p.emulateMedia({reducedMotion:'no-preference'});
     for(const [width,height] of [[1920,1000],[1440,1000],[820,1180],[768,720],[390,844]]) {
+      await p.goto(site,{waitUntil:'networkidle'});
       await p.setViewportSize({width,height});
-      await p.goto(site);
       await p.waitForFunction(()=>document.querySelector('#members')?.dataset.animated==='true');
       await p.locator('#members').evaluate(s=>s.scrollIntoView({behavior:'instant',block:'start'}));
       await p.waitForFunction(()=>Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread'))<.001);
