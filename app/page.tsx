@@ -59,7 +59,8 @@ const cooperativeCards = [
 const memberProfiles = [
   {name:'Chipo Nyambuya, Esq',role:'International Legal, Governance, and Economic Development Leader',bio:'Her areas of leadership bring together international law, governance and economic development.',expertise:['International law','Governance','Economic development'],image:'chipo'},
   {name:'Elizabeth L. Carter, Esq',role:'Business and Corporate Securities Attorney, Legal & Business',bio:'Her work connects business law, corporate securities and the legal foundations that support enterprise.',expertise:['Business law','Corporate securities','Legal & business'],image:'elizabeth'},
-  {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'}
+  {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'},
+  {name:'Ade Wede Wee-Wee Kekuleh',role:'Advocate, legal professional and chartered accountant',bio:'Ade Wede Wee-Wee Kekuleh is a Liberian advocate, legal professional, chartered accountant, journalist, lecturer and published author. Her work focuses on gender, human rights, peacebuilding and social justice, with particular attention to women, children and underserved communities. She is a Partner at ZE’AD Advisors and Consultants and teaches Managerial Accounting and Legal Aspects of Business at the United Methodist University Graduate School.',expertise:['Gender & human rights','Peacebuilding','Social justice','Law & accounting'],image:'ade-wede'}
 ] as const;
 const regions = {
   Africa: 'WisConnect’s cultural and strategic root — where local businesses, communities and cooperative opportunity connect.',
@@ -272,6 +273,14 @@ export default function Home(){
   const menuButton=useRef<HTMLButtonElement>(null);
   const languagePicker=useRef<HTMLDetailsElement>(null);
   const profileDialog=useRef<HTMLDialogElement>(null);
+  function closeProfile(){
+    const dialog=profileDialog.current;
+    if(!dialog?.open||dialog.dataset.closing)return;
+    if(reducedMotion){dialog.close();return;}
+    dialog.dataset.closing='true';
+    const exit=dialog.animate([{transform:'translateY(0)',opacity:1},{transform:'translateY(100dvh)',opacity:0}],{duration:260,easing:'cubic-bezier(.4,0,1,1)'});
+    exit.finished.then(()=>dialog.close()).catch(()=>{}).finally(()=>{delete dialog.dataset.closing;});
+  }
   const membersSection=useRef<HTMLElement>(null);
   const [membersAnimated,setMembersAnimated]=useState(false);
   const [featuredMember,setFeaturedMember]=useState(0);
@@ -448,7 +457,7 @@ export default function Home(){
         <p>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative. Every connection starts with a person.</p>
       </div>
       <div className={`${styles.enterpriseControls} ${styles.memberControls}`}>
-        <p>Meet our three visionaries</p>
+        <p>Meet our {memberProfiles.length} visionaries</p>
         <button type="button" aria-label="Previous visionary" aria-controls="member-cards" disabled={memberEdges.start} onClick={()=>browseCards(memberTrack.current,-1)}><ArrowDownIcon/></button>
         <button type="button" aria-label="Next visionary" aria-controls="member-cards" disabled={memberEdges.end} onClick={()=>browseCards(memberTrack.current,1)}><ArrowDownIcon/></button>
       </div>
@@ -464,7 +473,7 @@ export default function Home(){
             event.currentTarget.scrollTo({left:step.offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
           }
         }}>
-        {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} data-featured={featuredMember===index} key={member.name} onClick={()=>setSelectedMember(index)} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
+        {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} data-featured={featuredMember===index} key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
           <span className={styles.memberImage}><img src={assetPath(`${member.image}-480.webp`)} srcSet={`${assetPath(`${member.image}-480.webp`)} 480w, ${assetPath(`${member.image}-800.webp`)} 800w`} sizes="(max-width: 620px) calc(100vw - 56px), (max-width: 699px) 34vw, (max-width: 1279px) 30vw, 390px" alt="" width="1254" height="1254" loading="lazy" decoding="async"/><span className={styles.memberNumber} aria-hidden="true">0{index+1}</span></span>
           <span className={styles.memberInfo}><strong>{member.name}</strong><span>{member.expertise.slice(0,2).join(' · ')}</span><span className={styles.profileAction}>View profile <ArrowUpRightIcon/></span></span>
         </button>)}
@@ -474,12 +483,17 @@ export default function Home(){
       </motion.div>
     </section>
 
-    <dialog className={styles.profileDialog} ref={profileDialog} aria-labelledby="profile-name" aria-describedby="profile-role" onClose={()=>setSelectedMember(null)}>
+    <dialog className={`${styles.profileDialog} ${styles.visionarySheet}`} ref={profileDialog} aria-labelledby="profile-name" aria-describedby="profile-role" onClose={()=>setSelectedMember(null)} onCancel={event=>{event.preventDefault();closeProfile();}} onClick={event=>{
+      if(event.target!==event.currentTarget)return;
+      const bounds=event.currentTarget.getBoundingClientRect();
+      if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)closeProfile();
+    }}>
       {selectedMember!==null&&<>
-        <div className={styles.dialogToolbar}><span>Meet the visionaries · 0{selectedMember+1} / 03</span><button className={styles.dialogClose} type="button" onClick={()=>profileDialog.current?.close()} autoFocus>Close <span aria-hidden="true">×</span></button></div>
-        <div className={styles.dialogGrid}>
-          <img className={styles.dialogPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
-          <div className={styles.dialogContent}><p className="eyebrow">Woman behind the dream</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.profileRole}>{memberProfiles[selectedMember].role}</p><p>{memberProfiles[selectedMember].bio}</p><ul>{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.secondaryAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
+        <div className={styles.sheetToolbar}><span className={styles.sheetHandle} aria-hidden="true"/><button className={styles.sheetClose} type="button" onClick={closeProfile} aria-label="Close profile" autoFocus><span aria-hidden="true">×</span></button></div>
+        <div className={styles.sheetGrid}>
+          <div className={styles.sheetIntro}><p className="eyebrow">Meet the visionaries · {String(selectedMember+1).padStart(2,'0')} / {String(memberProfiles.length).padStart(2,'0')}</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.sheetRole}>{memberProfiles[selectedMember].role}</p></div>
+          <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
+          <div className={styles.sheetBio}><p>{memberProfiles[selectedMember].bio}</p><ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
         </div>
       </>}
     </dialog>

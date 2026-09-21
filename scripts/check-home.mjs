@@ -386,7 +386,7 @@ try {
       assert(await evaluate(`(() => {
         const track = document.querySelector('#member-cards');
         const cards = [...track.children].map(card => card.getBoundingClientRect());
-        return cards.length === 3 && track.scrollWidth > track.clientWidth &&
+        return cards.length === 4 && track.scrollWidth > track.clientWidth &&
           cards.every(card => Math.abs(card.top - cards[0].top) < 1);
       })()`), 'Mobile portraits form a horizontal row');
       await until('document.querySelector("#members button[aria-label^=Previous]").disabled');
@@ -402,7 +402,7 @@ try {
       await until('document.querySelector("#members button[aria-label^=Next]").disabled');
       assert(await evaluate('document.activeElement === document.querySelector("#member-cards").lastElementChild'), 'End focuses the last portrait');
       await key('ArrowLeft');
-      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[1].offsetLeft) < 2');
+      await until('Math.abs(document.querySelector("#member-cards").scrollLeft - document.querySelector("#member-cards").children[2].offsetLeft) < 2');
       await key('Home');
       await until('document.querySelector("#members button[aria-label^=Previous]").disabled');
       await key('ArrowRight');
