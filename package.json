@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:api": ".venv/bin/python -m uvicorn backend.app.main:app --reload --port 8001",
+    "dev:api": "WISCONNECT_LOCAL_AUTH=1 .venv/bin/python -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8001 --no-proxy-headers",
+    "auth:up": "docker compose up -d db mailpit",
+    "auth:admin": ".venv/bin/python -m backend.bootstrap_admin",
+    "auth:check": ".venv/bin/python -m backend.check_auth",
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",
     "db:migrate": ".venv/bin/python -m alembic -c backend/alembic.ini upgrade head",

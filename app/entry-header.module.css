@@ -1,0 +1,12 @@
+.header { background: #fff; font-family: var(--font-sans), Arial, sans-serif; }
+.inner { display: flex; align-items: center; gap: 24px; width: min(1280px, calc(100% - 48px)); min-height: 76px; margin-inline: auto; padding-inline: 24px; }
+.brand { display: inline-flex; align-items: center; flex-shrink: 0; width: 144px; min-height: 44px; }
+.brand img { display: block; width: 100%; height: auto; }
+.backLink { display: inline-flex; align-items: center; flex-shrink: 0; gap: 8px; min-height: 44px; margin-left: auto; color: var(--purple); font-size: 13px; font-weight: 500; line-height: 1.5; white-space: nowrap; }
+.header .backLink svg { flex: none; width: 16px; height: 16px; }
+.backLink:hover { text-decoration: underline; text-underline-offset: 4px; }
+.header a:focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; border-radius: var(--radius-control); }
+@media (max-width: 620px) {
+  .inner { width: 100%; min-height: 66px; gap: 12px; }
+  .brand { width: 132px; }
+}

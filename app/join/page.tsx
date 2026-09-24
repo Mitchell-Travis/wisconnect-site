@@ -1,8 +1,8 @@
 "use client";
 
-import Link from 'next/link';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
-import { assetPath } from '../assets';
+import Link from 'next/link';
+import EntryHeader from '../entry-header';
 import styles from './page.module.css';
 
 const steps=['Welcome','About you','Your contribution','Review'];
@@ -81,10 +81,7 @@ export default function JoinPage(){
   }
 
   return <main className={styles.page} data-step={step}>
-    <header className={styles.header}>
-      <Link className={styles.brand} href="/" aria-label="WisConnect home"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect" width="204" height="56"/></Link>
-      <Link className={styles.backHome} href="/"><ArrowIcon/><span>Back to WisConnect</span></Link>
-    </header>
+    <EntryHeader/>
 
     <div className={styles.layout}>
       <section id="application" className={styles.application} aria-labelledby="step-title">
@@ -132,7 +129,7 @@ export default function JoinPage(){
             {step===3&&<div className={styles.emailFallback}><button type="button" onClick={copyApplication}>Copy application instead</button><p role="status">{copyStatus}</p><details><summary>View application text</summary><label htmlFor="application-text" className={styles.textLabel}>Copy this text into an email to hello@wisconnect.co.</label><textarea id="application-text" value={application} readOnly rows={9}/></details></div>}
           </div>
         </form>
-        <p className={styles.privacyNote}>Your answers stay in this tab during these steps. They aren’t saved for later or sent until you send the email.</p>
+        <p className={styles.privacyNote}>Your answers stay in this tab during these steps. They aren’t saved for later or sent until you send the email. <Link href="/#privacy">Privacy & form information</Link></p>
         <noscript><p>Please enable JavaScript to use the guided application, or email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a> to introduce yourself.</p></noscript>
       </section>
     </div>

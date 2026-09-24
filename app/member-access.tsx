@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { assetPath } from "./assets";
+import EntryHeader from "./entry-header";
 import styles from "./member-access.module.css";
 import DashboardView, { DashboardGate, View } from "./dashboard/dashboard-view";
 
@@ -31,6 +31,7 @@ async function api(path: string, method = "GET", body?: object, signal?: AbortSi
 }
 
 const loadMembers = (signal: AbortSignal) => api("/members", "GET", undefined, signal);
+const deleteMember = (id: number) => api(`/members/${id}`, "DELETE");
 const loadInvitations = (signal: AbortSignal) => api("/invitations", "GET", undefined, signal);
 const sendInvitation = (email: string) => api("/invitations", "POST", { email });
 const revokeInvitation = (id: number) => api(`/invitations/${id}`, "DELETE");
@@ -48,12 +49,19 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   const [message, setMessage] = useState("");
   const [created, setCreated] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [passwordBlurred, setPasswordBlurred] = useState(false);
+  const [confirmationBlurred, setConfirmationBlurred] = useState(false);
+  const passwordLength = Array.from(password).length;
+  const passwordLengthValid = passwordLength >= 15 && passwordLength <= 128;
   const token = useRef("");
 
   useEffect(() => {
     if (mode !== "signup") return;
     const openInvitation = () => {
       token.current = "";
+      setPassword(""); setConfirmation(""); setPasswordBlurred(false); setConfirmationBlurred(false);
       setInvitedEmail(""); setCreated(false); setShowPasswords(false); setError(""); setMessage(""); setReady(false);
       setSessionAttempt(value => value + 1);
     };
@@ -116,14 +124,25 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
       const name = form.elements.namedItem("name") as HTMLInputElement;
       name.setCustomValidity(name.value.trim() ? "" : "Please enter your name.");
       if (!form.reportValidity()) return;
+      const field = form.elements.namedItem("password") as HTMLInputElement;
+      const length = Array.from(field.value).length;
+      if (length < 15 || length > 128) {
+        setPasswordBlurred(true);
+        setError(length < 15 ? "Use at least 15 characters for your password." : "Use no more than 128 characters for your password.");
+        field.focus(); return;
+      }
+      if (data.get("password") !== data.get("confirm")) {
+        setConfirmationBlurred(true); setError("Your passwords do not match.");
+        (form.elements.namedItem("confirm") as HTMLInputElement).focus(); return;
+      }
     }
     void action(async () => {
       if (mode === "signup") {
-        if (data.get("password") !== data.get("confirm")) throw new Error("Your passwords do not match.");
         const invitation = token.current;
         await api("/accept", "POST", { token: invitation, name: String(data.get("name")).trim(), password: data.get("password") });
         if (token.current !== invitation) return;
         token.current = "";
+        setPassword(""); setConfirmation("");
         setCreated(true);
         setMessage("Your account is ready. Sign in with your email and the password you just chose.");
       } else {
@@ -147,7 +166,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   }
 
   if ((mode === "dashboard" || mode === "admin") && ready && local && user) {
-    return <DashboardView user={user} busy={busy} error={error || sessionError} onSignOut={signOut} view={view} onViewChange={setView} loadMembers={loadMembers} loadInvitations={loadInvitations} sendInvitation={sendInvitation} revokeInvitation={revokeInvitation} onUpdateName={async name => {
+    return <DashboardView user={user} busy={busy} error={error || sessionError} onSignOut={signOut} view={view} onViewChange={setView} loadMembers={loadMembers} deleteMember={deleteMember} loadInvitations={loadInvitations} sendInvitation={sendInvitation} revokeInvitation={revokeInvitation} onUpdateName={async name => {
       setUser(await api("/me", "PATCH", { name }));
     }} />;
   }
@@ -159,10 +178,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   const retryAccess = () => { setReady(false); setError(""); setSessionError(""); setSessionAttempt(value => value + 1); };
 
   return <div className={`${styles.page} ${styles.loginPage}`}>
-    <header className={styles.header}><div className={styles.frame}>
-      <Link href="/" aria-label="WisConnect home"><img src={assetPath("logo-horizontal.webp")} alt="WisConnect" width="178" height="40" /></Link>
-      <Link href="/">Back to website <span aria-hidden="true">↗</span></Link>
-    </div></header>
+    <EntryHeader/>
     <main className={styles.main}>
       <div className={styles.content} aria-busy={!ready || busy}>
         <p className={styles.entryEyebrow}>People. Capital. Communities.</p>
@@ -180,9 +196,11 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
               <p className={styles.invitationEmail}>Your invitation is for <strong>{invitedEmail}</strong>.</p>
               <form onSubmit={submit} aria-label="Create your member account">
                 <label htmlFor="member-name">Your name<input id="member-name" name="name" placeholder="Full name" autoComplete="name" required maxLength={100} onChange={event=>event.currentTarget.setCustomValidity("")} /></label>
-                <label htmlFor="new-password">Choose a password<input id="new-password" name="password" type={showPasswords ? "text" : "password"} placeholder="Create a password" autoComplete="new-password" required minLength={15} maxLength={128} aria-describedby="password-help" /></label>
-                <p id="password-help" className={styles.hint}>Use 15–128 characters. A long, unique passphrase works well.</p>
-                <label htmlFor="confirm-password">Confirm password<input id="confirm-password" name="confirm" type={showPasswords ? "text" : "password"} placeholder="Repeat your password" autoComplete="new-password" required minLength={15} maxLength={128} /></label>
+                <label htmlFor="new-password">Choose a password<input id="new-password" name="password" type={showPasswords ? "text" : "password"} placeholder="Create a password" autoComplete="new-password" required value={password} onChange={event => { setPassword(event.target.value); setError(""); }} onBlur={() => setPasswordBlurred(true)} aria-invalid={passwordBlurred && !passwordLengthValid} aria-describedby="password-help password-length" /></label>
+                <p id="password-help" className={styles.hint}>Use at least 15 characters. Try four unrelated words or a password manager. Spaces are welcome; numbers and symbols are optional.</p>
+                <p id="password-length" className={styles.passwordFeedback} data-invalid={passwordBlurred && !passwordLengthValid} role="status">{passwordLength === 0 ? "15–128 characters" : passwordLength > 128 ? "Too long — use no more than 128 characters." : passwordLength < 15 ? `${15 - passwordLength} more ${15 - passwordLength === 1 ? "character" : "characters"} needed` : "✓ Length requirement met"}</p>
+                <label htmlFor="confirm-password">Confirm password<input id="confirm-password" name="confirm" type={showPasswords ? "text" : "password"} placeholder="Repeat your password" autoComplete="new-password" required value={confirmation} onChange={event => { setConfirmation(event.target.value); setError(""); }} onBlur={() => setConfirmationBlurred(true)} aria-invalid={confirmationBlurred && confirmation !== password} aria-describedby="password-match" /></label>
+                <p id="password-match" className={styles.passwordFeedback} data-invalid={confirmationBlurred && confirmation !== password} role="status">{confirmation ? confirmation === password ? "✓ Passwords match" : "Passwords do not match yet." : "Enter the same password again."}</p>
                 <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="new-password confirm-password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide passwords" : "Show passwords"}</button>
                 <button type="submit" disabled={busy}>{busy ? "Creating your account…" : "Create my account"}</button>
               </form>
@@ -198,7 +216,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
             {sessionError && <button className={styles.retryButton} type="button" onClick={retryAccess}>Try connecting again</button>}
             <form onSubmit={submit} aria-label="Sign in">
               <label htmlFor="email">Email address<input id="email" name="email" type="email" placeholder="you@example.com" autoComplete="username" required maxLength={254} /></label>
-              <label htmlFor="password">Password<input id="password" name="password" type={showPasswords ? "text" : "password"} placeholder="Your password" autoComplete="current-password" required maxLength={128} /></label>
+              <label htmlFor="password">Password<input id="password" name="password" type={showPasswords ? "text" : "password"} placeholder="Your password" autoComplete="current-password" required /></label>
               <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide password" : "Show password"}</button>
               <button type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
             </form>

@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { assetPath } from '../assets';
+import EntryHeader from '../entry-header';
 import styles from './page.module.css';
 import ContactForm from './contact-form';
 
@@ -10,14 +9,7 @@ export const metadata = { title: 'Contact | WisConnect' };
 
 export default function ContactPage() {
   return <div className={styles.page}>
-    <header className={styles.header}>
-      <div className={styles.headerInner}>
-        <Link className={styles.brand} href="/" aria-label="WisConnect home">
-          <img src={assetPath('logo-nav.webp')} alt="WisConnect" width="480" height="160"/>
-        </Link>
-        <Link className={styles.homeLink} href="/">Back to website <span aria-hidden="true">↗</span></Link>
-      </div>
-    </header>
+    <EntryHeader/>
     <main className={styles.main} aria-label="Contact WisConnect"><ContactForm countries={countries}/></main>
   </div>;
 }

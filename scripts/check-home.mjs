@@ -67,7 +67,7 @@ try {
   await until('document.querySelector("#hero-title") && document.readyState === "complete"');
   assert(await evaluate('!document.querySelector(".global-section") && document.querySelector("#impact").nextElementSibling.id === "stories"'), 'Standalone global-reach section is removed; stories follow the impact map');
   assert(await evaluate(`!document.querySelector('.cooperative-section') && document.querySelector('#cooperative').closest('section').id==='about' && document.querySelectorAll('#cooperative [data-pillar]').length===3 && [...document.querySelectorAll('#about a[href^="#"]')].every(a=>document.querySelector(a.hash))`),'Removed cooperative section; navigation and card actions resolve to the new stack and enterprises');
-  assert.deepEqual(await evaluate(`[...document.querySelectorAll('button[id^="nav-trigger-"]')].map(a=>a.textContent)`),['Our story','The cooperative','Our people','Businesses'],'WisConnect primary navigation labels are preserved');
+  assert.deepEqual(await evaluate(`[...document.querySelectorAll('button[id^="nav-trigger-"]')].map(a=>a.textContent)`),['About','Our people','Our work','Updates'],'Primary navigation follows the Phase 1 content groups');
   assert(await evaluate(`[...document.querySelectorAll('nav[aria-label="Primary navigation"] a')].every(a=>!a.hash || document.querySelector(a.hash)) && !document.querySelector('header > div > a[href*="marketplace"], header > div > a[href*="login"], header > div > a[href*="signup"], header > div > a[href*="dashboard"]')`),'Dropdown destinations resolve without exposing future account/shop routes');
   for(const width of [390,1440]){
     await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
@@ -182,10 +182,10 @@ try {
           const valueBounds = value.getBoundingClientRect();
           return bounds[i].left >= 0 && bounds[i].right <= innerWidth && label.left >= bounds[i].left && label.right <= bounds[i].right &&
             label.bottom <= bounds[i].bottom && valueBounds.left >= bounds[i].left && valueBounds.right <= bounds[i].right &&
-            value.textContent === ['250+','60+','12','30+'][i] && value.getAttribute('aria-label') === 'Illustrative sample: ' + value.textContent;
+            value.textContent === '—' && value.getAttribute('aria-label') === 'Awaiting verification';
         }) && document.querySelector('#impact svg').getAttribute('aria-hidden') === 'true' &&
-        document.querySelector('#impact-note').textContent.includes('design preview only—not verified results');
-    })()`), 'Impact proof band has equal responsive cells, unclipped sample numbers, and an explicit preview disclaimer');
+        document.querySelector('#impact-note').textContent.includes('Awaiting verification');
+    })()`), 'Impact proof band has equal responsive cells, unclipped placeholders, and an explicit verification notice');
     await evaluate('document.querySelector("#impact").scrollIntoView({behavior:"instant"})');
     assert(await evaluate('getComputedStyle(document.querySelector("#impact-title")).fontFamily.includes("Arial")'), 'Impact uses the reference sans-serif typography');
     assert(await evaluate(`getComputedStyle(document.querySelector('#impact')).backgroundColor === 'rgb(255, 255, 255)' && getComputedStyle(document.querySelector('#impact'),'::before').backgroundImage.includes('rgb(220, 207, 228)')`), 'Impact uses a clean lavender gradient behind the original map');
@@ -285,7 +285,7 @@ try {
     for(let menu=0;menu<4;menu++){
       await evaluate(`document.querySelector('#nav-trigger-${menu}').focus();document.querySelector('#nav-trigger-${menu}').click()`);
       await until(`document.querySelector('#nav-trigger-${menu}').getAttribute('aria-expanded')==='true'`);
-      assert(await evaluate(`(()=>{const p=document.querySelector('#nav-dropdown-${menu}'),r=p.getBoundingClientRect();return !p.hidden && r.left>=0 && r.right<=innerWidth && p.querySelectorAll('li a').length===6;})()`),'Dropdown fits and contains the six relevant destinations');
+      assert(await evaluate(`(()=>{const p=document.querySelector('#nav-dropdown-${menu}'),r=p.getBoundingClientRect();return !p.hidden && r.left>=0 && r.right<=innerWidth && p.querySelectorAll('li a').length===4;})()`),'Dropdown fits and contains four distinct destinations');
       if(width>=960){
         assert(await evaluate(`Math.abs(document.querySelector('#nav-dropdown-${menu}').getBoundingClientRect().width-Math.min(1262,innerWidth-48))<1`),'Dropdown matches Stripe reference width');
         assert(await evaluate(`getComputedStyle(document.querySelector('header').previousElementSibling).backdropFilter==='blur(5px)'`),'Open dropdown blurs the page');

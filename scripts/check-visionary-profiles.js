@@ -68,6 +68,9 @@ async (page, site = 'http://127.0.0.1:4173/wisconnect-site/') => {
         await p.getByRole('button',{name:'Resume portraits',exact:true}).click();
         await p.waitForFunction(name=>document.querySelector('#member-cards > [data-featured="true"]').getAttribute('aria-label')!==name,paused);
       }
+      // Copy must be readable well before the sticky scene ends.
+      await p.evaluate(()=>{const s=document.querySelector('#members');window.scrollTo({top:s.getBoundingClientRect().top+scrollY+(s.offsetHeight-innerHeight)*.6,behavior:'instant'});});
+      await p.waitForFunction(()=>Number(document.querySelector('#members > div').style.getPropertyValue('--member-reveal'))>.999);
       await p.evaluate(()=>{const s=document.querySelector('#members');window.scrollTo({top:s.getBoundingClientRect().top+scrollY+s.offsetHeight-innerHeight-2,behavior:'instant'});});
       await p.waitForFunction(()=>Number(document.querySelector('#members > div').style.getPropertyValue('--member-spread'))>.999);
       assert(await p.locator('#member-cards').evaluate(e=>{

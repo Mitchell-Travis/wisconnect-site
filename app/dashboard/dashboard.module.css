@@ -356,3 +356,11 @@
   & .inviteDialog::backdrop { background: rgb(0 0 0 / 60%); }
   @media (hover: hover) and (pointer: fine) { & .resource:hover { background: rgb(255 255 255 / 6%); } }
 }
+
+.deleteMemberAction { min-height: 44px; padding: 4px 8px; border: 0; border-radius: 6px; background: transparent; color: #a33444; font: inherit; cursor: pointer; }
+.deleteMemberAction:hover { background: rgb(163 52 68 / 8%); }
+.dangerAction, .dangerAction:hover { background: #a33444; border-color: #a33444; color: #fff; }
+.deleteMemberDescription { overflow-wrap: anywhere; }
+:global([data-dashboard-theme="dark"]) .deleteMemberAction { color: #ff9aa8; }
+:global(html[data-dashboard-theme="dark"]) .dashboard .dangerAction,
+:global(html[data-dashboard-theme="dark"]) .dashboard .dangerAction:hover { background: #a33444; color: #fff; }

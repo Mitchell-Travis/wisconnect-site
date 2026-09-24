@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './page.module.css';
 
@@ -90,9 +91,10 @@ export default function ContactForm({countries}:{countries:{code:string;name:str
           </div>}
         </div>
       </form>
-    </section>
     <p className={styles.deliveryNote} id="contact-delivery-note">{prepared?'Your message is ready. It is sent only when you press Send in your email app.':'No account needed. Review your message before sending it through your email app.'}</p>
+    <p className={styles.directContact}>Your answers stay in this tab until you send the email. <Link href="/#privacy">Privacy & form information</Link></p>
     <p className={styles.directContact}>Prefer to write directly? <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a></p>
+    </section>
     <noscript><p className={styles.deliveryNote}>Enable JavaScript to use the guided form, or email us directly using the link above.</p></noscript>
   </div>;
 }

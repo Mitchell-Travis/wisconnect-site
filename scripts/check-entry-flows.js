@@ -12,6 +12,7 @@ async page => {
   if(scenario==='offline')return route.abort('failed');
   let status=200,body={};
   if(path==='/invitation'){if(scenario==='expired'){status=410;body={detail:'Your invitation has expired.'}}else body={email:'invited@example.com'}}
+  if(path==='/accept'&&request.postDataJSON().password==='12345678901234567890')return route.fulfill({status:422,headers,contentType:'application/json',body:JSON.stringify({detail:'This password is too common or easy to guess. Choose unrelated words or use a password manager.'})});
   if(path==='/accept'){accepted.push(request.postDataJSON());if(holdAccept)await new Promise(resolve=>releaseAccept=resolve);}
   if(path==='/me'){if(scenario==='signed-in')body={name:'Test Member',email:'member@example.com',role:'member'};else {status=401;body={detail:'Not signed in.'}}}
   if(path==='/login'){status=401;body={detail:'Invalid email or password.'}}
@@ -27,6 +28,23 @@ async page => {
    await p.getByRole('button',{name:'Hide passwords',exact:true}).click();
    if(width===390||width===1440)await p.screenshot({path:'/tmp/wisconnect-signup-complete-'+width+'.png',fullPage:true});
   }
+  await p.locator('#member-name').fill('Test Member');
+  for (const [secret, message] of [['short-password','at least 15'], ['long-test-value-'.repeat(9),'no more than 128'], ['🔑'.repeat(14),'at least 15']]) {
+   await p.locator('#new-password').fill(secret); await p.locator('#confirm-password').fill(secret);
+   assert(await p.locator('#new-password').inputValue()===secret,'Overlong passwords are not silently truncated');
+   await p.getByRole('button',{name:'Create my account',exact:true}).click();
+   await p.getByRole('alert').filter({hasText:message}).waitFor();
+   assert(accepted.length===0,'Invalid lengths do not reach API');
+  }
+  await p.locator('#new-password').fill('maple river fog');
+  assert((await p.locator('#password-length').innerText()).includes('Length requirement met'),'Exactly 15 characters meets length requirement');
+  await p.locator('#confirm-password').fill('maple river fog');
+  assert((await p.locator('#password-match').innerText()).includes('Passwords match'),'Matching feedback is immediate');
+  await p.locator('#new-password').fill('maple river fog '+'🌿'.repeat(112));
+  assert((await p.locator('#password-length').innerText()).includes('Length requirement met'),'128 Unicode code points counted consistently with API');
+  await p.locator('#new-password').fill('12345678901234567890');await p.locator('#confirm-password').fill('12345678901234567890');
+  await p.getByRole('button',{name:'Create my account',exact:true}).click();await p.getByRole('alert').filter({hasText:'too common'}).waitFor();
+  assert(await p.locator('#member-name').count()===1,'Common-password rejection preserves invitation form for retry');
   await p.locator('#member-name').fill('   ');await p.locator('#new-password').fill('a-long-test-passphrase');await p.locator('#confirm-password').fill('a-long-test-passphrase');await p.getByRole('button',{name:'Create my account',exact:true}).click();assert(accepted.length===0,'Whitespace name cannot submit');
   await p.locator('#member-name').fill('  Test Member  ');await p.locator('#confirm-password').fill('a-mismatched-passphrase');await p.getByRole('button',{name:'Create my account',exact:true}).click();await p.getByRole('alert').filter({hasText:'do not match'}).waitFor();assert(accepted.length===0,'Mismatch cannot reach API');
   await p.locator('#confirm-password').fill('a-long-test-passphrase');holdAccept=true;await p.getByRole('button',{name:'Create my account',exact:true}).click();await p.getByRole('button',{name:'Creating your account…',exact:true}).waitFor();assert(await p.getByRole('button',{name:'Creating your account…',exact:true}).isDisabled(),'Submission has a disabled loading state');releaseAccept();holdAccept=false;
