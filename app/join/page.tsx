@@ -129,7 +129,7 @@ export default function JoinPage(){
             {step===3&&<div className={styles.emailFallback}><button type="button" onClick={copyApplication}>Copy application instead</button><p role="status">{copyStatus}</p><details><summary>View application text</summary><label htmlFor="application-text" className={styles.textLabel}>Copy this text into an email to hello@wisconnect.co.</label><textarea id="application-text" value={application} readOnly rows={9}/></details></div>}
           </div>
         </form>
-        <p className={styles.privacyNote}>Your answers stay in this tab during these steps. They aren’t saved for later or sent until you send the email. <Link href="/#privacy">Privacy & form information</Link></p>
+        <p className={styles.privacyNote}>Your answers stay in this tab during these steps. They aren’t saved for later or sent until you send the email. <Link href="/terms">Terms & Conditions</Link></p>
         <noscript><p>Please enable JavaScript to use the guided application, or email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a> to introduce yourself.</p></noscript>
       </section>
     </div>
