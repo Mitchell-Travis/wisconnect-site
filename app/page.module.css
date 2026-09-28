@@ -688,3 +688,17 @@
   .purposeBridge{grid-template-columns:1fr;gap:10px;margin-top:36px}
   .valueFoot{align-items:flex-start;flex-direction:column;gap:14px;margin-top:36px}
 }
+
+
+/* Restored textile strip beneath the primary navigation */
+.navTextile{
+  height:clamp(28px,2.4vw,38px);
+  background:
+    linear-gradient(90deg,rgba(33,20,45,.24),rgba(75,46,131,.04),rgba(33,20,45,.24)),
+    var(--textile-background) center 46%/cover no-repeat;
+  border-block:1px solid rgba(212,175,124,.42);
+  box-shadow:inset 0 -12px 20px rgba(33,20,45,.12);
+}
+@media(max-width:700px){
+  .navTextile{height:24px;background-position:center 42%}
+}
