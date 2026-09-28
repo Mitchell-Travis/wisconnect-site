@@ -2550,3 +2550,8 @@ main::after{
   .join-grid a p{font-size:14px;line-height:1.7}
   .join-grid a b{position:absolute;top:22px;right:22px}
 }
+
+
+/* Goal 1 — focused closing invitation */
+.join-section .join-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:920px}
+@media(max-width:980px){.join-section .join-grid{grid-template-columns:1fr;max-width:none}}
