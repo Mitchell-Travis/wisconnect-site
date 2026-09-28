@@ -42,3 +42,33 @@ Transform the WisConnect homepage from a Phase 1 information inventory into a fo
 - Secondary content remains represented outside the main homepage story.
 - No invented impact claims or fake proof is introduced.
 - Mobile and desktop layouts preserve the established WisConnect design language.
+
+
+## Refinement — 2026-09-28
+
+Mitchell approved the focused homepage direction but requested that two high-value storytelling sections remain on the homepage:
+
+8. Impact & connections — map plus transparent statistics placeholders
+9. Stories — editorial proof and human context
+
+The homepage now follows:
+
+Hero → Why WisConnect exists → People · Capital · Communities → What WisConnect unlocks → The women building it → Enterprise in action → Impact & connections → Stories → Join WisConnect
+
+The impact section keeps the interactive map and statistic slots, but explicitly states that figures are awaiting verification and that mapped geographies are a connection vision rather than proof of active offices or programs.
+
+The Stories section remains an editorial preview until approved member/community stories and media are supplied.
+
+The /explore route is expanded into the Phase 1 content hub for:
+- About / purpose details
+- Member directory
+- Business directory
+- Programs & proposed recurring activities
+- Resources & videos
+- Community contributions
+- News, events and gallery
+- FAQs
+- English/French status
+- Privacy/form information
+
+This preserves the Phase 1 content inventory while keeping the homepage narrative concise.
