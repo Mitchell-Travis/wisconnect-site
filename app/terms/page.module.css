@@ -1,0 +1,12 @@
+.page{min-height:100svh;background:#fff;color:var(--ink)}
+.rail{width:min(980px,calc(100% - 48px));margin-inline:auto}
+.hero{padding:100px 0 72px;background:linear-gradient(145deg,#fff 15%,#faf7fc 70%,#f8f1e7)}
+.eyebrow{margin:0 0 18px;color:#806b87;font-size:12px;letter-spacing:.19em;text-transform:uppercase}
+.hero h1,.section h2{font-family:var(--font-display);font-weight:400;color:var(--plum);letter-spacing:-.03em}
+.hero h1{max-width:760px;margin:0;font-size:clamp(48px,7vw,82px);line-height:1.02}
+.hero p{max-width:760px;margin:28px 0 0;color:var(--muted);font-size:18px;line-height:1.75}
+.section{padding:64px 0;border-top:1px solid var(--line)}
+.section h2{margin:0 0 18px;font-size:clamp(30px,4vw,46px)}
+.section p{max-width:780px;margin:0 0 16px;color:var(--muted);font-size:16px;line-height:1.8}
+.action{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin-top:10px;padding:0 20px;border-radius:var(--radius-control);background:var(--purple);color:#fff;font-weight:600}
+@media(max-width:620px){.rail{width:calc(100% - 32px)}.hero{padding:72px 0 56px}.section{padding:52px 0}}
