@@ -17,7 +17,8 @@ const navigationMenus = [
     {title:'Enterprise',links:[{label:'Businesses & sectors',description:'The kinds of enterprises WisConnect is being built to support.',href:'#businesses'}]}
   ],feature:{image:'story-enterprise-640.webp',title:'Real people. Real enterprise.',description:'The cooperative becomes meaningful through the women and businesses inside it.'}},
   {label:'Explore',groups:[
-    {title:'More from WisConnect',links:[{label:'Programs, resources & updates',description:'Secondary information without interrupting the homepage story.',href:'/explore'},{label:'Contact WisConnect',description:'Membership, partnerships and general questions.',href:'/contact'}]}
+    {title:'From the network',links:[{label:'Stories',description:'People, enterprise and the meaning behind the work.',href:'#stories'},{label:'Programs, resources & updates',description:'Secondary information without interrupting the homepage story.',href:'/explore'}]},
+    {title:'Connect',links:[{label:'Contact WisConnect',description:'Membership, partnerships and general questions.',href:'/contact'}]}
   ],feature:{image:'story-skills-640.webp',title:'Go deeper when you are ready.',description:'Directories, resources, updates and practical information live beyond the homepage.'}}
 ] as const;
 const networkStories = [
@@ -656,21 +657,21 @@ export default function Home(){
       <div className={styles.emptyContent}><h3>Community initiatives awaiting approval.</h3><p>We are making space for members to describe their work, why it matters, the people involved and the contributions behind it. Project details and outcomes will be shared after verification and publication consent.</p><Link className={styles.contentLink} href="/join">Tell us what you would like to contribute <ArrowUpRightIcon/></Link></div>
     </div></section>
 
-    <section hidden id="impact" className={styles.impact} aria-labelledby="impact-title">
+    <section id="impact" className={styles.impact} aria-labelledby="impact-title">
       <div className={styles.impactFrame}>
         <div className={styles.impactHeading}>
-          <p className="eyebrow">Impact & proof</p>
-          <h2 id="impact-title">The power of<br/><em>shared ownership.</em></h2>
+          <p className="eyebrow">Impact & connections</p>
+          <h2 id="impact-title">Local roots.<br/><em>Wider possibilities.</em></h2>
         </div>
         <dl id="impact-metrics" className={styles.impactMetrics} aria-describedby="impact-note" style={{'--metric-index':impactIndicator,'--metric-column':impactIndicator%2,'--metric-row':Math.floor(impactIndicator/2)} as CSSProperties} onPointerLeave={()=>setImpactHover(null)}>
           {['Members','Member businesses','Projects & programs','Community outcomes'].map((label,index)=><div key={label} data-active={impactMetric===index} onPointerEnter={event=>{if(event.pointerType==='mouse')setImpactHover(index);}}>
             <dt id={`impact-label-${index}`}>{label}</dt><dd aria-label="Awaiting verification"><button type="button" aria-label={`${label}: awaiting verification`} aria-pressed={impactMetric===index} aria-controls="impact-map" onFocus={()=>setImpactHover(index)} onBlur={()=>setImpactHover(null)} onClick={()=>setImpactMetric(index)}><span aria-hidden="true">—</span></button></dd>
           </div>)}
         </dl>
-        <p id="impact-note" className={styles.impactNote}>Awaiting verification. Member totals, business totals, project activity and community outcomes will be published with sources and reporting dates once approved.</p>
+        <p id="impact-note" className={styles.impactNote}>Impact should be proven, not implied. Verified member totals, business totals, program activity and community outcomes will be published here with sources and reporting dates once approved.</p>
         <div id="global-reach" ref={impactVisual} className={styles.impactVisual}>
-          <h3 className={styles.connectionTitle}>Local roots. Diaspora connections.</h3>
-          <p className={styles.connectionCopy}>Draft perspective: connections between Black women business owners in Africa and the diaspora can create space to exchange skills, cultural knowledge and business relationships. Members’ own experiences will help tell that story.</p>
+          <h3 className={styles.connectionTitle}>Connection should create opportunity.</h3>
+          <p className={styles.connectionCopy}>WisConnect’s wider connection vision is about more than geography: relationships across Africa and the diaspora can open pathways to knowledge, partners, buyers, capital and new markets. The locations below represent a strategic connection vision, not claims of active offices or programs.</p>
           <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>Connection vision · locations and partnerships await confirmation.</span></div>
           <svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false">
             <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
@@ -693,9 +694,9 @@ export default function Home(){
       </div>
     </section>
 
-    <section hidden id="stories" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
+    <section id="stories" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
       <div className={styles.storiesHeader}>
-        <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title">Good things grow together.</h2><p>People, ideas and everyday work behind a shared future. Member stories will explore what motivates the work, the talents and assets people bring, and the impact of their contributions.</p></div>
+        <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title">The work becomes real through people.</h2><p>Business growth, shared ownership and community impact mean more when you can see the people, motivations, talents and contributions behind them.</p></div>
         <div className={styles.enterpriseControls} role="group" aria-label="Story navigation">
           <span className={styles.storyCount}>0{activeStory+1} <span>/ 04</span></span>
           <button type="button" aria-label="Previous story" aria-controls="story-gallery" disabled={activeStory===0} onClick={()=>selectStory(activeStory-1)}><ArrowDownIcon/></button>
@@ -765,6 +766,6 @@ export default function Home(){
       <div className={styles.emptyContent}><h3>How these forms work today</h3><p>The Contact and Join forms hold your answers in the current tab while you complete the steps. They prepare an email draft; they do not save a submission to a website database. You decide whether to send it in your email app. Copying a message places its text on your clipboard.</p><p>Contact asks for your name, email, country, optional organization, topic and message. Join asks for your name, email, location, experience and proposed contribution. Please include only what is needed for your inquiry.</p><h3>Privacy policy awaiting approval</h3><p>WisConnect still needs to supply its approved policy, responsible organization and privacy contact, how received messages are used and retained, who can access them, and how people can request changes or deletion. This form information is not the final privacy policy.</p><Link className={styles.contentLink} href="/contact">Ask a privacy question <ArrowUpRightIcon/></Link></div>
     </div></section>
 
-    <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>The story</strong><a href="#purpose">Why WisConnect exists</a><a href="#about">People · Capital · Communities</a><a href="#what-we-do">What WisConnect unlocks</a></div><div><strong>People & enterprise</strong><a href="#members">The women building it</a><a href="#businesses">Enterprise in action</a><Link href="/explore">Explore more</Link></div><div><strong>Take part</strong><Link href="/join">Join WisConnect</Link><Link href="/contact">Contact</Link><Link href="/explore#faq">FAQs</Link><Link href="/explore#languages">Language availability</Link></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/explore#privacy">Privacy & form information</Link></div></footer>
+    <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>The story</strong><a href="#purpose">Why WisConnect exists</a><a href="#about">People · Capital · Communities</a><a href="#what-we-do">What WisConnect unlocks</a></div><div><strong>People & enterprise</strong><a href="#members">The women building it</a><a href="#businesses">Enterprise in action</a><a href="#impact">Impact & connections</a><a href="#stories">Stories</a></div><div><strong>Take part</strong><Link href="/join">Join WisConnect</Link><Link href="/contact">Contact</Link><Link href="/explore#faq">FAQs</Link><Link href="/explore#languages">Language availability</Link></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/explore#privacy">Privacy & form information</Link></div></footer>
   </main></div></MotionConfig>
 }
