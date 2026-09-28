@@ -9,17 +9,17 @@ import styles from './page.module.css';
 const sectors = ['Food & Beverages','Consulting Services','Agriculture','Textiles & Apparel','Handmade Crafts','Training'] as const;
 const navigationMenus = [
   {label:'About',groups:[
-    {title:'The story',links:[{label:'Why WisConnect exists',description:'Why Black women should not have to build alone.',href:'#purpose'},{label:'Our cooperative model',description:'People, capital and communities working together.',href:'#about'}]},
-    {title:'The value',links:[{label:'What WisConnect unlocks',description:'Grow, connect, access opportunity and own.',href:'#what-we-do'}]}
-  ],feature:{image:'story-community-640.webp',title:'Built around shared progress.',description:'A focused story about ownership, opportunity and community.'}},
+    {title:'WisConnect',links:[{label:'Cooperative model',description:'People, capital and communities.',href:'#about'},{label:'Impact & connections',description:'Evidence and the wider connection vision.',href:'#impact'}]},
+    {title:'Go deeper',links:[{label:'Explore WisConnect',description:'Directories, programs, resources, updates and more.',href:'/explore'}]}
+  ],feature:{image:'story-community-640.webp',title:'Rooted in community.',description:'Explore the purpose behind a shared future.'}},
   {label:'Our people',groups:[
-    {title:'Women',links:[{label:'Meet the women building it',description:'Leadership, expertise and lived experience.',href:'#members'}]},
-    {title:'Enterprise',links:[{label:'Businesses & sectors',description:'The kinds of enterprises WisConnect is being built to support.',href:'#businesses'}]}
-  ],feature:{image:'story-enterprise-640.webp',title:'Real people. Real enterprise.',description:'The cooperative becomes meaningful through the women and businesses inside it.'}},
-  {label:'Explore',groups:[
-    {title:'From the network',links:[{label:'Stories',description:'People, enterprise and the meaning behind the work.',href:'#stories'},{label:'Programs, resources & updates',description:'Secondary information without interrupting the homepage story.',href:'/explore'}]},
-    {title:'Connect',links:[{label:'Contact WisConnect',description:'Membership, partnerships and general questions.',href:'/contact'}]}
-  ],feature:{image:'story-skills-640.webp',title:'Go deeper when you are ready.',description:'Directories, resources, updates and practical information live beyond the homepage.'}}
+    {title:'People',links:[{label:'Meet the visionaries',description:'The women behind WisConnect.',href:'#members'}]},
+    {title:'Enterprise',links:[{label:'Business sectors',description:'Explore six areas of enterprise.',href:'#businesses'}]}
+  ],feature:{image:'story-enterprise-640.webp',title:'Individual strengths.',description:'People, experience and enterprise shape the cooperative.'}},
+  {label:'Our work',groups:[
+    {title:'Support',links:[{label:'What WisConnect does',description:'The practical role of the cooperative.',href:'#what-we-do'}]},
+    {title:'Stories',links:[{label:'Stories from the network',description:'People, ideas and everyday contributions.',href:'#stories'}]}
+  ],feature:{image:'story-skills-640.webp',title:'Knowledge, shared.',description:'Explore the ideas behind practical support.'}}
 ] as const;
 const networkStories = [
   {image:'enterprise',category:'Enterprise',title:'Made by her. Ready for more.',description:'A good product is a beginning. The next chapter takes connections, practical support and room to grow.',alt:'A woman sewing fabric at her workshop table',position:'65% center',credit:'Joaquin Reyes Ramos',source:'https://www.pexels.com/photo/african-woman-sewing-fabric-with-vintage-machine-37409120/',paragraphs:[
@@ -440,10 +440,10 @@ export default function Home(){
         <div className={styles.heroCopy}>
           <p className={styles.identity}>Black Women Business Development<br/>&amp; Resource Center</p>
           <h1 id="hero-title">Build your business.<br/><em>Share in <br/>what grows.</em></h1>
-          <p className={styles.heroLede}>A cooperative connecting Black women entrepreneurs to shared ownership, business opportunity, and each other.</p>
+          <p className={styles.heroLede}>A cooperative connecting women entrepreneurs to shared ownership, business opportunity, and each other.</p>
           <div className={styles.heroActions}>
             <Link className={styles.primaryAction} href="/join">Join the Cooperative <ArrowUpRightIcon/></Link>
-            <a className={styles.secondaryAction} href="#purpose">Discover WisConnect <ArrowDownIcon/></a>
+            <a className={styles.secondaryAction} href="#about">Discover WisConnect <ArrowDownIcon/></a>
           </div>
         </div>
         <div className={styles.heroArt}>
@@ -453,18 +453,11 @@ export default function Home(){
       </div>
       <div className={styles.heroFoot}>
         <p>People. Capital. Communities.</p>
-        <a href="#purpose">Why WisConnect exists <ArrowDownIcon/></a>
+        <a href="#members">Meet the women behind WisConnect <ArrowDownIcon/></a>
       </div>
     </section>
 
-    <section id="purpose" className={`section ${styles.contentSection}`} aria-labelledby="purpose-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Why WisConnect exists</p><h2 id="purpose-title">Talent is already here.<br/>Opportunity should be closer.</h2></div><p>Black women build businesses with skill, ambition and deep community knowledge. Too often, access to capital, markets, trusted relationships and practical support is fragmented.</p></div>
-      <div className={styles.purposeNarrative}>
-        <p>WisConnect exists to bring those pieces into one cooperative network — so women can grow what they own while helping shape something larger together.</p>
-        <p>That means making knowledge easier to share, opportunity easier to reach, and the value created by business growth more connected to the people and communities creating it.</p>
-      </div>
-      <div className={styles.purposeBridge}><span>Not another network to join.</span><strong>A system to build together.</strong><a href="#about">See how the model works <ArrowUpRightIcon/></a></div>
-    </div></section>
+    
 
     <section id="about" className={styles.beliefSection} aria-labelledby="belief-title"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`}>
       <div className={styles.beliefCard} data-pillar="people">
@@ -502,22 +495,15 @@ export default function Home(){
       </article>)}
     </div></section>
 
-    <section id="what-we-do" className="section what-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">What WisConnect unlocks</p><h2>From individual ambition<br/>to shared possibility.</h2></div><p>The cooperative is designed around outcomes members can feel in their businesses — stronger capability, stronger relationships, wider opportunity and a meaningful stake in what grows.</p></div><div className="program-list">
-      <article><span>01</span><div><h3>Grow</h3><p>Build stronger businesses through practical knowledge, visibility, learning and support shaped around real enterprise needs.</p></div></article>
-      <article><span>02</span><div><h3>Connect</h3><p>Reach people who can share experience, open doors, collaborate and help turn isolated effort into collective capability.</p></div></article>
-      <article><span>03</span><div><h3>Access</h3><p>Move closer to capital, buyers, contracts, partners and wider market opportunities as the network develops.</p></div></article>
-      <article><span>04</span><div><h3>Own</h3><p>Participate in a cooperative where members help shape the institution and the value created together.</p></div></article>
-    </div><div className={styles.valueFoot}><p>Programs, resources and recurring activities support these outcomes — they are not the story by themselves.</p><Link className={styles.contentLink} href="/explore">Explore programs & resources <ArrowUpRightIcon/></Link></div></div></section>
-
     <section id="members" ref={membersSection} className={styles.members} data-animated={membersAnimated} data-profile-open={selectedMember!==null} aria-labelledby="members-title">
       <motion.div className={styles.memberStage} style={{'--member-spread':memberSpread,'--member-reveal':memberReveal,'--member-pointer':memberPointer} as MotionStyle}>
         <svg className={styles.memberThreads} viewBox="0 0 1600 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
           {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*55-130} C430 ${i*30+90} 940 ${i*13+345} 1260 535 S1510 ${i*34+150} 1700 ${i*39+50}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
         </svg>
         <div className={styles.membersHeading}>
-          <p className="eyebrow">The women building WisConnect</p>
-          <h2 id="members-title">Different experience.<br/><em>One shared ambition.</em></h2>
-          <p className={styles.memberLede}>Meet the women bringing legal, business, governance and entrepreneurial experience into the cooperative — and shaping what it can become.</p>
+          <p className="eyebrow">Meet the visionaries</p>
+          <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2>
+          <p className={styles.memberLede}>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative.</p>
           <div className={styles.memberActions}>
             <Link className={styles.memberJoin} href="/join">Join the cooperative <ArrowUpRightIcon/></Link>
             <Link className={`${styles.memberJoin} ${styles.memberContact}`} href="/contact">Contact <ArrowUpRightIcon/></Link>
@@ -564,16 +550,10 @@ export default function Home(){
       </>}
     </dialog>
 
-    <section hidden id="member-directory" className={`section ${styles.contentSection}`} aria-labelledby="directory-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Member directory</p><h2 id="directory-title">Get to know what we bring.</h2></div><p>Explore the profiles already featured above. The full member register, locations and preferred contact links await publication approval.</p></div>
-      <ul className={styles.directoryList}>
-        {memberProfiles.map((member,index)=><li key={member.name}><div><h3>{member.name}</h3><p>{member.bio}</p><p><strong>Expertise:</strong> {member.expertise.join(' · ')}</p><p className={styles.contentNote}>Location & direct contact: awaiting approval.</p></div><button type="button" className={styles.storyRead} aria-label={`Read biography for ${member.name}`} aria-haspopup="dialog" onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}}>View profile <ArrowUpRightIcon/></button></li>)}
-      </ul>
-      <Link className={styles.contentLink} href="/contact">Ask WisConnect about an introduction <ArrowUpRightIcon/></Link>
-    </div></section>
+    
 
-    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Enterprise in action</p><h2 id="enterprises-title">Built for the businesses<br/>women are growing now.</h2></div><p>WisConnect is being shaped around real enterprise — from food and professional services to agriculture, apparel, craft and training.</p></div>
-      <p className={styles.contentNote}>These sectors show the kinds of businesses the cooperative is designed to support. Individual business listings will be published only after member approval.</p>
+    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Preview</p><h2 id="enterprises-title">Built by members. Backed by the cooperative.</h2></div><p>Across six practical sectors, members are turning professional skill, cultural knowledge and local resources into enterprises with room to grow.</p></div>
+      <p className={styles.contentNote}>Illustrative sector descriptions and photographs. Approved business listings appear in the directory below.</p>
       <div className={styles.enterpriseControls}>
         <p>Explore our six sectors</p>
         <button type="button" aria-label="Previous enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.start} onClick={()=>slideEnterprise(-1)}><ArrowDownIcon/></button>
@@ -628,50 +608,36 @@ export default function Home(){
       </ul>
     </div></section>
 
-    <section hidden id="business-directory" className={`section ${styles.contentSection}`} aria-labelledby="business-directory-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Business directory</p><h2 id="business-directory-title">Discover member-owned businesses.</h2></div><p>Meet the enterprises behind the cooperative, with approved details and a direct way to connect.</p></div>
-      <div className={styles.emptyContent}><h3>Listings awaiting approval.</h3><p>No business listings are published here yet. Each listing will include the business and owner’s name, sector, description, approved photo or logo, and contact link.</p><p>This directory introduces businesses. Purchases and payments are not available on this website.</p><Link className={styles.contentLink} href="/contact">Ask about listing your business <ArrowUpRightIcon/></Link></div>
-    </div></section>
+    
+
+    <section id="what-we-do" className="section what-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">What WisConnect does</p><h2>Turn shared ownership into shared progress.</h2></div><p>WisConnect connects members to the resources, relationships and practical support that help enterprises grow.</p></div><p className={styles.contentNote}>Service direction for review. Availability, eligibility and named programs are still to be confirmed.</p><div className="program-list">
+      <article><span>01</span><div><h3>Put ownership in members’ hands</h3><p>Give members a voice in the cooperative and a stake in the value they help create.</p></div></article>
+      <article><span>02</span><div><h3>Open doors to capital and opportunity</h3><p>Connect entrepreneurs with funding pathways, trusted partners and opportunities to move forward.</p></div></article>
+      <article><span>03</span><div><h3>Help member businesses grow</h3><p>Bring practical learning, visibility and business support closer to the needs of each enterprise.</p></div></article>
+      <article><span>04</span><div><h3>Keep value moving through communities</h3><p>Link business growth to stronger local networks, livelihoods and opportunity that stays in the community.</p></div></article>
+    </div></div></section>
 
     
 
-    <section hidden id="programs" className={`section ${styles.contentSection}`} aria-labelledby="programs-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Programs & activities</p><h2 id="programs-title">Ways to learn. Reasons to connect.</h2></div><p>Ideas raised for regular engagement with Black women business owners. These activities are proposed; no schedule or registration is confirmed.</p></div>
-      <div className={styles.contentGrid}>
-        <article><span className={styles.contentLabel}>Proposed</span><h3>Webinars</h3><p>Conversations around members’ questions and experience. Topics, presenters and frequency await the team’s decision.</p></article>
-        <article><span className={styles.contentLabel}>Proposed</span><h3>Tutorials</h3><p>Practical learning led by shared expertise. Content, format and contributors are still to be agreed.</p></article>
-        <article><span className={styles.contentLabel}>Proposed</span><h3>Coffee meetings</h3><p>Space for introductions and regular exchange. Hosts, locations and meeting frequency are still to be agreed.</p></article>
-      </div><a className={styles.contentLink} href="#events">See the events calendar <ArrowDownIcon/></a>
-    </div></section>
+    
 
-    <section hidden id="resources" className={`section ${styles.contentSection}`} aria-labelledby="resources-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">Resources & videos</p><h2 id="resources-title">Knowledge to share.</h2></div>
-      <div className={styles.contentGrid}>
-        <article><span className={styles.contentLabel}>Awaiting content</span><h3>Guides & learning materials</h3><p>Approved resources, authors and accessible download links will be listed here when supplied.</p></article>
-        <article><span className={styles.contentLabel}>Awaiting content</span><h3>Watch & listen</h3><p>Member conversations and approved videos will appear here with captions or transcripts. No videos are published yet.</p></article>
-      </div><Link className={styles.contentLink} href="/contact">Suggest a resource <ArrowUpRightIcon/></Link>
-    </div></section>
-
-    <section hidden id="community-work" className={`section ${styles.contentSection}`} aria-labelledby="community-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Community work</p><h2 id="community-title">What each of us can contribute.</h2></div><p>Skills, mentorship, local knowledge and relationships can all be part of a member’s contribution.</p></div>
-      <div className={styles.emptyContent}><h3>Community initiatives awaiting approval.</h3><p>We are making space for members to describe their work, why it matters, the people involved and the contributions behind it. Project details and outcomes will be shared after verification and publication consent.</p><Link className={styles.contentLink} href="/join">Tell us what you would like to contribute <ArrowUpRightIcon/></Link></div>
-    </div></section>
+    
 
     <section id="impact" className={styles.impact} aria-labelledby="impact-title">
       <div className={styles.impactFrame}>
         <div className={styles.impactHeading}>
-          <p className="eyebrow">Impact & connections</p>
-          <h2 id="impact-title">Local roots.<br/><em>Wider possibilities.</em></h2>
+          <p className="eyebrow">Impact & proof</p>
+          <h2 id="impact-title">The power of<br/><em>shared ownership.</em></h2>
         </div>
         <dl id="impact-metrics" className={styles.impactMetrics} aria-describedby="impact-note" style={{'--metric-index':impactIndicator,'--metric-column':impactIndicator%2,'--metric-row':Math.floor(impactIndicator/2)} as CSSProperties} onPointerLeave={()=>setImpactHover(null)}>
           {['Members','Member businesses','Projects & programs','Community outcomes'].map((label,index)=><div key={label} data-active={impactMetric===index} onPointerEnter={event=>{if(event.pointerType==='mouse')setImpactHover(index);}}>
             <dt id={`impact-label-${index}`}>{label}</dt><dd aria-label="Awaiting verification"><button type="button" aria-label={`${label}: awaiting verification`} aria-pressed={impactMetric===index} aria-controls="impact-map" onFocus={()=>setImpactHover(index)} onBlur={()=>setImpactHover(null)} onClick={()=>setImpactMetric(index)}><span aria-hidden="true">—</span></button></dd>
           </div>)}
         </dl>
-        <p id="impact-note" className={styles.impactNote}>Impact should be proven, not implied. Verified member totals, business totals, program activity and community outcomes will be published here with sources and reporting dates once approved.</p>
+        <p id="impact-note" className={styles.impactNote}>Awaiting verification. Member totals, business totals, project activity and community outcomes will be published with sources and reporting dates once approved.</p>
         <div id="global-reach" ref={impactVisual} className={styles.impactVisual}>
-          <h3 className={styles.connectionTitle}>Connection should create opportunity.</h3>
-          <p className={styles.connectionCopy}>WisConnect’s wider connection vision is about more than geography: relationships across Africa and the diaspora can open pathways to knowledge, partners, buyers, capital and new markets. The locations below represent a strategic connection vision, not claims of active offices or programs.</p>
+          <h3 className={styles.connectionTitle}>Local roots. Diaspora connections.</h3>
+          <p className={styles.connectionCopy}>Draft perspective: connections between Black women business owners in Africa and the diaspora can create space to exchange skills, cultural knowledge and business relationships. Members’ own experiences will help tell that story.</p>
           <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>Connection vision · locations and partnerships await confirmation.</span></div>
           <svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false">
             <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
@@ -696,7 +662,7 @@ export default function Home(){
 
     <section id="stories" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
       <div className={styles.storiesHeader}>
-        <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title">The work becomes real through people.</h2><p>Business growth, shared ownership and community impact mean more when you can see the people, motivations, talents and contributions behind them.</p></div>
+        <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title">Good things grow together.</h2><p>People, ideas and everyday work behind a shared future. Member stories will explore what motivates the work, the talents and assets people bring, and the impact of their contributions.</p></div>
         <div className={styles.enterpriseControls} role="group" aria-label="Story navigation">
           <span className={styles.storyCount}>0{activeStory+1} <span>/ 04</span></span>
           <button type="button" aria-label="Previous story" aria-controls="story-gallery" disabled={activeStory===0} onClick={()=>selectStory(activeStory-1)}><ArrowDownIcon/></button>
@@ -729,43 +695,20 @@ export default function Home(){
       </>}
     </dialog>
 
-    <section hidden id="news" className={`section ${styles.contentSection}`} aria-labelledby="news-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">News & announcements</p><h2 id="news-title">From the cooperative.</h2></div>
-      <div className={styles.emptyContent}><h3>No approved updates yet.</h3><p>News, announcements and community updates will appear here with publication dates. WisConnect is confirming who supplies and approves regular updates.</p></div>
-    </div></section>
+    
 
-    <section hidden id="events" className={`section ${styles.contentSection}`} aria-labelledby="events-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Events calendar</p><h2 id="events-title">Come into the conversation.</h2></div><p>Find dates, details, locations or online links, and registration information for confirmed gatherings.</p></div>
-      <div className={styles.emptyContent}><h3>No confirmed events to display.</h3><p>Dates and RSVP links will be added when approved. Proposed webinars, tutorials and coffee meetings are not scheduled events.</p><Link className={styles.contentLink} href="/contact">Ask about upcoming gatherings <ArrowUpRightIcon/></Link></div>
-    </div></section>
+    
 
-    <section hidden id="gallery" className={`section ${styles.contentSection}`} aria-labelledby="gallery-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Photo gallery</p><h2 id="gallery-title">Life in the network.</h2></div><p>A home for approved member, event, program and community photographs. Images, captions, credits and publication permissions are still to come.</p></div>
-      <div className={styles.contentGrid}>{['Members & their work','Events & programs','Community moments'].map(label=><figure className={styles.galleryPlaceholder} key={label}><div aria-hidden="true">Photo to come</div><figcaption><strong>{label}</strong><span>Awaiting approved photography</span></figcaption></figure>)}</div>
-    </div></section>
+    
 
-    <section hidden id="faq" className={`section ${styles.contentSection}`} aria-labelledby="faq-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">Frequently asked questions</p><h2 id="faq-title">Before you take the next step.</h2></div>
-      <details className={styles.contentDetails}><summary>How do I express interest in membership?</summary><p>Use the <Link href="/join">membership form</Link> to introduce yourself, your location, experience and what you would like to contribute. It prepares an email for you to review and send. Membership eligibility, fees, location-specific requirements and review timing still need confirmation.</p></details>
-      <details className={styles.contentDetails}><summary>Does completing the form make me a member?</summary><p>No. Completing the form does not grant membership. Nothing is sent until you send the draft from your email app. WisConnect is confirming whether this introduction will serve as the formal application and how the review process will work.</p></details>
-      <details className={styles.contentDetails}><summary>Are programs and events open for registration?</summary><p>No confirmed program schedule or event registration is listed yet. Webinars, tutorials and coffee meetings are proposals. Confirmed opportunities will appear in the <a href="#events">events calendar</a>.</p></details>
-      <details className={styles.contentDetails}><summary>Can I buy from businesses here?</summary><p>The <a href="#business-directory">business directory</a> is for discovering and contacting member-owned businesses. This website does not offer checkout or online dues payments.</p></details>
-      <details className={styles.contentDetails}><summary>Can my profile or story be featured?</summary><p><Link href="/contact">Contact WisConnect</Link> about contributing a biography, business listing, story or photograph. Names, images and contact information need the person’s publication permission and content approval.</p></details>
-      <details id="languages" className={styles.contentDetails}><summary>Is the website available in French?</summary><p>English is available now. French content is awaiting translation, review and an agreed launch date.</p><p lang="fr">La version française est en préparation. La date de publication reste à confirmer.</p></details>
-    </div></section>
+    
 
-    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Build with us</p><h2>Your business can grow.<br/>Imagine what can grow with it.</h2><p className="join-lede">Bring your experience into a cooperative built around shared opportunity, stronger businesses and value that reaches beyond one person.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Join WisConnect</strong><p>Explore membership and tell us what you want to build.</p><b><ArrowUpRightIcon/></b></Link><Link href="/contact"><span>02 · Conversation</span><strong>Talk with our team</strong><p>Ask about partnerships, the cooperative or how to get involved.</p><b><ArrowUpRightIcon/></b></Link></div></div></section>
+    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Bring your experience, explore the network or start a conversation.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Become a Member</strong><p>Learn about membership and apply.</p><b><ArrowUpRightIcon/></b></Link><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="/explore#businesses"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
 
-    <section hidden id="contact-info" className={`section ${styles.contentSection}`} aria-labelledby="contact-info-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title">Start with a conversation.</h2></div><p>Use the contact form to prepare an email about membership, partnerships, business listings or a general question.</p></div>
-      <div className={styles.contentGrid}><article><h3>Write to WisConnect</h3><Link className={styles.contentLink} href="/contact">Open the contact form <ArrowUpRightIcon/></Link><a className={styles.contentLink} href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><p>The receiving inbox and acknowledgement process await final confirmation.</p></article><article><h3>Locations & social channels</h3><p>Approved office or service-area details and official social links are awaiting confirmation. The map above illustrates a connection vision.</p></article></div>
-    </div></section>
+    
 
-    <section hidden id="privacy" className={`section ${styles.contentSection}`} aria-labelledby="privacy-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">Privacy & form information</p><h2 id="privacy-title">Before you share your details.</h2></div>
-      <div className={styles.emptyContent}><h3>How these forms work today</h3><p>The Contact and Join forms hold your answers in the current tab while you complete the steps. They prepare an email draft; they do not save a submission to a website database. You decide whether to send it in your email app. Copying a message places its text on your clipboard.</p><p>Contact asks for your name, email, country, optional organization, topic and message. Join asks for your name, email, location, experience and proposed contribution. Please include only what is needed for your inquiry.</p><h3>Privacy policy awaiting approval</h3><p>WisConnect still needs to supply its approved policy, responsible organization and privacy contact, how received messages are used and retained, who can access them, and how people can request changes or deletion. This form information is not the final privacy policy.</p><Link className={styles.contentLink} href="/contact">Ask a privacy question <ArrowUpRightIcon/></Link></div>
-    </div></section>
+    
 
-    <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>The story</strong><a href="#purpose">Why WisConnect exists</a><a href="#about">People · Capital · Communities</a><a href="#what-we-do">What WisConnect unlocks</a></div><div><strong>People & enterprise</strong><a href="#members">The women building it</a><a href="#businesses">Enterprise in action</a><a href="#impact">Impact & connections</a><a href="#stories">Stories</a></div><div><strong>Take part</strong><Link href="/join">Join WisConnect</Link><Link href="/contact">Contact</Link><Link href="/explore#faq">FAQs</Link><Link href="/explore#languages">Language availability</Link></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/explore#privacy">Privacy & form information</Link></div></footer>
+    <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>Explore</strong><a href="#about">Cooperative model</a><a href="#members">Visionaries</a><a href="#businesses">Business sectors</a><a href="#impact">Impact & connections</a></div><div><strong>Learn & take part</strong><a href="#what-we-do">What WisConnect does</a><a href="#stories">Stories</a><Link href="/explore">Explore more</Link><Link href="/join">Membership interest</Link></div><div><strong>Keep in touch</strong><Link href="/contact">Contact</Link><Link href="/explore#faq">FAQs</Link><Link href="/explore#languages">English / French availability</Link><Link href="/explore#privacy">Privacy & form information</Link></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/explore#privacy">Privacy & form information</Link></div></footer>
   </main></div></MotionConfig>
 }
