@@ -431,11 +431,11 @@ export default function Home(){
         <Link className={styles.navContact} href="/contact" onClick={close}>Contact</Link>
         <Link className={styles.navJoin} href="/join" onClick={close}>Join us <ArrowUpRightIcon/></Link>
       </div>
+      <div className={styles.navTextile} aria-hidden="true"/>
     </header>
 
     <main id="main-content" tabIndex={-1} inert={menuOpen}>
     <section id="top" className={styles.hero} aria-labelledby="hero-title">
-      <div className="hero-textile-ribbon" aria-hidden="true"/>
       <div className={styles.heroGrid}>
         <div className={styles.heroCopy}>
           <p className={styles.identity}>Black Women Business Development<br/>&amp; Resource Center</p>
