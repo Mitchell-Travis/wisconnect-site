@@ -72,3 +72,38 @@
 .content form .passwordFeedback { margin: -12px 0 0; font-size: 13px; line-height: 1.5; color: #51465c; }
 .content form .passwordFeedback[data-invalid="true"] { color: #842e42; }
 .loginPage .content input[aria-invalid="true"] { border-color: #842e42; }
+
+/* Returning-member flow: a quiet frame and compact, labelled controls. */
+.focusedLogin .main { min-height: 570px; padding: 64px 24px; background: radial-gradient(ellipse at 100% 0, #f2e5c9, transparent 52%), radial-gradient(ellipse at 0 100%, #e9dff2, transparent 55%), #faf8fb; }
+.focusedLogin .content { width: min(480px, 100%); padding: 40px; border: 1px solid rgb(86 53 120 / 10%); box-shadow: 0 10px 32px rgb(41 24 51 / 4%); }
+.focusedLogin .content .entryEyebrow { margin-bottom: 16px; font-size: 11px; }
+.focusedLogin .content > p { line-height: 1.75; }
+.focusedLogin .content .signInForm { display: block; margin: 28px 0 0; }
+.loginFields { display: grid; gap: 22px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.loginFields:disabled { opacity: .7; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.loginField { display: grid; gap: 8px; min-width: 0; }
+.focusedLogin .content .loginField label { font-size: 14px; }
+.focusedLogin .content .loginField input { padding-inline: 14px; background: #fff; }
+.passwordControl { position: relative; }
+.focusedLogin .content .passwordControl input { padding-right: 76px; }
+.focusedLogin .content .revealPassword { position: absolute; right: 4px; top: 4px; min-width: 64px; min-height: 44px; padding: 8px; border: 0; background: transparent; color: var(--purple); font: inherit; font-size: 13px; font-weight: 600; }
+.focusedLogin .content .revealPassword:hover { background: var(--mist); }
+.focusedLogin .content .revealPassword:focus-visible { outline-offset: -2px; }
+.loginHelp { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; margin-top: -18px; color: var(--purple); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+.focusedLogin .content .signInButton { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: -8px; }
+.focusedLogin .content .loginErrors { margin: 0 0 22px; padding: 14px 16px; border-left: 3px solid #842e42; background: #fff3f3; color: #842e42; font-size: 14px; line-height: 1.6; }
+.loginErrors:focus { outline: 2px solid #842e42; outline-offset: 3px; }
+.loginErrors ul { padding-left: 18px; margin: 8px 0 0; }
+.loginErrors li + li { margin-top: 6px; }
+.loginErrors a { text-decoration: underline; text-underline-offset: 3px; }
+.focusedLogin .content .loginFieldError { margin: 0; color: #842e42; font-size: 13px; line-height: 1.6; }
+.focusedLogin .loginFooter { width: min(480px, calc(100% - 48px)); padding-top: 24px; }
+.focusedLogin .loginFooter .membershipPrompt { margin: 0; font-size: 14px; }
+.focusedLogin .loginFooter a { display: inline-flex; align-items: center; min-height: 44px; }
+.focusedLogin .loginFooter > p + p { margin: 0; }
+@media (max-width: 620px) {
+  .focusedLogin .main { align-items: start; min-height: 0; padding: 40px 24px 24px; background: linear-gradient(180deg, #f8f3fb, #fff 260px); }
+  .focusedLogin .content { margin: 0 auto; padding: 0; border: 0; box-shadow: none; background: transparent; }
+  .focusedLogin .loginFooter { padding-top: 8px; }
+}

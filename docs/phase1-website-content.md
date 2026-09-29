@@ -2,6 +2,10 @@
 
 Source: the public website inventory and Elizabeth Carter comment summaries in `WISCONNECT_CONTEXT.md`, with the story order from `DESIGN_NOTES.md`. This pass uses that recorded inventory; it does not independently re-read or approve the original presentation comments. Current client approval gaps remain visible. No publication or production service changes are included.
 
+## September 29 update — member directory
+
+Removed the duplicate homepage member list and its navigation entry. The seven visionary profiles remain at `#members`, with the introduction link beneath them. A separate directory is deferred until the wider roster, expertise and approved contact details are ready. The historical Phase 1 plan below records the original inventory.
+
 ## Step 1 — existing content
 
 Before: Hero → Visionaries → Belief/cooperative stack → Enterprise sectors → What we do → Impact/map → Stories → Participation.

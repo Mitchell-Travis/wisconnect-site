@@ -21,15 +21,16 @@ export default function TermsPage(){
     <section className={styles.section}>
       <div className={styles.rail}>
         <h2>Contact and membership forms</h2>
-        <p>The Contact and Join forms keep your answers in the current browser tab while you complete the steps. They prepare an email draft for you to review. They do not save a submission to a website database.</p>
-        <p>Nothing is sent until you choose to send the message through your email app. If you use a copy option, the text is placed on your clipboard so you can paste it into an email yourself.</p>
+        <p>Where online submissions are enabled, pressing Submit on the Contact form saves your inquiry in the WisConnect database for administrators to review. The service also attempts an email notification to hello@wisconnect.co. A saved inquiry remains available in the dashboard if the email notification fails.</p>
+        <p>The current local preview uses a test inbox unless real email delivery is configured. The hosted website does not yet accept online submissions and provides a direct email alternative.</p>
+        <p>The Join form still prepares an email draft. It keeps your answers in the current tab and does not save an application to the website database. Nothing is sent from Join until you send the draft through your email app.</p>
       </div>
     </section>
 
     <section className={styles.section}>
       <div className={styles.rail}>
         <h2>Information you may provide</h2>
-        <p>The Contact form may ask for your name, email, country, optional organization, topic and message. The Join form may ask for your name, email, location, business or professional experience, and the contribution you would like to make.</p>
+        <p>The Contact form asks for your name, email, topic and message. Submitted inquiries also have a reference, submission time and email-notification status. The Join form may ask for your name, email, location, business or professional experience, and the contribution you would like to make.</p>
         <p>Please provide only the information needed for your inquiry or membership interest.</p>
       </div>
     </section>

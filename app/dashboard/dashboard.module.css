@@ -364,3 +364,20 @@
 :global([data-dashboard-theme="dark"]) .deleteMemberAction { color: #ff9aa8; }
 :global(html[data-dashboard-theme="dark"]) .dashboard .dangerAction,
 :global(html[data-dashboard-theme="dark"]) .dashboard .dangerAction:hover { background: #a33444; color: #fff; }
+.inboxToolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.inboxToolbar p { margin: 0; font-size: 14px; color: inherit; }
+.inboxList { display: grid; gap: 12px; margin-bottom: 24px; }
+.inquiry { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.inquiry summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px; cursor: pointer; min-height: 64px; }
+.inquiry summary > span { min-width: 0; display: grid; gap: 4px; }
+.inquiry summary strong { font-size: 14px; overflow-wrap: anywhere; }
+.inquiry summary span span, .inquiry time { font-size: 12px; opacity: .75; }
+.inquiry time { flex-shrink: 0; }
+.inquiry summary:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+.inquiry[open] summary { border-bottom: 1px solid var(--line); }
+.inquiryBody { padding: 20px; font-size: 14px; overflow-wrap: anywhere; }
+.inquiryBody > a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; }
+.inquiryMessage { white-space: pre-wrap; line-height: 1.8; margin: 12px 0 24px; }
+.inquiryDelivery { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line); }
+.inquiryDelivery p { margin: 0; font-size: 12px; }
+@media (max-width: 620px) { .inboxToolbar { align-items: start; } .inquiry summary { align-items: start; flex-direction: column; gap: 8px; padding: 16px; } .inquiryBody { padding: 16px; } }

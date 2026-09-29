@@ -4,7 +4,7 @@ async (page, site='http://127.0.0.1:4173/wisconnect-site/') => {
   const context=await page.context().browser().newContext({reducedMotion:'reduce'});
   const p=await context.newPage(),errors=[];
   p.on('pageerror',e=>errors.push(e.message));
-  const sections=['top','purpose','about','members','member-directory','businesses','business-directory','what-we-do','programs','resources','community-work','impact','stories','news','events','gallery','faq','join','contact-info','privacy'];
+  const sections=['top','purpose','about','members','businesses','business-directory','what-we-do','programs','resources','community-work','impact','stories','news','events','gallery','faq','join','contact-info','privacy'];
   try {
     for(const width of [320,390,768,960,1440,1920]) {
       await p.setViewportSize({width,height:900});await p.goto(site,{waitUntil:'networkidle'});
@@ -16,7 +16,7 @@ async (page, site='http://127.0.0.1:4173/wisconnect-site/') => {
         return {duplicates:ids.filter((id,i)=>ids.indexOf(id)!==i),broken:links.filter(a=>a.hash&&a.pathname===location.pathname&&!document.getElementById(decodeURIComponent(a.hash.slice(1)))).map(a=>a.getAttribute('href')),nav:nav.map(a=>a.getAttribute('href')),overflow:document.documentElement.scrollWidth>innerWidth};
       });
       assert(!audit.duplicates.length&&!audit.broken.length&&!audit.overflow,JSON.stringify({width,...audit}));
-      assert(new Set(audit.nav).size===16&&audit.nav.length===16,'Every menu destination is distinct');
+      assert(new Set(audit.nav).size===15&&audit.nav.length===15,'Every menu destination is distinct');
       assert(!await p.locator('header a[href*="marketplace"],header a[href*="login"],header a[href*="signup"],footer a[href*="marketplace"]').count(),'No commerce or account navigation');
       for(const id of sections.slice(1)) {
         const section=p.locator('#'+id);await section.scrollIntoViewIfNeeded();
@@ -36,11 +36,11 @@ async (page, site='http://127.0.0.1:4173/wisconnect-site/') => {
       assert(await faq.getAttribute('open')!==null,'FAQ opens using keyboard');
       assert(await faq.locator('summary').evaluate(e=>getComputedStyle(e).outlineStyle==='solid'),'FAQ has visible focus');
       await p.keyboard.press('Enter');assert(await faq.getAttribute('open')===null,'FAQ closes using keyboard');
-      const profile=p.locator('#member-directory button').first();await profile.click();
+      const profile=p.locator('#member-cards button').first();await profile.click();
       await p.locator('dialog[aria-labelledby="profile-name"]').waitFor({state:'visible'});await p.keyboard.press('Escape');
-      assert(await profile.evaluate(e=>e===document.activeElement),'Directory profile restores focus');
+      assert(await profile.evaluate(e=>e===document.activeElement),'Visionary profile restores focus');
       if(width===390||width===1440) {
-        for(const id of ['purpose','member-directory','programs','events','gallery','faq']) {
+        for(const id of ['purpose','members','programs','events','gallery','faq']) {
           await p.locator('#'+id).screenshot({path:`/tmp/wisconnect-phase1-${id}-${width}.png`});
         }
       }
@@ -60,6 +60,6 @@ async (page, site='http://127.0.0.1:4173/wisconnect-site/') => {
     const paths=await p.locator('a[href]').evaluateAll(links=>[...new Set(links.filter(a=>a.origin===location.origin).map(a=>a.pathname))]);
     for(const path of paths)assert((await p.request.get(site.split('/').slice(0,3).join('/')+path)).ok(),'Local link resolves: '+path);
     assert(!errors.length,errors.join('\n'));
-    return 'PASS: Phase 1 order/content, unique navigation and IDs, all anchors/routes, six responsive widths, keyboard FAQ, directory profile/focus, truthful placeholders and both form privacy links.';
+    return 'PASS: Phase 1 order/content, unique navigation and IDs, all anchors/routes, six responsive widths, keyboard FAQ, visionary profile/focus, truthful placeholders and both form privacy links.';
   } finally {await context.close();}
 }

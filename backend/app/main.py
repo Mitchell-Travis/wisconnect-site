@@ -10,6 +10,7 @@ from sqlalchemy import text
 
 from .database import engine
 from .auth import ORIGIN, PASSWORD_COMMON_MESSAGE, router, throttle
+from .contact import router as contact_router
 
 
 class Health(BaseModel):
@@ -30,14 +31,14 @@ app.add_middleware(
 
 @app.middleware("http")
 async def local_auth_boundary(request: Request, call_next):
-    if request.url.path.startswith("/auth"):
+    if request.url.path.startswith("/auth") or request.url.path == "/contact":
         if (os.getenv("WISCONNECT_LOCAL_AUTH") != "1" or not request.client
                 or request.client.host not in {"127.0.0.1", "::1"}):
             return JSONResponse({"detail": "Local authentication pilot is unavailable."}, status_code=404)
         if request.method not in {"GET", "HEAD", "OPTIONS"}:
             if request.headers.get("origin") != ORIGIN or request.headers.get("x-wisconnect-request") != "1":
                 return JSONResponse({"detail": "Untrusted request origin."}, status_code=403)
-            if len(await request.body()) > 8192:
+            if len(await request.body()) > (16384 if request.url.path == "/contact" else 8192):
                 return JSONResponse({"detail": "Request too large."}, status_code=413)
             try:
                 throttle("ip:" + request.client.host, 80)
@@ -53,6 +54,8 @@ async def local_auth_boundary(request: Request, call_next):
 
 @app.exception_handler(RequestValidationError)
 async def invalid_input(request: Request, error: RequestValidationError):
+    if request.url.path == "/contact":
+        return JSONResponse({"detail": "Check your name, email, topic and message (up to 3,000 characters)."}, status_code=422)
     # Return only fixed messages, never raw errors or submitted passwords.
     if any(item["type"] == "password_common" for item in error.errors()):
         return JSONResponse({"detail": PASSWORD_COMMON_MESSAGE}, status_code=422)
@@ -65,6 +68,7 @@ async def invalid_input(request: Request, error: RequestValidationError):
 
 
 app.include_router(router)
+app.include_router(contact_router)
 
 
 @app.get("/")

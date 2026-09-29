@@ -2,6 +2,8 @@
 // Run: node scripts/check-join.mjs [join URL]. No email is opened or sent.
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 
 const url=process.argv[2]??'http://localhost:3000/join/';
 const targets=await fetch('http://127.0.0.1:9222/json/list').then(r=>r.json());
@@ -33,9 +35,9 @@ async function until(expression){
   await evaluate(`new Promise((resolve,reject)=>{const start=Date.now();const check=()=>{if(${expression})resolve(true);else if(Date.now()-start>10000)reject(new Error(${JSON.stringify(expression)}));else setTimeout(check,50);};check();})`);
 }
 async function step(number){
-  await until(`document.querySelector('main').dataset.step==='${number}'`);
+  await until(`document.querySelector('[data-step]').dataset.step==='${number}'`);
   await evaluate(`Promise.all(document.getAnimations().filter(a=>a.effect.getTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})))`);
-  assert.equal(await evaluate(`document.querySelector('[aria-current="step"]').textContent.endsWith(${JSON.stringify(['Welcome','About you','Your contribution','Review'][number])})`),true);
+  if(number)assert.equal(await evaluate(`document.querySelector('[aria-current="step"]').textContent.endsWith(${JSON.stringify(['Welcome','About you','Your contribution','Review'][number])})`),true);
   if(number)assert(await evaluate(`document.activeElement.id==='step-title'`),'Step change moves keyboard focus to its heading');
   assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth && [...document.querySelectorAll('#application input, #application textarea, #application button, #application a, #application nav li')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;})`),'Controls and progress fit the viewport');
   assert(await evaluate(`[...document.querySelectorAll('#application button, #application a')].filter(el=>el.getClientRects().length).every(el=>el.getBoundingClientRect().height>=44)`),'Controls retain touch targets');
@@ -46,7 +48,7 @@ async function fill(name,value){
 async function submit(){await evaluate(`document.querySelector('form button[type=submit]').click()`);}
 async function screenshot(name){
   const {data}=await send('Page.captureScreenshot',{format:'png'});
-  await writeFile(`/tmp/wisconnect-join-${name}.png`,Buffer.from(data,'base64'));
+  await writeFile(join(tmpdir(), `wisconnect-join-${name}.png`),Buffer.from(data,'base64'));
 }
 
 try{
@@ -59,7 +61,7 @@ try{
     await send('Page.navigate',{url});
     await until(`document.querySelector('#step-title') && document.readyState==='complete'`);
     await step(0);
-    assert(await evaluate(`document.querySelector('#application').textContent.includes('email app')`),'Email delivery is disclosed before starting');
+    assert(await evaluate(`document.querySelector('#application').textContent.includes('send by email')`),'Email delivery is disclosed before starting');
     if(width===390||width===1440)await screenshot(`${width}-welcome`);
     await submit();
     await step(1);
@@ -69,7 +71,7 @@ try{
       assert.equal(await evaluate('document.activeElement.id'),'full-name','Keyboard continues from the heading into the first field');
     }
     await submit();
-    assert.equal(await evaluate(`document.querySelector('main').dataset.step`),'1','Empty required fields block progression');
+    assert.equal(await evaluate(`document.querySelector('[data-step]').dataset.step`),'1','Empty required fields block progression');
     await fill('name','   ');
     await fill('email','invalid');
     await fill('location','Monrovia, Liberia');
@@ -77,7 +79,7 @@ try{
     assert(await evaluate(`document.querySelector('[name=email]').validity.typeMismatch`),'Invalid email is rejected');
     await fill('email','test+cooperative@example.com');
     await submit();
-    assert(await evaluate(`document.querySelector('[name=name]').validity.customError`),'Whitespace-only answers are rejected');
+    assert(await evaluate(`document.querySelector('[name=name]').getAttribute('aria-invalid')==='true'`),'Whitespace-only answers are rejected');
     await fill('name','Amina & Joël');
     if(width===390){
       await evaluate(`document.querySelector('[name=name]').focus()`);
@@ -88,7 +90,7 @@ try{
     await fill('expertise','I run a textile business & teach design.');
     await fill('contribution','   ');
     await submit();
-    assert(await evaluate(`document.querySelector('[name=contribution]').validity.customError`),'Contribution requires meaningful text');
+    assert(await evaluate(`document.querySelector('[name=contribution]').getAttribute('aria-invalid')==='true'`),'Contribution requires meaningful text');
     await fill('contribution','Mentorship, local connections, and practical skills.');
     await evaluate(`document.querySelector('form button[type=button]').click()`);
     await step(1);
@@ -115,7 +117,7 @@ try{
     const email=await evaluate(`document.querySelector('form a[href^="mailto:"]').href`);
     const parsed=new URL(email);
     assert.equal(parsed.pathname,'hello@wisconnect.co');
-    assert.equal(parsed.searchParams.get('subject'),'Membership application — Amina & Joël Updated');
+    assert.equal(parsed.searchParams.get('subject'),'Membership interest — Amina & Joël Updated');
     assert(parsed.searchParams.get('body').includes('Mentorship & introductions\nAcross communities.'));
     assert(parsed.searchParams.get('body').includes('Email: test+cooperative@example.com'));
     // Test the handoff message without launching an email application.
@@ -123,10 +125,10 @@ try{
     await until(`document.querySelector('form').textContent.includes('Nothing has been submitted through this website.')`);
     if(width===390||width===1440)await screenshot(`${width}-review`);
     if(width===1440){
-      await evaluate(`Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.__copiedApplication=text;}}});[...document.querySelectorAll('form button')].find(button=>button.textContent==='Copy application instead').click()`);
+      await evaluate(`Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.__copiedApplication=text;}}});[...document.querySelectorAll('form button')].find(button=>button.textContent==='Copy introduction').click()`);
       await until(`document.querySelector('form').textContent.includes('Copied. Paste it')`);
       assert.equal(await evaluate('window.__copiedApplication'),parsed.searchParams.get('body'));
-      await evaluate(`navigator.clipboard.writeText=async()=>{throw new Error('Permission denied')};[...document.querySelectorAll('form button')].find(button=>button.textContent==='Copy application instead').click()`);
+      await evaluate(`navigator.clipboard.writeText=async()=>{throw new Error('Permission denied')};[...document.querySelectorAll('form button')].find(button=>button.textContent==='Copy introduction').click()`);
       await until(`document.querySelector('form').textContent.includes('Copy isn’t available here.')`);
       await evaluate(`document.querySelector('form details summary').click()`);
       assert.equal(await evaluate(`document.querySelector('#application-text').value`),parsed.searchParams.get('body'),'Manual copy fallback retains the complete application');

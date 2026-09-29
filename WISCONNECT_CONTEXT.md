@@ -2,6 +2,52 @@
 
 Last updated: 2026-09-29. Read the team profile update first, then the local startup update, then the Windows checkout and product handoffs; dated entries further down retain historical decisions and verification.
 
+## September 29 forms and homepage release
+
+- Mitchell authorized committing and pushing the accumulated work after the Join background update. Scope: Contact, Login and Join design/flows; local Contact inbox/backend/migration; homepage team spacing, mobile rails, directory simplification and eight Chicago business sectors; related checks and documentation.
+- Include the 16 optimized sector WebP assets. Unreferenced original portraits, generated studio masters, PDF and DOCX source documents remain local and are excluded from this release. Generated next-env.d.ts changes are excluded.
+- GitHub Pages publishes the static frontend only. Hosted login and direct Contact submissions remain intentionally unavailable; Join prepares an email draft. Backend storage and Mailpit notification checks have passed locally. Real SMTP delivery and production API/database hosting remain future configuration.
+- The release is a feedback preview. Historical “local/unpublished” notes below describe earlier stages. Check Git/Actions for the release commit and final deployment status. The team email is a draft, not an automatically sent message.
+
+## Join visual redesign (2026-09-29)
+
+- Follow-up: use Contact’s pale purple/sand/gold background and rounded desktop surround, with its vertical fade on mobile. Keep the simplified photograph/layout, hidden rails and removed caption.
+- Mitchell chose to keep the short five-question introduction for now. The supplied full business-asset questionnaire remains deferred. Read docs/join-redesign-2026-09-29.md.
+- The first collage direction was rejected as feeling generic. Current Join uses one uncropped community photograph (purpose-community), a white background, direct copy and a simple introduction button. Removed decorative plum/gold panel, chef overlay, flourish, numbered benefits and slogans. The user also requested no rails and no visible photography caption; source/license notes remain in docs. Mobile keeps the photo on welcome and hides it during entry. Shared typography remains.
+- Three counted steps: About you, Your contribution and Review. Added example fields, linked error summary, inline validation, focused step headings, validated review edits and cancel-edit restoration. Email draft/copy/manual text remain the delivery path; no automatic submission or membership approval. Contact’s backend submission does not apply to Join.
+- Build passed. Browser exercised validation and the review flow; responsive and image checks completed. Standalone Join/entry scripts updated and syntax-checked; not run. No external email, push or deployment.
+
+## Login flow refinement (2026-09-29)
+
+- Built the returning-member design from the existing forms research: narrower 480px card, soft purple/gold frame, Welcome back, email example, inline Show/Hide, one Sign in action, visible help link and separate membership exploration. Mobile keeps shared typography and 24px gutters without a nested card; signup styling stays separate.
+- New app/login/login-form.tsx provides focused field-error summary and credential/service errors, preserves entries after failures, disables controls while submitting, supports autocomplete/paste, and does not impose signup password rules on login. Connection retry keeps the form mounted. Shared account calls now time out after 15 seconds; mutation actions prevent concurrent duplicate starts.
+- Browser checked empty/malformed fields, Show/Hide, generic incorrect credentials, successful sign-in to the member dashboard, already-signed-in state and sign-out. Confirmed the temporary member session was revoked and removed that owned test account. Desktop/390px screenshots and 320px fitting checks passed. Non-local-origin access guard verified; no production access enabled. Backend authentication logic unchanged.
+- Production build passed. Existing scripts/check-auth.mjs login expectations updated (syntax check only); browser verification used the in-app Browser. Recovery assistance remains Contact; automated password reset is not implemented. API outage/timeout behavior was code-reviewed, not simulated in this browser pass. No push or deployment.
+
+## Contact submission and redesign (2026-09-29)
+
+- Contact now has name, email, topic (defaults to General inquiry), message and one Submit button. Removed draft/copy controls and optional business/country questions. Existing desktop photograph, mobile composition and type tokens remain.
+- POST /contact saves an inquiry in PostgreSQL before attempting email. Additive migration 0002_contact_inquiries is applied locally. Admin dashboard has Contact inquiries, pagination and failed-email retry; ordinary members cannot read or retry inquiries. UUID retries prevent duplicate records and serialize notifications. No account or membership is created.
+- Default delivery is local Mailpit only (8025). Real hello@wisconnect.co delivery is NOT configured. SMTP credentials/verified sender are still required; public MX records point to Google, but the user does not know the provider. Server-only settings are in .env.example; the launcher does not automatically load .env. Preserve localhost/Pages guards. Hosted submission still needs production API/database hosting.
+- Build, contact integration suite and existing auth suite passed. Browser verified actual local submission/receipt, retained answers during API failure, mobile validation/focus and fitting at 320/390px, and desktop layout. The unique synthetic browser inquiry and Mailpit notification were removed. Admin access/pagination/retry were API-tested in an isolated schema; the admin inbox UI was not independently browser-tested. No external email, push or deployment.
+- Read README and docs/contact-redesign-2026-09-29.md for current behavior. Earlier email-draft descriptions below are historical. Join and account designs remain subsequent work.
+
+## Chicago business sectors (2026-09-29, after release)
+
+- Re-read Elizabeth’s September 26, 11:22 AM email: coffee shop, day care, shared kitchen, restaurant, wellness (yoga/aesthetics/spa), juice bar, clothing store, screen printing. Replaced the homepage’s six survey sectors with these eight; Chicago is explicit. New stock photos include Black children for day care as Mitchell requested. Existing type system and carousel remain. See docs/business-sectors-2026-09-29.md for source and photography. Local and not pushed.
+
+## Member directory simplification (2026-09-29, after release)
+
+- Removed the duplicate homepage member directory and its menu entry; the footer now links to Meet the visionaries. Moved the introduction link below the seven portrait cards. A dedicated member directory remains future work when the wider approved roster is available. Preserved profile dialogs, mobile swipe and Business directory. Production build passed; browser checks at 390px and 1440px found no page overflow, the seven profiles remain, the bio dialog opens, the introduction link reaches Contact, and homepage anchors resolve. Local and not pushed.
+
+## Mobile decorative rails (2026-09-29, after release)
+
+- Hide the global vertical page rails and navigation rail ticks at 760px and below. Shared content gutters, section separators and desktop/tablet rails above this breakpoint are preserved. Local and not pushed.
+
+## Team section spacing alignment (2026-09-29, after release)
+
+- Aligned Meet the visionaries with the shared section/shell/section-heading layout. Replaced the independent 1200px container and 36–56px heading scale with the existing shell and `--type-section`; section padding and heading-to-portrait gap now use `--section-space-y` / `--section-content-gap`. Mobile swipe gutters use `--content-gutter`. Original flowing background, seven portraits, horizontal mobile rail and bio popup are preserved. Local changes after release 5b0a372; not yet pushed.
+
 ## September 29 release
 
 - Mitchell authorized committing and pushing the accumulated work to `main`: seven team profiles and portraits, responsive team grid/swipe layout, supplied Purpose statements and stock photography, section-boundary refinement, mobile cooperative card overlap, desktop rail extension, and Windows backend launcher/loopback fixes.

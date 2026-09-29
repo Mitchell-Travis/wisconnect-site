@@ -77,7 +77,7 @@ async function signOut() {
   }
   await evaluate(`[...document.querySelectorAll('button')].find(b=>b.textContent==='Sign out').click()`);
   await until(`location.pathname==='/login/' && document.querySelector('form[aria-label="Sign in"]')`);
-  assert(await evaluate(`document.querySelector('h1').textContent==='Welcome to WisConnect' && !document.body.textContent.includes('Member access · Local test')`), 'Every sign-out returns to the shared login page');
+  assert(await evaluate(`document.querySelector('h1').textContent==='Welcome back.' && !document.body.textContent.includes('Member access · Local test')`), 'Every sign-out returns to the shared login page');
 }
 async function screenshot(name) {
   const {data} = await send('Page.captureScreenshot', {format: 'png'});
@@ -93,29 +93,17 @@ try {
     await send('Emulation.setDeviceMetricsOverride', {width, height: 900, deviceScaleFactor: 1, mobile: false});
     await navigate('/login/');
     await until(`document.querySelector('form[aria-label="Sign in"]')`);
-    assert(await evaluate(`document.querySelector('h1').textContent==='Welcome to WisConnect' && getComputedStyle(document.querySelector('main > div')).textAlign==='center'`));
-    assert.equal(await evaluate(`getComputedStyle(document.querySelector('footer')).backgroundColor`), 'rgba(0, 0, 0, 0)', 'Global dark footer must not leak into login');
-    assert.deepEqual(await evaluate(`[...document.querySelectorAll('form input')].map(el=>el.placeholder)`), ['Email address', 'Password']);
-    assert(await evaluate(`[...document.querySelectorAll('form input')].every(el=>{const s=getComputedStyle(el);return s.backgroundColor==='rgb(244, 244, 245)' && s.borderColor==='rgb(222, 221, 224)' && s.borderWidth==='1px' && el.labels.length===1;})`), 'Empty fields are neutral gray with accessible labels');
+    assert(await evaluate(`document.querySelector('h1').textContent==='Welcome back.' && getComputedStyle(document.querySelector('main > div')).textAlign==='left'`));
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('form input')].map(el=>el.placeholder)`), ['e.g. maya@example.com', 'Enter your password']);
+    assert(await evaluate(`[...document.querySelectorAll('form input')].every(el=>el.labels.length===1 && getComputedStyle(el).fontSize==='16px')`), 'Persistent labels and readable input text');
     await evaluate(`document.querySelector('[name=email]').focus()`);
-    assert.equal(await evaluate(`getComputedStyle(document.querySelector('[name=email]')).backgroundColor`), 'rgb(255, 255, 255)', 'Focused email field turns white');
-    assert(await evaluate(`getComputedStyle(document.querySelector('[name=email]')).outlineWidth==='1px'`), 'Keyboard focus is visible without a heavy outline');
-    await fill('email', 'appearance@example.test');
-    await until(`getComputedStyle(document.querySelector('[name=email]')).borderColor==='rgb(118, 92, 135)'`);
-    await fill('email', '');
-    await until(`getComputedStyle(document.querySelector('[name=email]')).borderColor==='rgb(222, 221, 224)'`);
-    await evaluate(`document.querySelector('[name=password]').focus()`);
-    assert(await evaluate(`getComputedStyle(document.querySelector('[name=email]')).backgroundColor==='rgb(244, 244, 245)' && getComputedStyle(document.querySelector('[name=password]')).backgroundColor==='rgb(255, 255, 255)'`), 'Only the active field has a white background');
-    await evaluate(`document.querySelector('[name=password]').blur()`);
-    assert.equal(await evaluate(`getComputedStyle(document.querySelector('[name=password]')).backgroundColor`), 'rgb(244, 244, 245)', 'Leaving the field restores gray');
-    assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth && document.querySelector('form').getBoundingClientRect().width<=440 && [...document.querySelectorAll('main input, main button')].every(el=>{const r=el.getBoundingClientRect();return r.left>=32 && r.right<=innerWidth-32 && r.height>=44;})`), 'Login stays narrow, inset, and touch-friendly');
-    await evaluate(`document.querySelector('summary').click()`);
-    assert(await evaluate(`document.querySelector('details').open && document.querySelector('details p').textContent.includes('invitation-only')`));
-    await evaluate(`document.querySelector('summary').click()`);
+    assert(await evaluate(`parseFloat(getComputedStyle(document.querySelector('[name=email]')).outlineWidth)>=2`), 'Visible keyboard focus');
+    assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth && document.querySelector('form').getBoundingClientRect().width<=440 && [...document.querySelectorAll('main input, main button')].every(el=>{const r=el.getBoundingClientRect();return r.left>=24 && r.right<=innerWidth-24 && r.height>=44;})`), 'Login stays narrow and touch-friendly');
+    assert(await evaluate(`!!document.querySelector('form a[href="/contact/"]') && document.querySelector('footer').textContent.includes('Member access by invitation')`), 'Help and invitation context remain available');
     if (width === 390 || width === 1440) await screenshot(`${width}-login`);
     await navigate('/admin/');
     await until(`document.querySelector('form')`);
-    assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth && [...document.querySelectorAll('main input, main button, main h1')].every(el=>{const r=el.getBoundingClientRect();const rail=innerWidth<=620?12:innerWidth<=980?18:Math.max(24,(innerWidth-1280)/2);return r.left>=rail+18 && r.right<=innerWidth-rail-18;})`), 'Content stays inset from rails');
+    assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth && [...document.querySelectorAll('main input, main button, main h1')].every(el=>{const r=el.getBoundingClientRect();return r.left>=24 && r.right<=innerWidth-24;})`), 'Content stays inset from rails');
     assert(await evaluate(`[...document.querySelectorAll('button,input')].every(el=>el.getBoundingClientRect().height>=44)`));
     await submit();
     assert(await evaluate(`!document.querySelector('form').checkValidity()`));

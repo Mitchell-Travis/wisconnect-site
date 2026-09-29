@@ -1256,6 +1256,16 @@ main::after{
   .nav-shell::after{right:-6px}
 }
 
+/* Phones keep the shared gutters without the decorative vertical frame. */
+@media (max-width: 760px) {
+  main::before,
+  main::after,
+  .nav-shell::before,
+  .nav-shell::after {
+    display: none;
+  }
+}
+
 /* Dark areas keep the rails subtle, never dominant */
 .impact-section,
 .site-footer{

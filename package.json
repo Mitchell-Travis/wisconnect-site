@@ -8,6 +8,7 @@
     "auth:up": "docker compose up -d db mailpit",
     "auth:admin": "node scripts/python.mjs -m backend.bootstrap_admin",
     "auth:check": "node scripts/python.mjs -m backend.check_auth",
+    "contact:check": "node scripts/python.mjs -m backend.check_contact",
     "db:up": "docker compose up -d db",
     "db:down": "docker compose down",
     "db:migrate": "node scripts/python.mjs -m alembic -c backend/alembic.ini upgrade head",

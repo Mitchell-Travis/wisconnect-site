@@ -11,6 +11,7 @@ import DataState from "./data-state";
 import ThemeToggle from "./theme-toggle";
 import { InviteDialog, InvitationsList, Invitation } from "./invitations";
 import MembersDirectory, { MemberRecord } from "./members-directory";
+import ContactInbox, { Inquiry, InquiryPage } from "./contact-inbox";
 import { adminItems, memberItems, sections, SectionKey, View } from "./sections";
 
 const inter = localFont({ src: "./fonts/InterVariable.woff2", weight: "100 900", style: "normal", display: "swap" });
@@ -18,7 +19,7 @@ const inter = localFont({ src: "./fonts/InterVariable.woff2", weight: "100 900",
 export type { View } from "./sections";
 type User = { name: string; email: string; role: "admin" | "member" };
 
-export default function DashboardView({ user, busy, error, onSignOut, view, onViewChange, onUpdateName, loadMembers, deleteMember, loadInvitations, sendInvitation, revokeInvitation }: {
+export default function DashboardView({ user, busy, error, onSignOut, view, onViewChange, onUpdateName, loadMembers, deleteMember, loadInvitations, sendInvitation, revokeInvitation, loadInquiries, retryInquiryEmail }: {
   user: User; busy: boolean; error: string; onSignOut: () => void;
   view: View; onViewChange: (view: View) => void;
   onUpdateName: (name: string) => Promise<void>;
@@ -27,6 +28,8 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
   loadInvitations: (signal: AbortSignal) => Promise<Invitation[]>;
   sendInvitation: (email: string) => Promise<{ message: string }>;
   revokeInvitation: (id: number) => Promise<void>;
+  loadInquiries: (signal: AbortSignal, before?: number) => Promise<InquiryPage>;
+  retryInquiryEmail: (id: number) => Promise<Inquiry>;
 }) {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [invitationsVersion, setInvitationsVersion] = useState(0);
@@ -42,7 +45,7 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
   const moreButton = useRef<HTMLButtonElement>(null);
   const moreMenu = useRef<HTMLDivElement>(null);
   const mobileItems = user.role === "admin" ? (["home", "members", "payments", "projects"] as const) : (["home", "membership", "myBusiness", "documents"] as const);
-  const moreItems = user.role === "admin" ? (["businesses", "documents", "reports", "team"] as const) : [];
+  const moreItems = user.role === "admin" ? (["inquiries", "businesses", "documents", "reports", "team"] as const) : [];
   const preview = view in sections ? sections[view as SectionKey] : null;
   const memberArea = ["members", "applications", "invitations"].includes(view);
   const financeArea = ["payments", "investments"].includes(view);
@@ -189,7 +192,7 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
           {view === "invitations" && <a href="http://localhost:8025" target="_blank" rel="noreferrer">Email inbox <Icon kind="external" /></a>}
         </div>}
 
-        {view === "members" ? (user.role === "admin" ? <MembersDirectory loadMembers={loadMembers} deleteMember={deleteMember} onViewChange={selectView} onInvite={() => setInviteOpen(true)} /> : <p>Administrator access required.</p>) : preview ? (preview.adminOnly && user.role !== "admin" ? <p>Administrator access required.</p> : <SectionPreview key={view} section={view as SectionKey} />) : view === "invitations" ? (user.role === "admin" ? <InvitationsList loadInvitations={loadInvitations} revokeInvitation={revokeInvitation} version={invitationsVersion} onInvite={() => setInviteOpen(true)} /> : <p>Only administrators can issue invitations.</p>) : view === "home" ? <>
+        {view === "inquiries" ? (user.role === "admin" ? <ContactInbox loadInquiries={loadInquiries} retryInquiryEmail={retryInquiryEmail}/> : <p>Administrator access required.</p>) : view === "members" ? (user.role === "admin" ? <MembersDirectory loadMembers={loadMembers} deleteMember={deleteMember} onViewChange={selectView} onInvite={() => setInviteOpen(true)} /> : <p>Administrator access required.</p>) : preview ? (preview.adminOnly && user.role !== "admin" ? <p>Administrator access required.</p> : <SectionPreview key={view} section={view as SectionKey} />) : view === "invitations" ? (user.role === "admin" ? <InvitationsList loadInvitations={loadInvitations} revokeInvitation={revokeInvitation} version={invitationsVersion} onInvite={() => setInviteOpen(true)} /> : <p>Only administrators can issue invitations.</p>) : view === "home" ? <>
           <div className={styles.overview}>
             <section className={styles.card} aria-labelledby="access-title">
               <div className={styles.cardHeading}><h2 id="access-title">Your account</h2><span className={styles.status}><span aria-hidden="true" />Signed in</span></div>

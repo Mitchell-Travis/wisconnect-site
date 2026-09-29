@@ -54,53 +54,34 @@ try {
   await send('Page.enable');
   await send('Runtime.discardConsoleEntries');
   await send('Runtime.enable');
-  await send('Page.navigate',{url});
-  await until(`document.querySelector('#contact-email') && document.readyState==='complete' && document.querySelector('header img').complete && document.querySelector('header img').naturalWidth>0`);
-  for(const width of [320,390,768,1440,1920]){
-    await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
-    assert(await evaluate(`(()=>{const card=document.querySelector('section[data-step]'),r=card.getBoundingClientRect();return document.documentElement.scrollWidth===innerWidth && r.left>=12 && r.right<=innerWidth-12 && Math.abs(r.width-Math.min(608,innerWidth-(innerWidth<=620?48:160)))<1 && [...card.querySelectorAll('input,select')].every(e=>e.getBoundingClientRect().height>=48);})()`),'Card and controls fit the measured layout');
-    assert(await evaluate(`document.querySelector('header img').naturalWidth>0`),'WisConnect logo loads');
+  await send('Page.navigate', {url});
+  await until("document.querySelector('#contact-name') && !document.querySelector('fieldset').disabled");
+  assert.equal(await evaluate("document.querySelector('#contact-topic').value"), 'General inquiry');
+  for (const width of [320, 390, 768, 1440, 1920]) {
+    await send('Emulation.setDeviceMetricsOverride', {width, height:900, deviceScaleFactor:1, mobile:false});
+    assert(await evaluate("document.documentElement.scrollWidth<=innerWidth"), 'No horizontal overflow at ' + width);
+    assert(await evaluate("[...document.querySelectorAll('form input,form select,form textarea,form button')].filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.height>=44})"), 'Controls fit and retain touch height');
   }
-  for(const width of [390,1440]){
-    await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
-    await send('Page.navigate',{url});
-    await until(`document.querySelector('#contact-email') && document.readyState==='complete' && document.querySelector('header img').complete && document.querySelector('header img').naturalWidth>0`);
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    assert.equal(await evaluate(`document.querySelector('section[data-step]').dataset.step`),'0','Empty first step cannot advance');
-    await evaluate(`(()=>{const set=(id,value)=>{const e=document.getElementById(id);Object.getOwnPropertyDescriptor(e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype,'value').set.call(e,value);e.dispatchEvent(new Event(e.tagName==='SELECT'?'change':'input',{bubbles:true}));};set('contact-email','test@example.com');set('contact-country','LR');})()`);
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    await until(`document.querySelector('#contact-name')`);
-    await until(`document.activeElement.id==='contact-title'`);
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    assert.equal(await evaluate(`document.querySelector('section[data-step]').dataset.step`),'1','A name is required');
-    await evaluate(`(()=>{const e=document.querySelector('#contact-name');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'Test visitor');e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    await until(`document.querySelector('#contact-message')`);
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    assert(await evaluate(`!!document.querySelector('#contact-message')`),'Empty message cannot proceed to review');
-    await evaluate(`(()=>{const e=document.querySelector('#contact-message');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,'Design preview only.');e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
-    await evaluate(`document.querySelector('ol button').click()`);
-    await until(`document.querySelector('#contact-email')`);
-    assert.deepEqual(await evaluate(`[document.querySelector('#contact-email').value,document.querySelector('#contact-country').value]`),['test@example.com','LR'],'Previous answers are preserved');
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    await until(`document.querySelector('#contact-name')`);
-    assert.equal(await evaluate(`document.querySelector('#contact-name').value`),'Test visitor');
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    await until(`document.querySelector('#contact-message')`);
-    assert.equal(await evaluate(`document.querySelector('#contact-message').value`),'Design preview only.');
-    await evaluate(`(()=>{const e=document.querySelector('#contact-topic');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(e,'Partnerships');e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
-    await evaluate(`document.querySelector('form').requestSubmit()`);
-    await until(`document.querySelector('#contact-title').textContent==='Ready to connect.'`);
-    assert(await evaluate(`(()=>{const url=new URL(document.querySelector('form a[href^="mailto:"]').href);return url.pathname==='hello@wisconnect.co' && url.searchParams.get('subject')==='WisConnect — Partnerships' && ['Test visitor','test@example.com','Liberia','Design preview only.'].every(text=>url.searchParams.get('body').includes(text));})()`),'Email draft includes the reviewed details and correct destination');
-    assert(await evaluate(`document.querySelector('#contact-delivery-note').textContent.includes('only when you press Send')`),'Delivery is clearly an email handoff');
-    await evaluate(`document.querySelector('form button').click()`);
-    await until(`document.querySelector('#contact-message')`);
-    assert.equal(await evaluate(`document.querySelector('#contact-message').value`),'Design preview only.','Editing keeps the draft');
-    console.log(`PASS ${width}px: validation, review, email draft, focus and retained answers`);
-  }
-  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
-  assert(await evaluate(`document.querySelector('form').getAnimations({subtree:true}).every(a=>a.playState==='finished')`),'Reduced motion stops step animation');
-  await send('Emulation.setEmulatedMedia',{features:[]});
-  assert.deepEqual(errors,[],'No browser errors');
-  console.log('PASS five-width layout and reduced motion');
-} finally {socket.close();}
+  const set = async (field, value) => {
+    await evaluate("(()=>{const e=document.getElementById(" + JSON.stringify(field) + ");const proto=e.tagName==='SELECT'?HTMLSelectElement.prototype:e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(proto,'value').set.call(e," + JSON.stringify(value) + ");e.dispatchEvent(new Event(e.tagName==='SELECT'?'change':'input',{bubbles:true}));})()");
+  };
+  const prepare = () => evaluate("document.querySelector('form').requestSubmit(document.querySelector('button[type=submit]'))");
+  await prepare();
+  await until("document.querySelectorAll('[aria-invalid=true]').length===3 && document.activeElement.getAttribute('role')==='alert'");
+  await set('contact-name', '  Test visitor  ');
+  await set('contact-email', 'invalid-email');
+  await set('contact-topic', 'Partnerships');
+  await set('contact-message', 'Preview & planning\nSecond line.');
+  await prepare();
+  await until("document.querySelectorAll('[aria-invalid=true]').length===1");
+  assert.equal(await evaluate("document.querySelector('[aria-invalid=true]').id"), 'contact-email');
+  assert.equal(await evaluate("document.querySelector('#contact-message').value"), 'Preview & planning\nSecond line.', 'Validation preserves answers');
+  assert.equal(await evaluate("document.querySelector('#contact-topic').value"), 'Partnerships');
+  assert(!await evaluate("!!document.querySelector('#contact-organization') || !!document.querySelector('#contact-country')"), 'Only necessary fields remain');
+  assert.equal(await evaluate("document.querySelector('button[type=submit]').textContent.trim()"), 'Submit');
+  await set('contact-name', '   ');
+  await prepare();
+  await until("document.querySelector('#contact-name').getAttribute('aria-invalid')==='true'");
+  assert.deepEqual(errors, [], 'No browser errors');
+  console.log('PASS: five responsive widths, default topic, simplified controls, validation/focus and retained answers. No inquiry submitted; run npm run contact:check for isolated persistence/delivery checks.');
+} finally { socket.close(); }

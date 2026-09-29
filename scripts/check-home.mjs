@@ -354,7 +354,7 @@ try {
     console.log(`PASS ${width}px: visionary keyboard navigation`);
     await evaluate('document.activeElement.blur(); document.querySelector("#enterprise-cards").scrollIntoView({behavior:"instant",block:"start"}); document.querySelector("#enterprise-cards").scrollTo({left:0,behavior:"instant"})');
     await until('document.querySelector("#businesses button[aria-label^=Previous]").disabled');
-    assert.equal(await evaluate('document.querySelectorAll("#enterprise-cards > li").length'), 6);
+    assert.equal(await evaluate('document.querySelectorAll("#enterprise-cards > li").length'), 8);
     assert(await evaluate(`(()=>{const image=document.querySelector('#enterprise-cards > li > a > div'),css=getComputedStyle(image);return Math.abs(image.offsetWidth/image.offsetHeight-(innerWidth<=620?358/373:332/448))<.005 && css.borderRadius==='6px' && getComputedStyle(document.querySelector('#enterprise-cards')).columnGap==='16px';})()`),'Enterprise images follow the reference proportions, corners and gaps');
     assert(await evaluate('[...document.querySelectorAll("#enterprise-cards a")].every(a => /\\/join\\/?$/.test(a.getAttribute("href")))'), 'Each card links to real membership page');
     await evaluate('document.querySelector("#businesses button[aria-label^=Next]").click()');

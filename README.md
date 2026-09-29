@@ -64,6 +64,7 @@ Local defaults are documented in `.env.example`. Override them with environment 
 npm run typecheck
 npm run build
 npm run auth:check
+npm run contact:check
 ```
 
 ## Local invite-only member access
@@ -98,8 +99,22 @@ Before a real launch: choose API/database hosting and a same-site HTTPS deployme
 
 Security references: [OWASP password storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html), [single-use token guidance](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html), and [Mailpit's local Docker setup](https://mailpit.axllent.org/docs/install/docker/).
 
+## Contact submissions and email
+
+Run `npm run auth:up`, `npm run db:migrate`, `npm run dev` and `npm run dev:api`. Contact uses the same local-only API boundary as authentication. Visitors do not need an account to submit; only administrators can view **Contact inquiries** in the dashboard or retry a failed email notification.
+
+Each submission is saved before email is attempted. The browser retains its submission ID across an unchanged retry; concurrent retries create one inquiry and serialize notification attempts. An SMTP acceptance followed by a server/database failure can still result in a duplicate notification when retried. Delivery status means the email service accepted the message, not that it reached the recipient’s inbox.
+
+By default, `WISCONNECT_CONTACT_MAIL_MODE=local` captures notifications in Mailpit at `http://localhost:8025`. Nothing is delivered externally. The recipient is fixed to `hello@wisconnect.co`; the visitor’s validated address is Reply-To. No account is created.
+
+For real email, configure the server process with `WISCONNECT_CONTACT_MAIL_MODE=smtp` and the SMTP host, port, TLS mode, username, password and verified From address listed in `.env.example`. Use credentials authorized for the sending service. The launcher does not automatically load `.env`; set variables in the server’s environment and restart the API. Keep credentials private and out of `NEXT_PUBLIC_*` variables and Git. Real sending credentials have not been configured or tested. Public MX records point to Google mail servers; that alone does not establish sending permissions or authentication settings.
+
+`npm run contact:check` uses its own disposable PostgreSQL schema and local test emails. It checks validation, origin restrictions, admin access, concurrent retries, persistence when email fails, retry, pagination and TLS configuration with a fake SMTP transport. It removes its own test data.
+
+The GitHub Pages build keeps Contact submission disabled and offers direct email. Public form submission requires a hosted API/database and appropriate production controls; SMTP configuration alone does not enable the hosted form.
+
 ## Current scope
 
-The responsive public website now represents the Phase 1 content inventory, including explicit placeholders for content and decisions awaiting approval. See `docs/phase1-website-content.md`. Contact and Join prepare email drafts; they do not save submissions or grant membership. The API provides a database health check and the separate local-only member invitation pilot above.
+The responsive public website now represents the Phase 1 content inventory, including explicit placeholders for content and decisions awaiting approval. See `docs/phase1-website-content.md`. Contact submissions are saved in the local administrator dashboard and trigger an email notification. Join still prepares an email draft; neither flow grants membership. The API also provides database health and the local-only member invitation pilot above.
 
 GitHub Pages remains configured for the static public website. The API and database require separate application hosting before production deployment.

@@ -80,14 +80,12 @@
 .heroFoot a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 13px; color: var(--plum); }
 
 /* Equal portrait cards keep every member visible; biographies open in the existing dialog. */
-.page section.members { width: 100%; margin: 0; padding: 96px 24px; background: var(--mist); scroll-margin-top: 80px; position: relative; isolation: isolate; }
+.page section.members { width: 100%; margin: 0; padding: var(--section-space-y) 0; background: var(--mist); scroll-margin-top: 80px; position: relative; isolation: isolate; }
 .memberThreads { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .13; pointer-events: none; z-index: -1; }
-.memberStage { max-width: 1200px; margin: 0 auto; }
 .memberSwipeHint { display: none; }
-.membersHeading { display: grid; grid-template-columns: 1.3fr 1fr; align-items: end; gap: 48px; margin-bottom: 48px; }
-.membersHeading :global(.eyebrow) { margin: 0 0 20px; color: var(--purple); font-size: 12px; }
-.membersHeading h2 { margin: 0; color: var(--plum); font-size: clamp(36px, 4vw, 56px); font-weight: 400; line-height: 1.1; letter-spacing: -.025em; }
-.memberIntroduction { max-width: 360px; justify-self: end; }
+.membersHeading { margin-bottom: var(--section-content-gap); }
+.memberIntroduction { min-width: 0; }
+.memberConnection { margin-top: 24px; }
 .memberLede { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .memberHint { margin: 18px 0 0; color: var(--purple); font-size: 13px; }
 .memberGrid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 40px 24px; }
@@ -104,16 +102,12 @@
 .memberRead svg { width: 16px; height: 16px; }
 .memberCard:hover .memberRead { text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 959px) {
-  .page section.members { padding: 72px 32px; }
-  .membersHeading { grid-template-columns: 1fr; gap: 24px; margin-bottom: 36px; }
-  .memberIntroduction { max-width: 480px; justify-self: start; }
   .memberGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .memberCard:nth-child(5):nth-last-child(3) { grid-column: span 2; }
   .memberCard:last-child:nth-child(odd) { grid-column: 2 / span 2; }
 }
 @media (max-width: 699px) {
-  .page section.members { padding: 56px 24px; }
-  .memberGrid { display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 24px; margin-inline: -24px; padding: 6px 24px 18px; scrollbar-width: thin; scrollbar-color: #b9a5ce transparent; }
+  .memberGrid { display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--content-gutter); margin-inline: calc(-1 * var(--content-gutter)); padding: 6px var(--content-gutter) 18px; scrollbar-width: thin; scrollbar-color: #b9a5ce transparent; }
   .memberCard { flex: 0 0 82%; scroll-snap-align: start; }
   .memberSwipeHint { display: inline; }
   .memberCard, .memberCard:nth-child(5):nth-last-child(3), .memberCard:last-child:nth-child(odd) { grid-column: auto; }
@@ -607,8 +601,8 @@
 .contentSection:has(+ .contentSection) { background: var(--mist); }
 .contentGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 28px; margin-top: 36px; }
 .contentGrid > article { padding-top: 24px; border-top: 1px solid var(--line); min-width: 0; }
-.contentGrid h3, .emptyContent h3, .directoryList h3 { color: var(--plum); font-family: var(--font-display); font-size: 28px; line-height: 1.2; letter-spacing: -.025em; }
-.contentGrid p, .emptyContent p, .directoryList p, .contentDetails p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
+.contentGrid h3, .emptyContent h3 { color: var(--plum); font-family: var(--font-display); font-size: 28px; line-height: 1.2; letter-spacing: -.025em; }
+.contentGrid p, .emptyContent p, .contentDetails p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
 .contentLabel { display: block; margin-bottom: 14px; color: var(--purple); font-size: 11px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
 .contentNote { margin: 24px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; max-width: 760px; }
 .contentLink { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 12px; padding-block: 8px; color: var(--purple); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; }
@@ -620,11 +614,6 @@
 .contentDetails summary { padding-block: 12px; color: var(--plum); font-size: 17px; font-weight: 550; cursor: pointer; }
 .contentDetails p { margin: 8px 0 20px; }
 .contentDetails a { display: inline-block; padding-block: 8px; color: var(--purple); text-decoration: underline; text-underline-offset: 3px; }
-.directoryList { list-style: none; margin: 32px 0 0; padding: 0; }
-.directoryList li { display: flex; align-items: start; justify-content: space-between; gap: 32px; padding-block: 28px; border-top: 1px solid var(--line); }
-.directoryList li > div { min-width: 0; }
-.directoryList p { margin: 12px 0 0; }
-.directoryList .contentNote { font-size: 13px; }
 .galleryPlaceholder { margin: 0; }
 .galleryPlaceholder > div { display: grid; place-items: center; aspect-ratio: 4 / 3; border: 1px dashed var(--mauve); border-radius: 6px; background: var(--sand); color: var(--muted); font-size: 14px; }
 .galleryPlaceholder figcaption { display: grid; gap: 6px; margin-top: 16px; color: var(--plum); font-size: 15px; }
@@ -637,7 +626,6 @@
 .languageDropdown .contentLink { margin: 0; padding-inline: 10px; font-size: 12px; }
 @media (max-width: 760px) {
   .contentGrid { gap: 24px; }
-  .directoryList li { flex-direction: column; gap: 8px; }
   .contentDetails summary { font-size: 16px; }
 }
 

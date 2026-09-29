@@ -1,6 +1,7 @@
 // Navigation follows the platform phases recorded in WISCONNECT_CONTEXT.md.
 // These sections are UI previews; they do not represent connected records.
 export const sections = {
+  inquiries: { title: "Contact inquiries", icon: "email", subtitle: "Conversations that start on the website.", description: "Read website contact submissions and check their email notifications.", tabs: ["Inbox"], columns: ["From", "Topic", "Received"], adminOnly: true },
   members: { title: "Members", icon: "people", subtitle: "The people behind the cooperative.", description: "Member profiles, membership status and directory visibility will be managed here.", tabs: ["All members", "Active", "Inactive"], columns: ["Member", "Membership", "Location", "Status"], adminOnly: true },
   applications: { title: "Applications", icon: "clipboard", subtitle: "From first interest to membership.", description: "Review membership applications, requested information and approval decisions in one place.", tabs: ["To review", "Approved", "Declined"], columns: ["Applicant", "Submitted", "Reviewer", "Status"], adminOnly: true },
   businesses: { title: "Businesses", icon: "business", subtitle: "Keep member enterprises connected.", description: "Track member-owned businesses, their sectors and the people responsible for them.", tabs: ["All businesses", "Products", "Services"], columns: ["Business", "Member", "Sector", "Status"], adminOnly: true },
@@ -23,5 +24,5 @@ export const sections = {
 export type SectionKey = keyof typeof sections;
 export type View = "home" | "account" | "help" | "invitations" | SectionKey;
 
-export const adminItems = ["members", "businesses", "payments", "projects", "documents", "reports"] as const;
+export const adminItems = ["members", "inquiries", "businesses", "payments", "projects", "documents", "reports"] as const;
 export const memberItems = ["membership", "myBusiness", "documents"] as const;

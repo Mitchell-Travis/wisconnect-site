@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import EntryHeader from "./entry-header";
+import LoginForm from "./login/login-form";
 import styles from "./member-access.module.css";
 import DashboardView, { DashboardGate, View } from "./dashboard/dashboard-view";
 
@@ -15,9 +16,10 @@ class ApiError extends Error {
 
 async function api(path: string, method = "GET", body?: object, signal?: AbortSignal) {
   let response: Response;
+  const timeout = AbortSignal.timeout(15000);
   try {
     response = await fetch(`http://localhost:8001/auth${path}`, {
-      method, signal, credentials: "include", cache: "no-store", referrerPolicy: "no-referrer",
+      method, signal: signal ? AbortSignal.any([signal, timeout]) : timeout, credentials: "include", cache: "no-store", referrerPolicy: "no-referrer",
       headers: { "Content-Type": "application/json", "X-WisConnect-Request": "1" },
       body: body ? JSON.stringify(body) : undefined,
     });
@@ -25,6 +27,7 @@ async function api(path: string, method = "GET", body?: object, signal?: AbortSi
     if (signal?.aborted) throw err;
     throw new Error("The account service is unavailable. Please try again in a moment.");
   }
+  if (response.status >= 500) throw new ApiError("The account service is unavailable. Please try again in a moment.", response.status);
   const data = response.status === 204 ? null : await response.json();
   if (!response.ok) throw new ApiError(data.detail || "Something went wrong. Please try again.", response.status);
   return data;
@@ -35,6 +38,8 @@ const deleteMember = (id: number) => api(`/members/${id}`, "DELETE");
 const loadInvitations = (signal: AbortSignal) => api("/invitations", "GET", undefined, signal);
 const sendInvitation = (email: string) => api("/invitations", "POST", { email });
 const revokeInvitation = (id: number) => api(`/invitations/${id}`, "DELETE");
+const loadInquiries = (signal: AbortSignal, before?: number) => api(`/contact-inquiries${before ? `?before=${before}` : ""}`, "GET", undefined, signal);
+const retryInquiryEmail = (id: number) => api(`/contact-inquiries/${id}/retry-email`, "POST");
 
 export default function MemberAccess({ mode }: { mode: Mode }) {
   const [view, setView] = useState<View>(mode === "admin" ? "invitations" : "home");
@@ -56,6 +61,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   const passwordLength = Array.from(password).length;
   const passwordLengthValid = passwordLength >= 15 && passwordLength <= 128;
   const token = useRef("");
+  const actionPending = useRef(false);
 
   useEffect(() => {
     if (mode !== "signup") return;
@@ -109,11 +115,12 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   }, [mode, sessionAttempt]);
 
   async function action(work: () => Promise<void>) {
-    if (busy) return;
+    if (actionPending.current) return;
+    actionPending.current = true;
     setBusy(true); setError(""); setMessage("");
     try { await work(); }
     catch (err) { setError(err instanceof Error ? err.message : "Please try again."); }
-    finally { setBusy(false); }
+    finally { actionPending.current = false; setBusy(false); }
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -166,7 +173,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   }
 
   if ((mode === "dashboard" || mode === "admin") && ready && local && user) {
-    return <DashboardView user={user} busy={busy} error={error || sessionError} onSignOut={signOut} view={view} onViewChange={setView} loadMembers={loadMembers} deleteMember={deleteMember} loadInvitations={loadInvitations} sendInvitation={sendInvitation} revokeInvitation={revokeInvitation} onUpdateName={async name => {
+    return <DashboardView user={user} busy={busy} error={error || sessionError} onSignOut={signOut} view={view} onViewChange={setView} loadMembers={loadMembers} deleteMember={deleteMember} loadInvitations={loadInvitations} sendInvitation={sendInvitation} revokeInvitation={revokeInvitation} loadInquiries={loadInquiries} retryInquiryEmail={retryInquiryEmail} onUpdateName={async name => {
       setUser(await api("/me", "PATCH", { name }));
     }} />;
   }
@@ -174,22 +181,22 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   const isSignup = mode === "signup";
   const invitationProblem = isSignup && ready && local && !invitedEmail && !!error;
   const title = isSignup ? (created ? "You’re part of WisConnect." : invitationProblem ? "Let’s get you connected." : "Activate your member account.")
-    : user ? `Welcome back, ${user.name}.` : "Welcome to WisConnect";
-  const retryAccess = () => { setReady(false); setError(""); setSessionError(""); setSessionAttempt(value => value + 1); };
+    : user ? "You’re signed in." : "Welcome back.";
+  const retryAccess = () => { if (isSignup) setReady(false); setError(""); setSessionError(""); setSessionAttempt(value => value + 1); };
 
-  return <div className={`${styles.page} ${styles.loginPage}`}>
+  return <div className={`${styles.page} ${styles.loginPage} ${!isSignup ? styles.focusedLogin : ""}`}>
     <EntryHeader/>
-    <main className={styles.main}>
+    <main className={styles.main} aria-labelledby="access-title">
       <div className={styles.content} aria-busy={!ready || busy}>
-        <p className={styles.entryEyebrow}>People. Capital. Communities.</p>
-        <h1>{title}</h1>
+        <p className={styles.entryEyebrow}>{isSignup ? "People. Capital. Communities." : "Member sign in"}</p>
+        <h1 id="access-title">{title}</h1>
         <noscript><p>Enable JavaScript to access your account, or <Link href="/contact">contact WisConnect</Link> for help.</p></noscript>
         {!ready ? <p className={styles.loading} role="status">{isSignup ? "Checking your invitation…" : "Checking your access…"}</p> : !local ? <>
           <p>Online member access is not available here yet. Contact the cooperative for help with your account or invitation.</p>
           <Link className={styles.continueLink} href="/contact">Contact WisConnect</Link>
           <Link className={styles.textLink} href="/join">Explore membership</Link>
         </> : <>
-          {(error || sessionError) && <p className={styles.notice} data-tone="error" role="alert">{error || sessionError}</p>}
+          {(error || sessionError) && (isSignup || !!user) && <p className={styles.notice} data-tone="error" role="alert">{error || sessionError}</p>}
           {message && <p className={styles.notice} data-tone="success" role="status">{message}</p>}
           {isSignup ? <>
             {invitedEmail && !created && <>
@@ -212,15 +219,14 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
             </>}
             <Link className={created ? styles.continueLink : styles.textLink} href="/login">{created ? "Sign in to your account" : "Already activated? Sign in"}</Link>
           </> : !user ? <>
-            <p>Sign in to your member account.</p>
+            <p>Your cooperative. Your member workspace.</p>
             {sessionError && <button className={styles.retryButton} type="button" onClick={retryAccess}>Try connecting again</button>}
-            <form onSubmit={submit} aria-label="Sign in">
-              <label htmlFor="email">Email address<input id="email" name="email" type="email" placeholder="you@example.com" autoComplete="username" required maxLength={254} /></label>
-              <label htmlFor="password">Password<input id="password" name="password" type={showPasswords ? "text" : "password"} placeholder="Your password" autoComplete="current-password" required /></label>
-              <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide password" : "Show password"}</button>
-              <button type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
-            </form>
-            <div className={styles.entryLinks}><Link href="/contact">Need sign-in help?</Link><Link href="/join">Explore membership</Link></div>
+            <LoginForm busy={busy} error={error || sessionError} onEdit={() => setError("")} onSignIn={(email, password) => action(async () => {
+              const result: User = await api("/login", "POST", { email, password });
+              setSessionError("");
+              setUser(result);
+              if (mode === "login") location.assign("/dashboard/");
+            })}/>
           </> : <>
             <p>You’re already signed in as {user.email}.</p>
             <Link className={styles.continueLink} href="/dashboard">Open member workspace</Link>
@@ -230,8 +236,8 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
       </div>
     </main>
     <footer className={styles.loginFooter}>
-      <details><summary>Help</summary><p>Accounts are invitation-only. To activate yours, use the link from your cooperative administrator. <Link href="/contact">Contact WisConnect</Link> if you need help.</p></details>
-      <p>Member access by invitation</p>
+      {!isSignup ? <><p className={styles.membershipPrompt}>New to WisConnect? <Link href="/join">Explore membership</Link></p><p>Member access by invitation <span aria-hidden="true">·</span> <Link href="/terms">Terms & Conditions</Link></p></> : <><details><summary>Help</summary><p>Accounts are invitation-only. To activate yours, use the link from your cooperative administrator. <Link href="/contact">Contact WisConnect</Link> if you need help.</p></details>
+      <p>Member access by invitation</p></>}
     </footer>
   </div>;
 }

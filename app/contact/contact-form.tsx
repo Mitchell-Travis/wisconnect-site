@@ -4,97 +4,142 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './page.module.css';
 
-const steps=['Your email','Your details','Let’s talk'];
-const titles=['Let’s start a conversation.','A little more about you.','How can we help?'];
-const descriptions=['A few details to help us get to know you.','Introduce yourself and your business or organization.','Tell us what you have in mind for WisConnect.'];
+const emptyAnswers = { name: '', email: '', topic: 'General inquiry', message: '' };
+const labels = { name: 'Full name', email: 'Email address', message: 'Your message' };
+type RequiredField = keyof typeof labels;
+type Errors = Partial<Record<RequiredField, string>>;
 
+export default function ContactForm() {
+  const [answers, setAnswers] = useState(emptyAnswers);
+  const [errors, setErrors] = useState<Errors>({});
+  const [error, setError] = useState('');
+  const [ready, setReady] = useState(false);
+  const [available, setAvailable] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [receipt, setReceipt] = useState<{ reference: number; test_mode: boolean } | null>(null);
+  const summary = useRef<HTMLDivElement>(null);
+  const success = useRef<HTMLHeadingElement>(null);
+  const submission = useRef('');
+  const submitting = useRef(false);
 
-function Arrow(){
-  return <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9m-3-3 3 3-3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-}
+  useEffect(() => {
+    setAvailable(location.origin === 'http://localhost:3000' && !process.env.NEXT_PUBLIC_BASE_PATH);
+    setReady(true);
+  }, []);
+  useEffect(() => { if (receipt) success.current?.focus(); }, [receipt]);
 
-export default function ContactForm({countries}:{countries:{code:string;name:string}[]}){
-  const [step,setStep]=useState(0);
-  const [answers,setAnswers]=useState({email:'',country:'',name:'',organization:'',topic:'',message:''});
-  const [prepared,setPrepared]=useState(false);
-  const [copyStatus,setCopyStatus]=useState('');
-  const heading=useRef<HTMLHeadingElement>(null);
-  const moveFocus=useRef(false);
-
-  useEffect(()=>{
-    if(moveFocus.current)heading.current?.focus({preventScroll:true});
-  },[step,prepared]);
-
-  function goToStep(next:number){moveFocus.current=true;setPrepared(false);setCopyStatus('');setStep(next);}
-  function updateAnswer(event:ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>){
-    event.currentTarget.setCustomValidity('');
-    const {name,value}=event.currentTarget;
-    setAnswers(previous=>({...previous,[name]:value}));
+  function updateAnswer(event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+    const { name, value } = event.currentTarget;
+    setAnswers(previous => ({ ...previous, [name]: value }));
+    setErrors(previous => ({ ...previous, [name]: undefined }));
+    setError('');
+    submission.current = '';
   }
-  function continueForm(event:FormEvent<HTMLFormElement>){
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    for(const field of event.currentTarget.querySelectorAll<HTMLInputElement|HTMLTextAreaElement>('input[required],textarea[required]')){
-      field.setCustomValidity(field.value.trim()?'':'Please add your answer before continuing.');
+    if (submitting.current || !available) return;
+    const nextErrors: Errors = {};
+    for (const key of Object.keys(labels) as RequiredField[]) {
+      if (!answers[key].trim()) nextErrors[key] = key === 'message'
+        ? 'Tell us how we can help.' : key === 'name' ? 'Enter your name.' : 'Enter your email address.';
     }
-    if(!event.currentTarget.reportValidity())return;
-    if(step<2)goToStep(step+1);
-    else {moveFocus.current=true;setPrepared(true);}
-  }
-  const country=countries.find(country=>country.code===answers.country)?.name??answers.country;
-  const message=[`Name: ${answers.name.trim()}`,`Email: ${answers.email.trim()}`,`Country: ${country}`,...(answers.organization.trim()?[`Organization: ${answers.organization.trim()}`]:[]),`Topic: ${answers.topic}`,'',answers.message.trim()].join('\n');
-  const emailUrl=`mailto:hello@wisconnect.co?subject=${encodeURIComponent(`WisConnect — ${answers.topic}`)}&body=${encodeURIComponent(message)}`;
-  async function copyMessage(){
-    try {await navigator.clipboard.writeText(message);setCopyStatus('Copied. Paste into an email to hello@wisconnect.co.');}
-    catch {setCopyStatus('Open “View message text” below to select and copy your message.');}
+    const email = event.currentTarget.elements.namedItem('email') as HTMLInputElement;
+    if (answers.email.trim() && email.validity.typeMismatch) nextErrors.email = 'Enter an email address like name@example.com.';
+    setErrors(nextErrors);
+    setError('');
+    if (Object.keys(nextErrors).length) {
+      requestAnimationFrame(() => summary.current?.focus());
+      return;
+    }
+    submitting.current = true;
+    setBusy(true);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 35000);
+    try {
+      submission.current ||= crypto.randomUUID();
+      const response = await fetch('http://localhost:8001/contact', {
+        method: 'POST', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer',
+        headers: { 'Content-Type': 'application/json', 'X-WisConnect-Request': '1' },
+        body: JSON.stringify({ ...answers, submission_id: submission.current }),
+        signal: controller.signal,
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(response.status === 404 || response.status >= 500
+        ? 'Submissions are temporarily unavailable. Your answers are still here. Please try again, or email hello@wisconnect.co.'
+        : typeof result.detail === 'string' ? result.detail : 'We couldn’t save your message. Please try again.');
+      if (result.received !== true || typeof result.reference !== 'number') throw new Error('We couldn’t confirm receipt. Please try again.');
+      setReceipt(result);
+      setAnswers(emptyAnswers);
+      submission.current = '';
+    } catch (reason) {
+      setError(reason instanceof Error && reason.name !== 'AbortError' && !(reason instanceof TypeError)
+        ? reason.message : 'We couldn’t confirm receipt. Your answers are still here. Please try again, or email hello@wisconnect.co.');
+    } finally {
+      clearTimeout(timeout);
+      submitting.current = false;
+      setBusy(false);
+    }
   }
 
-  return <div className={styles.formWrap}>
-    <section className={styles.card} aria-labelledby="contact-title" data-step={step}>
-      <ol className={styles.progress} aria-label="Contact form progress">
-        {steps.map((label,index)=><li key={label} aria-current={step===index?'step':undefined} data-complete={index<step}>
-          <button type="button" disabled={index>=step} onClick={()=>goToStep(index)} aria-label={index<step?`Back to ${label}`:undefined}><span aria-hidden="true">{index<step?'✓':''}</span>{label}</button>
-        </li>)}
-      </ol>
-      <form onSubmit={continueForm} aria-describedby="contact-delivery-note">
-        <div className={styles.stepContent} key={step}>
-          <div className={styles.formHeading}><h1 id="contact-title" ref={heading} tabIndex={-1}>{prepared?'Ready to connect.':titles[step]}</h1><p>{prepared?'Review your message, then send it through your email app.':descriptions[step]}</p></div>
-          {prepared?<div className={styles.review}>
-            <dl><div><dt>From</dt><dd>{answers.name.trim()}<br/>{answers.email.trim()}</dd></div><div><dt>Based in</dt><dd>{country}</dd></div>{answers.organization.trim()&&<div><dt>Organization</dt><dd>{answers.organization.trim()}</dd></div>}<div><dt>Topic</dt><dd>{answers.topic}</dd></div></dl>
-            <p>{answers.message.trim()}</p>
-          </div>:<div className={styles.fields}>
-            {step===0&&<>
-              <label htmlFor="contact-email">Email address</label>
-              <input id="contact-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" value={answers.email} onChange={updateAnswer} maxLength={254} required/>
-              <label htmlFor="contact-country">Country/region</label>
-              <select id="contact-country" name="country" autoComplete="country" value={answers.country} onChange={updateAnswer} required><option value="" disabled>Select your country</option>{countries.map(country=><option key={country.code} value={country.code}>{country.name}</option>)}</select>
-            </>}
-            {step===1&&<>
+  const invalidFields = (Object.keys(labels) as RequiredField[]).filter(key => errors[key]);
+  const fieldProps = (key: RequiredField) => ({
+    id: 'contact-' + key, name: key, value: answers[key], onChange: updateAnswer, required: true,
+    'aria-invalid': Boolean(errors[key]),
+    'aria-describedby': errors[key] ? 'contact-' + key + '-error' : undefined,
+  });
+  const errorText = (key: RequiredField) => errors[key] && <p className={styles.fieldError} id={'contact-' + key + '-error'}>{errors[key]}</p>;
+
+  return <section className={styles.card} aria-labelledby="contact-form-title">
+    {receipt ? <div className={styles.confirmation}>
+      <span className={styles.confirmationIcon} aria-hidden="true">✓</span>
+      <h2 id="contact-form-title" ref={success} tabIndex={-1}>Thanks for reaching out.</h2>
+      <p>Your message has been received. The WisConnect team can follow up using the email you provided.</p>
+      <p className={styles.receipt}>Reference #{receipt.reference}</p>
+      {receipt.test_mode && <p className={styles.previewNote}>Saved in the local dashboard. Email notifications currently go to the test inbox.</p>}
+      <Link className={styles.returnLink} href="/">Back to WisConnect <span aria-hidden="true">→</span></Link>
+    </div> : <>
+      <div className={styles.formHeading}><h2 id="contact-form-title">Send us a message.</h2></div>
+      {ready && !available && <p className={styles.unavailable} role="status">Online submissions aren’t available here yet. Please email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a>.</p>}
+      <form onSubmit={submit} noValidate aria-label="Contact WisConnect" aria-busy={busy}>
+        {invalidFields.length > 0 && <div ref={summary} className={styles.errorSummary} role="alert" tabIndex={-1}>
+          <p><strong>Check {invalidFields.length === 1 ? 'this detail' : 'these details'}.</strong></p>
+          <ul>{invalidFields.map(key => <li key={key}><a href={'#contact-' + key} onClick={event => {
+            event.preventDefault(); document.getElementById('contact-' + key)?.focus();
+          }}>{labels[key]}: {errors[key]}</a></li>)}</ul>
+        </div>}
+        <fieldset className={styles.formFields} disabled={!ready || !available || busy}>
+          <legend className={styles.srOnly}>Your contact details and message</legend>
+          <div className={styles.fields}>
+            <div className={styles.field}>
               <label htmlFor="contact-name">Full name</label>
-              <input id="contact-name" name="name" autoComplete="name" placeholder="Your full name" value={answers.name} onChange={updateAnswer} maxLength={120} required/>
-              <label htmlFor="contact-organization">Business or organization <span>Optional</span></label>
-              <input id="contact-organization" name="organization" autoComplete="organization" placeholder="Business or organization name" value={answers.organization} onChange={updateAnswer} maxLength={160}/>
-            </>}
-            {step===2&&<>
-              <label htmlFor="contact-topic">I’m interested in</label>
-              <select id="contact-topic" name="topic" value={answers.topic} onChange={updateAnswer} required><option value="" disabled>Select a topic</option><option>Membership</option><option>Partnerships</option><option>Member enterprises</option><option>General inquiry</option></select>
+              <input {...fieldProps('name')} autoComplete="name" placeholder="e.g. Maya Johnson" maxLength={120}/>
+              {errorText('name')}
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="contact-email">Email address</label>
+              <input {...fieldProps('email')} type="email" autoComplete="email" autoCapitalize="none" spellCheck={false} placeholder="e.g. maya@example.com" maxLength={254}/>
+              {errorText('email')}
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="contact-topic">Topic</label>
+              <select id="contact-topic" name="topic" value={answers.topic} onChange={updateAnswer}><option>General inquiry</option><option>Membership</option><option>Partnerships</option><option>Member enterprises</option></select>
+            </div>
+            <div className={styles.field}>
               <label htmlFor="contact-message">Your message</label>
-              <textarea id="contact-message" name="message" rows={4} maxLength={3000} placeholder="Share a little about how you’d like to connect." value={answers.message} onChange={updateAnswer} required/>
-            </>}
-          </div>}
-          <div className={styles.formActions}>
-            {step>0&&<button type="button" className={styles.backButton} onClick={()=>goToStep(prepared?2:step-1)}><Arrow/> {prepared?'Edit message':'Back'}</button>}
-            {prepared?<a className={styles.continueButton} href={emailUrl}>Open email app<Arrow/></a>:<button className={styles.continueButton} type="submit">{step===2?'Review message':'Continue'}<Arrow/></button>}
+              <textarea {...fieldProps('message')} placeholder="e.g. I’d love to learn more about WisConnect and how to get involved." rows={5} maxLength={3000}/>
+              {errorText('message')}
+              {answers.message.length >= 2700 && <span className={styles.characterCount}>{3000 - answers.message.length} characters remaining</span>}
+            </div>
           </div>
-          {prepared&&<div className={styles.emailFallback}>
-            <button type="button" onClick={copyMessage}>Copy message instead</button><p role="status">{copyStatus}</p>
-            <details><summary>View message text</summary><label htmlFor="contact-message-copy">Send this to hello@wisconnect.co.</label><textarea id="contact-message-copy" value={message} readOnly rows={7}/></details>
-          </div>}
-        </div>
+          <div className={styles.formActions}>
+            <button type="submit" className={styles.primaryAction}>{busy ? 'Submitting…' : 'Submit'} <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+          </div>
+        </fieldset>
+        {error && <p className={styles.submissionError} role="alert">{error}</p>}
+        <p className={styles.privacyNote}>We’ll use your details to respond to your inquiry. <Link href="/terms">Terms & Conditions</Link></p>
       </form>
-    <p className={styles.deliveryNote} id="contact-delivery-note">{prepared?'Your message is ready. It is sent only when you press Send in your email app.':'No account needed. Review your message before sending it through your email app.'}</p>
-    <p className={styles.directContact}>Your answers stay in this tab until you send the email. <Link href="/terms">Terms & Conditions</Link></p>
-    <p className={styles.directContact}>Prefer to write directly? <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a></p>
-    </section>
-    <noscript><p className={styles.deliveryNote}>Enable JavaScript to use the guided form, or email us directly using the link above.</p></noscript>
-  </div>;
+      <noscript><p>To contact us, email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a>.</p></noscript>
+    </>}
+  </section>;
 }

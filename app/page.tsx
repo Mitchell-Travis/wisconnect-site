@@ -6,15 +6,15 @@ import { animate, motion, MotionConfig, useInView } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 
-const sectors = ['Food & Beverages','Consulting Services','Agriculture','Textiles & Apparel','Handmade Crafts','Training'] as const;
+const sectors = ['Coffee shops','Day care','Shared kitchens','Restaurants','Wellness','Juice bars','Clothing stores','Screen printing'] as const;
 const navigationMenus = [
   {label:'About',groups:[
     {title:'Why we exist',links:[{label:'Purpose, mission & values',description:'Our direction and what motivates it.',href:'#purpose'},{label:'Cooperative model',description:'People, capital and communities.',href:'#about'}]},
     {title:'Our ambition',links:[{label:'Impact',description:'Outcomes and evidence to be shared.',href:'#impact'},{label:'Diaspora connections',description:'Local roots and a wider circle.',href:'#global-reach'}]}
   ],feature:{image:'story-community-640.webp',title:'Rooted in community.',description:'Explore the purpose behind a shared future.'}},
   {label:'Our people',groups:[
-    {title:'People',links:[{label:'Meet the visionaries',description:'The women behind WisConnect.',href:'#members'},{label:'Member directory',description:'Profiles, expertise and contributions.',href:'#member-directory'}]},
-    {title:'Enterprise',links:[{label:'Business sectors',description:'Explore six areas of enterprise.',href:'#businesses'},{label:'Business directory',description:'Member-owned business listings.',href:'#business-directory'}]}
+    {title:'People',links:[{label:'Meet the visionaries',description:'The women behind WisConnect.',href:'#members'}]},
+    {title:'Enterprise',links:[{label:'Business sectors',description:'Explore our Chicago business sectors.',href:'#businesses'},{label:'Business directory',description:'Member-owned business listings.',href:'#business-directory'}]}
   ],feature:{image:'story-enterprise-640.webp',title:'Individual strengths.',description:'People, experience and enterprise shape the cooperative.'}},
   {label:'Our work',groups:[
     {title:'Support & learning',links:[{label:'Services & support',description:'The practical role of the cooperative.',href:'#what-we-do'},{label:'Programs & activities',description:'Proposed ways to learn and connect.',href:'#programs'}]},
@@ -103,42 +103,47 @@ const impactPlaces: {region:Region;label:string;x:number;y:number;route?:string}
   {region:'Vietnam / Southeast Asia',label:'Vietnam',x:800,y:199,route:'M474 220 Q658 40 800 199'}
 ];
 
-const sectorStories: Record<Sector,{image:string;alt:string;kicker:string;description:string}> = {
-  'Food & Beverages': {
-    image:assetPath('member-food.jpg'),
-    alt:'A Black woman welcoming customers from a café counter',
-    kicker:'Products & hospitality',
-    description:'Food brands, hospitality concepts and local producers creating products people can gather around.'
+// Sector list supplied by Elizabeth Carter on September 26, 2026 (Chicago).
+const sectorStories: Record<Sector,{image:string;alt:string;position:string;description:string}> = {
+  'Coffee shops': {
+    image:'coffee-shop', position:'50% 50%',
+    alt:'A Black woman behind a café counter',
+    description:'Coffee, conversation and hospitality, with a place for people to meet throughout the day.'
   },
-  'Consulting Services': {
-    image:assetPath('member-consulting.jpg'),
-    alt:'Black women collaborating around a conference table',
-    kicker:'Strategy & expertise',
-    description:'Advisors turning professional expertise into strategy, stronger systems and more resilient organizations.'
+  'Day care': {
+    image:'day-care', position:'20% 50%',
+    alt:'Two Black children playing together with colorful building blocks',
+    description:'Child care and early learning, with room for children to play, discover and grow.'
   },
-  Agriculture: {
-    image:assetPath('member-agriculture.jpg'),
-    alt:'A Black agricultural professional inspecting plants in a greenhouse',
-    kicker:'Production & food systems',
-    description:'Growers and agribusiness builders strengthening the path from production to market.'
+  'Shared kitchens': {
+    image:'shared-kitchen', position:'50% 50%',
+    alt:'Stainless steel preparation counters and cooking equipment in a commercial kitchen',
+    description:'Commercial kitchen space for food entrepreneurs to prepare products and develop their businesses.'
   },
-  'Textiles & Apparel': {
-    image:assetPath('member-textiles.jpg'),
-    alt:'A textile artisan hand-stitching richly detailed fabric',
-    kicker:'Design & making',
-    description:'Designers and makers bringing heritage, craft and contemporary style into new markets.'
+  Restaurants: {
+    image:'restaurant', position:'50% 35%',
+    alt:'A smiling Black woman chef wearing a black and red chef coat',
+    description:'Food and dining experiences that bring culinary skill, culture and hospitality to the table.'
   },
-  'Handmade Crafts': {
-    image:assetPath('member-crafts.jpg'),
-    alt:'A smiling artisan preparing a handmade candle',
-    kicker:'Artisan products',
-    description:'Skilled hands shaping distinctive products through cultural knowledge and thoughtful design.'
+  Wellness: {
+    image:'wellness', position:'52% 50%',
+    alt:'A Black woman practicing seated yoga on a mat',
+    description:'Yoga, aesthetics and spa services that make space for movement, relaxation and personal care.'
   },
-  Training: {
-    image:assetPath('member-training.jpg'),
-    alt:'A Black facilitator leading a professional training session',
-    kicker:'Learning & capacity',
-    description:'Facilitators sharing practical knowledge that helps people and enterprises move forward.'
+  'Juice bars': {
+    image:'juice-bar', position:'50% 50%',
+    alt:'Glasses of fresh orange juice on a sunlit table',
+    description:'Fresh juices and fruit-led drinks, bringing a refreshing option to everyday routines.'
+  },
+  'Clothing stores': {
+    image:'clothing-store', position:'76% 50%',
+    alt:'A Black woman browsing colorful clothing on a shop rack',
+    description:'Apparel and retail businesses connecting personal style with the experience of shopping locally.'
+  },
+  'Screen printing': {
+    image:'screen-printing', position:'50% 50%',
+    alt:'Hands pulling a wooden squeegee across an inked screen-printing frame',
+    description:'Custom printing that brings graphics, identities and creative ideas to fabric and apparel.'
   }
 };
 
@@ -516,12 +521,12 @@ export default function Home(){
       </article>)}
     </div></section>
 
-    <section id="members" data-divider="background" className={styles.members} aria-labelledby="members-title">
+    <section id="members" data-divider="background" className={`section ${styles.members}`} aria-labelledby="members-title">
       <svg className={styles.memberThreads} viewBox="0 0 1600 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
         {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*55-130} C430 ${i*30+90} 940 ${i*13+345} 1260 535 S1510 ${i*34+150} 1700 ${i*39+50}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
       </svg>
-      <div className={styles.memberStage}>
-        <div className={styles.membersHeading}>
+      <div className="shell">
+        <div className={`section-heading split-heading ${styles.membersHeading}`}>
           <div><p className="eyebrow">Meet the visionaries</p>
           <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2></div>
           <div className={styles.memberIntroduction}>
@@ -542,6 +547,7 @@ export default function Home(){
             <span className={styles.memberInfo}><strong>{member.name}</strong><span className={styles.memberRole}>{member.role}</span><span className={styles.memberRead}>Read bio <ArrowUpRightIcon/></span></span>
           </button>)}
         </div>
+        <div className={styles.memberConnection}><Link className={styles.contentLink} href="/contact">Ask WisConnect about an introduction <ArrowUpRightIcon/></Link></div>
       </div>
     </section>
 
@@ -560,18 +566,9 @@ export default function Home(){
       </>}
     </dialog>
 
-    <section id="member-directory" className={`section ${styles.contentSection}`} aria-labelledby="directory-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Member directory</p><h2 id="directory-title">Get to know what we bring.</h2></div><p>Explore the profiles already featured above. The full member register, locations and preferred contact links await publication approval.</p></div>
-      <ul className={styles.directoryList}>
-        {memberProfiles.map((member,index)=><li key={member.name}><div><h3>{member.name}</h3><p>{member.bio.split('\n\n')[0]}</p><p><strong>Expertise:</strong> {member.expertise.join(' · ')}</p><p className={styles.contentNote}>Location & direct contact: awaiting approval.</p></div><button type="button" className={styles.storyRead} aria-label={`Read biography for ${member.name}`} aria-haspopup="dialog" onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}}>View profile <ArrowUpRightIcon/></button></li>)}
-      </ul>
-      <Link className={styles.contentLink} href="/contact">Ask WisConnect about an introduction <ArrowUpRightIcon/></Link>
-    </div></section>
-
-    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Preview</p><h2 id="enterprises-title">Built by members. Backed by the cooperative.</h2></div><p>Across six practical sectors, members are turning professional skill, cultural knowledge and local resources into enterprises with room to grow.</p></div>
-      <p className={styles.contentNote}>Illustrative sector descriptions and photographs. Approved business listings appear in the directory below.</p>
+    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Chicago</p><h2 id="enterprises-title">Built by members. Backed by the cooperative.</h2></div><p>From coffee and food to child care, wellness and creative production, explore the sectors our Chicago members bring to WisConnect.</p></div>
       <div className={styles.enterpriseControls}>
-        <p>Explore our six sectors</p>
+        <p>Explore our {sectors.length} sectors</p>
         <button type="button" aria-label="Previous enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.start} onClick={()=>slideEnterprise(-1)}><ArrowDownIcon/></button>
         <button type="button" aria-label="Next enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.end} onClick={()=>slideEnterprise(1)}><ArrowDownIcon/></button>
       </div>
@@ -616,12 +613,13 @@ export default function Home(){
         }}>
         {sectors.map((sector,index)=><li id={`enterprise-${index}`} className={styles.enterpriseCard} key={sector}>
           <Link className={styles.enterpriseLink} href="/join" aria-label={`Explore membership in ${sector}`}>
-            <div className={styles.enterpriseImage}><img src={sectorStories[sector].image} alt={sectorStories[sector].alt} loading="lazy" draggable={false}/><h3>{sector}</h3></div>
+            <div className={styles.enterpriseImage}><img src={assetPath(`sector-${sectorStories[sector].image}-1000.webp`)} srcSet={`${assetPath(`sector-${sectorStories[sector].image}-640.webp`)} 640w, ${assetPath(`sector-${sectorStories[sector].image}-1000.webp`)} 1000w`} sizes="(max-width: 620px) 90vw, (max-width: 980px) 45vw, 340px" style={{objectPosition:sectorStories[sector].position}} alt={sectorStories[sector].alt} loading="lazy" decoding="async" draggable={false}/><h3>{sector}</h3></div>
             <p>{sectorStories[sector].description}</p>
             <span className={styles.enterpriseCta}>Explore membership <ArrowDownIcon/></span>
           </Link>
         </li>)}
       </ul>
+      <p className={styles.contentNote}>Stock photographs illustrate the sectors; they do not show WisConnect businesses.</p>
     </div></section>
 
     <section id="business-directory" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="business-directory-title"><div className="shell">
@@ -758,12 +756,12 @@ export default function Home(){
     <section id="join" data-divider="background" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Bring your experience, explore the network or start a conversation.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Become a Member</strong><p>Learn about membership and apply.</p><b><ArrowUpRightIcon/></b></Link><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="#business-directory"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
 
     <section id="contact-info" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="contact-info-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title">Start with a conversation.</h2></div><p>Use the contact form to prepare an email about membership, partnerships, business listings or a general question.</p></div>
-      <div className={styles.contentGrid}><article><h3>Write to WisConnect</h3><Link className={styles.contentLink} href="/contact">Open the contact form <ArrowUpRightIcon/></Link><a className={styles.contentLink} href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><p>The receiving inbox and acknowledgement process await final confirmation.</p></article><article><h3>Locations & social channels</h3><p>Approved office or service-area details and official social links are awaiting confirmation. The map above illustrates a connection vision.</p></article></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title">Start with a conversation.</h2></div><p>Get in touch about membership, partnerships, business listings or a general question.</p></div>
+      <div className={styles.contentGrid}><article><h3>Write to WisConnect</h3><Link className={styles.contentLink} href="/contact">Open the contact form <ArrowUpRightIcon/></Link><a className={styles.contentLink} href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><p>Questions about WisConnect? We’d love to hear from you.</p></article><article><h3>Locations & social channels</h3><p>Approved office or service-area details and official social links are awaiting confirmation. The map above illustrates a connection vision.</p></article></div>
     </div></section>
 
     
 
-    <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>Explore</strong><a href="#purpose">Purpose & values</a><a href="#about">Cooperative model</a><a href="#member-directory">Member directory</a><a href="#business-directory">Business directory</a><a href="#impact">Impact & connections</a></div><div><strong>Learn & take part</strong><a href="#programs">Programs</a><a href="#resources">Resources</a><a href="#community-work">Community work</a><a href="#events">Events</a><Link href="/join">Membership interest</Link></div><div><strong>Keep in touch</strong><a href="#stories">Stories</a><a href="#news">News</a><a href="#gallery">Gallery</a><a href="#faq">FAQs</a><a href="#contact-info">Contact & social channels</a><a href="#languages">English / French availability</a></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/terms">Terms & Conditions</Link></div></footer>
+    <footer className="site-footer"><div className="shell footer-grid"><div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities · A Brighter Tomorrow</p></div><div><strong>Explore</strong><a href="#purpose">Purpose & values</a><a href="#about">Cooperative model</a><a href="#members">Meet the visionaries</a><a href="#business-directory">Business directory</a><a href="#impact">Impact & connections</a></div><div><strong>Learn & take part</strong><a href="#programs">Programs</a><a href="#resources">Resources</a><a href="#community-work">Community work</a><a href="#events">Events</a><Link href="/join">Membership interest</Link></div><div><strong>Keep in touch</strong><a href="#stories">Stories</a><a href="#news">News</a><a href="#gallery">Gallery</a><a href="#faq">FAQs</a><a href="#contact-info">Contact & social channels</a><a href="#languages">English / French availability</a></div></div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/terms">Terms & Conditions</Link></div></footer>
   </main></div></MotionConfig>
 }

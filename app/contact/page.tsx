@@ -1,15 +1,27 @@
 import EntryHeader from '../entry-header';
 import styles from './page.module.css';
 import ContactForm from './contact-form';
-
-const regionNames=new Intl.DisplayNames(['en'],{type:'region'});
-const countries='AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW'.split(' ').map(code=>({code,name:regionNames.of(code)??code})).sort((a,b)=>a.name.localeCompare(b.name,'en'));
+import Link from 'next/link';
+import { assetPath } from '../assets';
 
 export const metadata = { title: 'Contact | WisConnect' };
 
 export default function ContactPage() {
   return <div className={styles.page}>
     <EntryHeader/>
-    <main className={styles.main} aria-label="Contact WisConnect"><ContactForm countries={countries}/></main>
+    <main className={styles.main} aria-label="Contact WisConnect">
+      <div className={styles.intro}>
+        <p className={styles.eyebrow}>Get in touch</p>
+        <h1 id="contact-title">Let’s start a conversation.</h1>
+        <p className={styles.lede}>A question, an idea, or an opportunity to work together. We’d love to hear what you have in mind.</p>
+        <a className={styles.directContact} href="mailto:hello@wisconnect.co">hello@wisconnect.co <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 12 8-8M4 4h8v8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></a>
+        <figure className={styles.photo}>
+          <img src={assetPath('purpose-connection-640.webp')} srcSet={`${assetPath('purpose-connection-640.webp')} 640w, ${assetPath('purpose-connection-1400.webp')} 1400w`} sizes="(max-width: 800px) 1px, (max-width: 1280px) 36vw, 460px" width="1400" height="933" alt="Three women sharing ideas around a laptop"/>
+          <figcaption>Illustrative community photography · PICHA Stock</figcaption>
+        </figure>
+        <Link className={styles.membershipLink} href="/join"><span><small>Ready to take the next step?</small><strong>Explore membership</strong></span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 12 8-8M4 4h8v8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
+      </div>
+      <ContactForm/>
+    </main>
   </div>;
 }

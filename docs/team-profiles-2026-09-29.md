@@ -33,3 +33,9 @@ Production build (including TypeScript) passed. Browser checks verified all seve
 ## Mobile swipe refinement
 
 Restored the original purple/gold SVG line background. Below 700px, portraits use a native horizontal scroll rail with snap alignment and a partial next-card preview. Desktop/tablet grids and biography dialogs remain. Browser checks verified horizontal overflow stays inside the rail, keyboard End reveals the final member, and Brandi's mobile dialog fits. Layout checks included 320px and desktop widths.
+
+## Shared section spacing refinement
+
+After release 5b0a372, replaced the team-specific stage width, headline size and outer padding with the shared `section`, `shell`, `section-heading` and `split-heading` styles. The team uses the same section spacing and content-gap tokens as surrounding sections. Horizontal portrait scrolling now derives its gutters from the shared content-gutter token. Team layout, portrait styling, background and biography content remain intact.
+
+At 1440px, the team, member directory and programs headings all measure x=120.4px, font-size=51.3px, line-height=56.43px, top margin=18px and section padding=96px. At 390px, team and directory both use x=32px, 32px headings and 64px section padding. Phone checks at 320px/390px retain internal horizontal scrolling with no page overflow; a profile was opened and closed successfully. Tablet grid fitting checked at 820px. Build/TypeScript and diff whitespace checks passed. Local and not pushed.
