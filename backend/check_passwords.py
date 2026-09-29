@@ -1,4 +1,4 @@
-"""Run .venv/bin/python -m backend.check_passwords; no database or network needed."""
+"""Run node scripts/python.mjs -m backend.check_passwords; no database or network needed."""
 from pydantic import ValidationError
 from .app.auth import AccountInput, Credentials, password_hash, password_matches
 

@@ -1,4 +1,4 @@
-"""Run locally with: .venv/bin/python -m backend.bootstrap_admin"""
+"""Run locally with: npm run auth:admin"""
 
 from getpass import getpass
 

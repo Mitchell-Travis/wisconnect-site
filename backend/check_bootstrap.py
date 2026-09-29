@@ -1,4 +1,4 @@
-"""Run: .venv/bin/python -m backend.check_bootstrap (no database required)."""
+"""Run: node scripts/python.mjs -m backend.check_bootstrap (no database required)."""
 
 import contextlib
 import io

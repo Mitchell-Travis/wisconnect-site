@@ -4,7 +4,6 @@ import sharp from 'sharp';
 const portraits = [
   ['Ade-Wede-photo-option-2-soft-studio.png', 'ade-wede'],
   ['Smiling shaved-head portrait with colorful jewelry.png', 'chipo'],
-  ['Red-bloused portrait on a warm ivory backdrop.png', 'elizabeth'],
   ['Yellow headwrap portrait with gold neck rings.png', 'priscilla'],
 ];
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
-import { animate, motion, MotionConfig, useInView, useScroll, useSpring, useTransform, type MotionStyle } from 'motion/react';
+import { animate, motion, MotionConfig, useInView } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 
@@ -54,15 +54,36 @@ const cooperativeCards = [
 ] as const;
 const memberProfiles = [
   {name:'Chipo Nyambuya, Esq',role:'International Legal, Governance, and Economic Development Leader',bio:'Her areas of leadership bring together international law, governance and economic development.',expertise:['International law','Governance','Economic development'],image:'chipo'},
-  {name:'Elizabeth L. Carter',role:'Business and Corporate Securities Attorney, Legal & Business',bio:'Her work connects business law, corporate securities and the legal foundations that support enterprise.',expertise:['Business law','Corporate securities','Legal & business'],image:'elizabeth'},
+  {name:'Elizabeth L. Carter',role:'WisConnect co-founder, inclusive redeveloper and co-op builder',bio:'Elizabeth is an inclusive redeveloper, co-op builder, community planner and commercial real estate and finance attorney. She is a co-founder of WisConnect, responsible for providing leadership, vision, and overall direction of the co-op’s affairs, especially as it concerns the Wisdom Connection Initiative, a 103,000 gsf alternative neighborhood system and cooperative business hub on the far south side of Chicago providing a variety of goods and services to the Greater Roseland community, including locally sourced, community-owned groceries, community-owned renewable energy, affordable commercial space, community health, and workforce development opportunities for youth through the arts, sports, and entrepreneurship.',expertise:['Cooperative development','Community planning','Commercial real estate','Finance law'],image:'elizabeth-carter'},
   {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'},
-  {name:'Ade Wede Wee-Wee Kekuleh',role:'Advocate, legal professional and chartered accountant',bio:'Ade Wede Wee-Wee Kekuleh is a Liberian advocate, legal professional, chartered accountant, journalist, lecturer and published author. Her work focuses on gender, human rights, peacebuilding and social justice, with particular attention to women, children and underserved communities. She is a Partner at ZE’AD Advisors and Consultants and teaches Managerial Accounting and Legal Aspects of Business at the United Methodist University Graduate School.',expertise:['Gender & human rights','Peacebuilding','Social justice','Law & accounting'],image:'ade-wede'}
-] as const;
-// Six portrait positions per scene; additional members get another scene.
-const portraitPositions = [
-  {x:-30,y:-28,scale:.8}, {x:30,y:24,scale:1.06},
-  {x:30,y:-30,scale:.9}, {x:-30,y:30,scale:.95},
-  {x:0,y:-36,scale:1}, {x:0,y:36,scale:.75}
+  {name:'Ade Wede Wee-Wee Kekuleh',role:'Advocate, legal professional and chartered accountant',bio:'Ade Wede Wee-Wee Kekuleh is a Liberian advocate, legal professional, chartered accountant, journalist, lecturer and published author. Her work focuses on gender, human rights, peacebuilding and social justice, with particular attention to women, children and underserved communities. She is a Partner at ZE’AD Advisors and Consultants and teaches Managerial Accounting and Legal Aspects of Business at the United Methodist University Graduate School.',expertise:['Gender & human rights','Peacebuilding','Social justice','Law & accounting'],image:'ade-wede'},
+  {name:'Nikki Bravo',role:'Entrepreneur, business leader and small-business advocate',bio:`Nikki Bravo is an entrepreneur, business leader, and small-business advocate with more than two decades of experience across city government, nonprofit workforce development, economic development, and business ownership.
+
+She earned a Bachelor of Science in Business Administration from Florida A&M University and continued her studies in real estate, systems analysis, and organizational development. Nikki began her career with the Chicago Department of Planning and Development as an economic development coordinator. During nearly 20 years in public service, she advanced into senior leadership roles, including Deputy Commissioner for the City of Chicago and Chief Administrative Officer of the Public Building Commission of Chicago. Her responsibilities included finance, administration, operations, human resources, and organizational development.
+
+In 2016, Nikki transitioned to the nonprofit and social enterprise sector as Vice President of Human Resources and Workforce Development for the Bishop Arthur M. Brazier Foundation’s BSD Industries L3C. This work strengthened her experience in workforce training and creating pathways between community talent and employment opportunities.
+
+Nikki and her husband, Tracy Powell, co-founded Momentum Coffee Holdings Inc., a Chicago-based coffee business that connects hospitality, entrepreneurship, and community investment. Momentum Coffee supports workforce development and emerging food entrepreneurs through the Build Momentum Food Incubator in partnership with BUILD Chicago.
+
+Nikki is an alumna of the Goldman Sachs 10,000 Small Businesses program, Founders First, the Breedlove Entrepreneurship Program, the Initiative for a Competitive Inner City’s Inner City Capital Connections program, and World Business Chicago’s Chi Accelerator Program.
+
+As a small-business advocate, Nikki brings the perspective of an active business owner to conversations about access to capital, responsible lending, workforce development, public policy, and the realities of growing a business. She serves on both the National and Illinois Small Business Councils of Small Business Majority. In 2025, she was recognized as an Enterprising Women of the Year Award recipient.
+
+Nikki is a first-generation American, wife, mother, and two-time marathon finisher.`,expertise:['Entrepreneurship','Workforce development','Economic development','Small-business advocacy'],image:'nikki'},
+  {name:'Tiffany “Chef Mama” Williams',role:'Chef, entrepreneur and community builder',bio:`Chef Tiffany “Chef Mama” Williams is a celebrated Chicago chef, entrepreneur, and community builder whose work bridges culinary excellence with meaningful social impact. Raised in the Woodlawn neighborhood on Chicago’s South Side, she founded Exquisite Catering & Events in 2017 to bring elevated, globally inspired cuisine to a community long overlooked by diverse dining experiences. Her creative, made-from-scratch menus quickly distinguished her as a sought-after chef, leading to production catering for film and TV sets, concert tours, festivals, and major entertainment clients across the country and abroad.
+
+Guided by a deep commitment to her hometown, Tiffany expanded her vision with Exquisite Kitchen, a licensed shared commercial kitchen designed to support and scale local food entrepreneurs. Through accessible kitchen space, business mentorship, and operational guidance, she helps emerging chefs and small food businesses navigate licensing, compliance, and growth with confidence. Her partnerships span youth workforce programs, neighborhood organizations, and fellow small businesses, reflecting her dedication to economic mobility and community collaboration.
+
+Known affectionately as “Chef Mama,” Tiffany is recognized not only for her culinary talent but for her leadership, generosity, and unwavering belief in second chances. Her work continues to create pathways to employment, entrepreneurship, and stability for South Side residents. Today, Exquisite Catering Co. and Exquisite Kitchen stand as vibrant hubs of creativity, opportunity, and cultural expression—rooted in tradition, powered by community, and driven by a vision for generational impact.`,expertise:['Culinary arts','Food entrepreneurship','Business mentorship','Community development'],image:'tiffany'},
+  {name:'Brandi Davis-Fitch',role:'Founder of BDavis Designs, designer and educator',bio:`Since 2003, BDavis Designs, LLC has been a trusted creative partner for entrepreneurs, small business owners, and community organizations throughout Chicago and beyond. With over 20 years of expertise in graphic design, web design, and apparel production, the firm specializes in helping clients discover their unique creative voice and bring bold visions to life through custom graphics, apparel designs, and engaging websites.
+
+Founded and led by Brandi Davis, the business draws on extensive corporate experience from roles at Johnson Publishing Company, Inc., Blue Cross and Blue Shield of Illinois, Career Builder, and Modern Tribe. Brandi also serves as an Online Adjunct Professor in graphic design and media arts at Southern New Hampshire University, bringing academic rigor and industry insight to every client engagement.
+
+Brandi holds a Bachelor of Fine Arts in Multimedia and Web Design from the Illinois Institute of Art-Chicago and a Master of Science in E-Commerce Technology and Project Management from DePaul University’s College of Computing and Digital Media.
+
+BDavis Designs takes pride in every detail of every project, ensuring meticulous attention at every step of the creative process. This commitment to excellence has built lasting partnerships with clients including the Chicago chapter of the National Black MBA Association, Chicago Aldermanic Black Caucus, Polished Pebbles, Greater Auburn Gresham Development Center, Friends of Richton Park, CZL | P.C., and LM Fitch Consultants.
+
+BDavis Designs operates from a philosophy of healing, confidence, and culture—creating work that not only looks exceptional but resonates with purpose and meaning.`,expertise:['Graphic design','Web design','Apparel production','Design education'],image:'brandi'}
 ] as const;
 const regions = {
   Africa: 'WisConnect’s cultural and strategic root — where local businesses, communities and cooperative opportunity connect.',
@@ -269,7 +290,6 @@ export default function Home(){
     media.addEventListener('change',finish);
     return()=>{stopEnterpriseSlide();window.removeEventListener('resize',stopEnterpriseSlide);media.removeEventListener('change',finish);};
   },[]);
-  const memberTrack=useRef<HTMLDivElement>(null);
   const header=useRef<HTMLElement>(null);
   const menuButton=useRef<HTMLButtonElement>(null);
   const languagePicker=useRef<HTMLDetailsElement>(null);
@@ -282,30 +302,6 @@ export default function Home(){
     const exit=dialog.animate([{transform:'translateY(0)',opacity:1},{transform:'translateY(100dvh)',opacity:0}],{duration:260,easing:'cubic-bezier(.4,0,1,1)'});
     exit.finished.then(()=>dialog.close()).catch(()=>{}).finally(()=>{delete dialog.dataset.closing;});
   }
-  const membersSection=useRef<HTMLElement>(null);
-  const [membersAnimated,setMembersAnimated]=useState(false);
-  const [memberScene,setMemberScene]=useState(0);
-  const [featuredMember,setFeaturedMember]=useState(0);
-  const [portraitsPaused,setPortraitsPaused]=useState(false);
-  const memberSceneCount=Math.ceil(memberProfiles.length/portraitPositions.length);
-  const visibleMemberCount=Math.min(portraitPositions.length,memberProfiles.length-memberScene*portraitPositions.length);
-  const {scrollYProgress:memberProgress}=useScroll({target:membersSection,offset:['start start','end end']});
-  const memberSpring=useSpring(memberProgress,{stiffness:100,damping:30,restDelta:.001});
-  const memberSpread=useTransform(memberSpring,[.08,.45],[0,1]);
-  const memberReveal=useTransform(memberSpring,[.45,.55],[0,1]);
-  const memberPointer=useTransform(memberReveal,value=>value>.9?'auto':'none');
-  useEffect(()=>{
-    if(!membersAnimated||portraitsPaused||selectedMember!==null)return;
-    const timer=window.setInterval(()=>{
-      const track=memberTrack.current;
-      if(!track||document.hidden||memberSpread.get()>.001||track.matches(':hover, :focus-within'))return;
-      const bounds=track.getBoundingClientRect();
-      const center=bounds.top+bounds.height/2;
-      if(center<0||center>window.innerHeight)return;
-      setFeaturedMember(index=>(index+1)%visibleMemberCount);
-    },3000);
-    return()=>window.clearInterval(timer);
-  },[membersAnimated,portraitsPaused,selectedMember,memberSpread,visibleMemberCount]);
   useEffect(()=>{
     if(reducedMotion!==false||!('IntersectionObserver' in window))return;
     // Content stays readable before hydration and if motion is unavailable.
@@ -322,13 +318,6 @@ export default function Home(){
     });
     return()=>observer.disconnect();
   },[reducedMotion]);
-  useEffect(()=>{
-    const media=window.matchMedia('(min-height: 720px) and (prefers-reduced-motion: no-preference)');
-    const update=()=>setMembersAnimated(media.matches);
-    update();
-    media.addEventListener('change',update);
-    return()=>media.removeEventListener('change',update);
-  },[]);
   useEffect(()=>{
     let previousY=Math.max(0,window.scrollY);
     const onScroll=()=>{
@@ -461,18 +450,37 @@ export default function Home(){
       </div>
     </section>
 
-    <section id="purpose" className={`section ${styles.contentSection}`} aria-labelledby="purpose-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Purpose & identity</p><h2 id="purpose-title">Why we come together.</h2></div><p>A place for Black women’s enterprise, knowledge and ambition to shape a shared future.</p></div>
-      <p className={styles.contentNote}>Draft direction for review. WisConnect’s official mission, vision, values and organizational history await approval.</p>
-      <div className={styles.contentGrid}>
-        <article><span className={styles.contentLabel}>Mission · Draft</span><h3>Build opportunity together.</h3><p>Connect Black women business owners through shared knowledge, relationships and cooperative opportunity.</p></article>
-        <article><span className={styles.contentLabel}>Vision · Draft</span><h3>Prosperity with local roots.</h3><p>A future where women’s businesses strengthen their communities and connections across the diaspora widen what is possible.</p></article>
-        <article><span className={styles.contentLabel}>Values · Draft</span><h3>People. Ownership. Contribution.</h3><p>Shared ownership, the exchange of experience and value that stays close to communities guide this proposed direction.</p></article>
+    <section id="purpose" className={`section ${styles.purposeSection}`} aria-labelledby="purpose-title"><div className="shell">
+      <div className={styles.purposeHeading}>
+        <div><p className="eyebrow">Purpose & identity</p><h2 id="purpose-title">Why we come <em>together.</em></h2></div>
+        <p>Africa & the Diaspora</p>
       </div>
-      <details className={styles.contentDetails}><summary>Why Black women-owned businesses?</summary><p>Draft perspective: a shared space can make women’s expertise, cultural knowledge and business ambitions more visible, while creating room to exchange support on their own terms. WisConnect will confirm the public wording and the experiences behind this focus.</p></details>
+      <div className={styles.purposeGrid}>
+        <article className={styles.purposeMission} aria-labelledby="purpose-mission-title">
+          <figure className={styles.purposePhoto}>
+            <img src={assetPath('purpose-connection-1400.webp')} srcSet={`${assetPath('purpose-connection-640.webp')} 640w, ${assetPath('purpose-connection-1400.webp')} 1400w`} sizes="(max-width: 760px) 100vw, 55vw" width="1400" height="912" loading="lazy" decoding="async" alt="Three women sharing ideas and working together at a laptop"/>
+          </figure>
+          <div className={styles.purposeCopy}>
+            <p className={styles.purposeLabel}>Connection into possibility</p>
+            <h3 id="purpose-mission-title">Our mission</h3>
+            <p>To provide connectivity among Black women visionaries through open-source technology and accessible inclusive spaces that mobilize personalized resources for collective abundance.</p>
+          </div>
+        </article>
+        <article className={styles.purposeVision} aria-labelledby="purpose-vision-title">
+          <div className={styles.purposeCopy}>
+            <p className={styles.purposeLabel}>A future we create together</p>
+            <h3 id="purpose-vision-title">Our vision</h3>
+            <p>A transformative and co-created ecosystem made by and for every woman in Africa and the Diaspora</p>
+          </div>
+          <figure className={styles.purposePhoto}>
+            <img src={assetPath('purpose-community-1400.webp')} srcSet={`${assetPath('purpose-community-640.webp')} 640w, ${assetPath('purpose-community-1400.webp')} 1400w`} sizes="(max-width: 760px) 100vw, 45vw" width="1400" height="933" loading="lazy" decoding="async" alt="Four women gathered around a coffee table, sharing a lively conversation"/>
+          </figure>
+        </article>
+      </div>
+      <p className={styles.purposeCredits}>Illustrative photography by PICHA Stock / Pexels: <a href="https://www.pexels.com/photo/three-women-looking-at-the-computer-3894378/">collaboration</a> &amp; <a href="https://www.pexels.com/photo/women-sitting-on-a-couch-3894375/">community</a>.</p>
     </div></section>
 
-    <section id="about" className={styles.beliefSection} aria-labelledby="belief-title"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`}>
+    <section id="about" data-divider="background" className={styles.beliefSection} aria-labelledby="belief-title"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`}>
       <div className={styles.beliefCard} data-pillar="people">
         <div className={styles.beliefCopy}>
           <div>
@@ -508,44 +516,33 @@ export default function Home(){
       </article>)}
     </div></section>
 
-    <section id="members" ref={membersSection} className={styles.members} data-animated={membersAnimated} data-profile-open={selectedMember!==null} aria-labelledby="members-title">
-      <motion.div className={styles.memberStage} style={{'--member-spread':memberSpread,'--member-reveal':memberReveal,'--member-pointer':memberPointer} as MotionStyle}>
-        <svg className={styles.memberThreads} viewBox="0 0 1600 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
-          {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*55-130} C430 ${i*30+90} 940 ${i*13+345} 1260 535 S1510 ${i*34+150} 1700 ${i*39+50}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
-        </svg>
+    <section id="members" data-divider="background" className={styles.members} aria-labelledby="members-title">
+      <svg className={styles.memberThreads} viewBox="0 0 1600 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
+        {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*55-130} C430 ${i*30+90} 940 ${i*13+345} 1260 535 S1510 ${i*34+150} 1700 ${i*39+50}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
+      </svg>
+      <div className={styles.memberStage}>
         <div className={styles.membersHeading}>
-          <p className="eyebrow">Meet the visionaries</p>
-          <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2>
-          <p className={styles.memberLede}>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative.</p>
-          <div className={styles.memberActions}>
-            <Link className={styles.memberJoin} href="/join">Join the cooperative <ArrowUpRightIcon/></Link>
-            <Link className={`${styles.memberJoin} ${styles.memberContact}`} href="/contact">Contact <ArrowUpRightIcon/></Link>
+          <div><p className="eyebrow">Meet the visionaries</p>
+          <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2></div>
+          <div className={styles.memberIntroduction}>
+            <p className={styles.memberLede}>Meet the women bringing legal, business, and entrepreneurial experience to the cooperative.</p>
+            <p className={styles.memberHint}><span className={styles.memberSwipeHint}>Swipe to explore. </span>Select a portrait to read her story.</p>
           </div>
-          <p className={styles.memberHint}>Select a portrait to meet her.</p>
-          {memberSceneCount>1&&<div className={styles.memberScenes} aria-label="More visionaries">
-            <button type="button" aria-label="Previous visionaries" disabled={memberScene===0} onClick={()=>setMemberScene(scene=>scene-1)}>←</button>
-            <span aria-live="polite">{memberScene+1} / {memberSceneCount}</span>
-            <button type="button" aria-label="Next visionaries" disabled={memberScene===memberSceneCount-1} onClick={()=>setMemberScene(scene=>scene+1)}>→</button>
-          </div>}
         </div>
-        <div id="member-cards" ref={memberTrack} className={styles.memberGrid} role="group" aria-label="Visionary profiles" onKeyDown={event=>{
+        <div id="member-cards" className={styles.memberGrid} role="group" aria-label="Visionary profiles" onKeyDown={event=>{
           if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
           event.preventDefault();
-          const cards=Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button:not([hidden])'));
+          const cards=Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button'));
           const index=cards.indexOf(document.activeElement as HTMLButtonElement);
           const next=event.key==='Home'?0:event.key==='End'?cards.length-1:Math.max(0,Math.min(cards.length-1,index+(event.key==='ArrowLeft'?-1:1)));
-          cards[next]?.focus({preventScroll:true});
+          cards[next]?.focus();
         }}>
-          {memberProfiles.map((member,index)=>{
-            const slot=portraitPositions[index%portraitPositions.length];
-            return <button type="button" className={styles.memberCard} hidden={Math.floor(index/portraitPositions.length)!==memberScene} data-slot={index%portraitPositions.length} data-featured={index%portraitPositions.length===featuredMember%visibleMemberCount} style={{'--portrait-x':slot.x,'--portrait-y':slot.y,'--portrait-scale':slot.scale} as CSSProperties} key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
-              <img src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 699px) 30vw, (max-width: 1279px) 22vw, 280px" alt="" width="800" height="800" loading="lazy" decoding="async"/>
-              <span className={styles.memberInfo}><strong>{member.name}</strong><span>View profile ↗</span></span>
-            </button>;
-          })}
+          {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
+            <span className={styles.memberPortrait}><img src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 699px) 78vw, (max-width: 959px) 44vw, 280px" alt="" width="800" height="800" loading="lazy" decoding="async"/></span>
+            <span className={styles.memberInfo}><strong>{member.name}</strong><span className={styles.memberRole}>{member.role}</span><span className={styles.memberRead}>Read bio <ArrowUpRightIcon/></span></span>
+          </button>)}
         </div>
-        {membersAnimated&&<button className={styles.portraitPlayback} type="button" aria-controls="member-cards" aria-pressed={portraitsPaused} onClick={()=>setPortraitsPaused(paused=>!paused)}>{portraitsPaused?'Resume portraits':'Pause portraits'}</button>}
-      </motion.div>
+      </div>
     </section>
 
     <dialog className={`${styles.profileDialog} ${styles.visionarySheet}`} ref={profileDialog} aria-labelledby="profile-name" aria-describedby="profile-role" onClose={()=>setSelectedMember(null)} onCancel={event=>{event.preventDefault();closeProfile();}} onClick={event=>{
@@ -558,7 +555,7 @@ export default function Home(){
         <div className={styles.sheetGrid}>
           <div className={styles.sheetIntro}><p className="eyebrow">Meet the visionaries · {String(selectedMember+1).padStart(2,'0')} / {String(memberProfiles.length).padStart(2,'0')}</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.sheetRole}>{memberProfiles[selectedMember].role}</p></div>
           <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-studio-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
-          <div className={styles.sheetBio}><p>{memberProfiles[selectedMember].bio}</p><ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
+          <div className={styles.sheetBio}>{memberProfiles[selectedMember].bio.split('\n\n').map((paragraph,index)=><p key={index}>{paragraph}</p>)}<ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
         </div>
       </>}
     </dialog>
@@ -566,7 +563,7 @@ export default function Home(){
     <section id="member-directory" className={`section ${styles.contentSection}`} aria-labelledby="directory-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Member directory</p><h2 id="directory-title">Get to know what we bring.</h2></div><p>Explore the profiles already featured above. The full member register, locations and preferred contact links await publication approval.</p></div>
       <ul className={styles.directoryList}>
-        {memberProfiles.map((member,index)=><li key={member.name}><div><h3>{member.name}</h3><p>{member.bio}</p><p><strong>Expertise:</strong> {member.expertise.join(' · ')}</p><p className={styles.contentNote}>Location & direct contact: awaiting approval.</p></div><button type="button" className={styles.storyRead} aria-label={`Read biography for ${member.name}`} aria-haspopup="dialog" onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}}>View profile <ArrowUpRightIcon/></button></li>)}
+        {memberProfiles.map((member,index)=><li key={member.name}><div><h3>{member.name}</h3><p>{member.bio.split('\n\n')[0]}</p><p><strong>Expertise:</strong> {member.expertise.join(' · ')}</p><p className={styles.contentNote}>Location & direct contact: awaiting approval.</p></div><button type="button" className={styles.storyRead} aria-label={`Read biography for ${member.name}`} aria-haspopup="dialog" onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}}>View profile <ArrowUpRightIcon/></button></li>)}
       </ul>
       <Link className={styles.contentLink} href="/contact">Ask WisConnect about an introduction <ArrowUpRightIcon/></Link>
     </div></section>
@@ -627,12 +624,12 @@ export default function Home(){
       </ul>
     </div></section>
 
-    <section id="business-directory" className={`section ${styles.contentSection}`} aria-labelledby="business-directory-title"><div className="shell">
+    <section id="business-directory" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="business-directory-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Business directory</p><h2 id="business-directory-title">Discover member-owned businesses.</h2></div><p>Meet the enterprises behind the cooperative, with approved details and a direct way to connect.</p></div>
       <div className={styles.emptyContent}><h3>Listings awaiting approval.</h3><p>No business listings are published here yet. Each listing will include the business and owner’s name, sector, description, approved photo or logo, and contact link.</p><p>This directory introduces businesses. Purchases and payments are not available on this website.</p><Link className={styles.contentLink} href="/contact">Ask about listing your business <ArrowUpRightIcon/></Link></div>
     </div></section>
 
-    <section id="what-we-do" className="section what-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">What WisConnect does</p><h2>Turn shared ownership into shared progress.</h2></div><p>WisConnect connects members to the resources, relationships and practical support that help enterprises grow.</p></div><p className={styles.contentNote}>Service direction for review. Availability, eligibility and named programs are still to be confirmed.</p><div className="program-list">
+    <section id="what-we-do" data-divider="background" className="section what-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">What WisConnect does</p><h2>Turn shared ownership into shared progress.</h2></div><p>WisConnect connects members to the resources, relationships and practical support that help enterprises grow.</p></div><p className={styles.contentNote}>Service direction for review. Availability, eligibility and named programs are still to be confirmed.</p><div className="program-list">
       <article><span>01</span><div><h3>Put ownership in members’ hands</h3><p>Give members a voice in the cooperative and a stake in the value they help create.</p></div></article>
       <article><span>02</span><div><h3>Open doors to capital and opportunity</h3><p>Connect entrepreneurs with funding pathways, trusted partners and opportunities to move forward.</p></div></article>
       <article><span>03</span><div><h3>Help member businesses grow</h3><p>Bring practical learning, visibility and business support closer to the needs of each enterprise.</p></div></article>
@@ -648,7 +645,7 @@ export default function Home(){
       </div><a className={styles.contentLink} href="#events">See the events calendar <ArrowDownIcon/></a>
     </div></section>
 
-    <section id="resources" className={`section ${styles.contentSection}`} aria-labelledby="resources-title"><div className="shell">
+    <section id="resources" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="resources-title"><div className="shell">
       <div className="section-heading"><p className="eyebrow">Resources & videos</p><h2 id="resources-title">Knowledge to share.</h2></div>
       <div className={styles.contentGrid}>
         <article><span className={styles.contentLabel}>Awaiting content</span><h3>Guides & learning materials</h3><p>Approved resources, authors and accessible download links will be listed here when supplied.</p></article>
@@ -661,7 +658,7 @@ export default function Home(){
       <div className={styles.emptyContent}><h3>Community initiatives awaiting approval.</h3><p>We are making space for members to describe their work, why it matters, the people involved and the contributions behind it. Project details and outcomes will be shared after verification and publication consent.</p><Link className={styles.contentLink} href="/join">Tell us what you would like to contribute <ArrowUpRightIcon/></Link></div>
     </div></section>
 
-    <section id="impact" className={styles.impact} aria-labelledby="impact-title">
+    <section id="impact" data-divider="background" className={styles.impact} aria-labelledby="impact-title">
       <div className={styles.impactFrame}>
         <div className={styles.impactHeading}>
           <p className="eyebrow">Impact & proof</p>
@@ -698,7 +695,7 @@ export default function Home(){
       </div>
     </section>
 
-    <section id="stories" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
+    <section id="stories" data-divider="background" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
       <div className={styles.storiesHeader}>
         <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title">Good things grow together.</h2><p>People, ideas and everyday work behind a shared future. Member stories will explore what motivates the work, the talents and assets people bring, and the impact of their contributions.</p></div>
         <div className={styles.enterpriseControls} role="group" aria-label="Story navigation">
@@ -743,12 +740,12 @@ export default function Home(){
       <div className={styles.emptyContent}><h3>No confirmed events to display.</h3><p>Dates and RSVP links will be added when approved. Proposed webinars, tutorials and coffee meetings are not scheduled events.</p><Link className={styles.contentLink} href="/contact">Ask about upcoming gatherings <ArrowUpRightIcon/></Link></div>
     </div></section>
 
-    <section id="gallery" className={`section ${styles.contentSection}`} aria-labelledby="gallery-title"><div className="shell">
+    <section id="gallery" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="gallery-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Photo gallery</p><h2 id="gallery-title">Life in the network.</h2></div><p>A home for approved member, event, program and community photographs. Images, captions, credits and publication permissions are still to come.</p></div>
       <div className={styles.contentGrid}>{['Members & their work','Events & programs','Community moments'].map(label=><figure className={styles.galleryPlaceholder} key={label}><div aria-hidden="true">Photo to come</div><figcaption><strong>{label}</strong><span>Awaiting approved photography</span></figcaption></figure>)}</div>
     </div></section>
 
-    <section id="faq" className={`section ${styles.contentSection}`} aria-labelledby="faq-title"><div className="shell">
+    <section id="faq" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="faq-title"><div className="shell">
       <div className="section-heading"><p className="eyebrow">Frequently asked questions</p><h2 id="faq-title">Before you take the next step.</h2></div>
       <details className={styles.contentDetails}><summary>How do I express interest in membership?</summary><p>Use the <Link href="/join">membership form</Link> to introduce yourself, your location, experience and what you would like to contribute. It prepares an email for you to review and send. Membership eligibility, fees, location-specific requirements and review timing still need confirmation.</p></details>
       <details className={styles.contentDetails}><summary>Does completing the form make me a member?</summary><p>No. Completing the form does not grant membership. Nothing is sent until you send the draft from your email app. WisConnect is confirming whether this introduction will serve as the formal application and how the review process will work.</p></details>
@@ -758,9 +755,9 @@ export default function Home(){
       <details id="languages" className={styles.contentDetails}><summary>Is the website available in French?</summary><p>English is available now. French content is awaiting translation, review and an agreed launch date.</p><p lang="fr">La version française est en préparation. La date de publication reste à confirmer.</p></details>
     </div></section>
 
-    <section id="join" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Bring your experience, explore the network or start a conversation.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Become a Member</strong><p>Learn about membership and apply.</p><b><ArrowUpRightIcon/></b></Link><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="#business-directory"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
+    <section id="join" data-divider="background" className="section join-section"><div className="shell"><p className="eyebrow">Participation</p><h2>Ownership is stronger<br/>when it’s shared.</h2><p className="join-lede">Bring your experience, explore the network or start a conversation.</p><div className="join-grid"><Link href="/join"><span>01 · Membership</span><strong>Become a Member</strong><p>Learn about membership and apply.</p><b><ArrowUpRightIcon/></b></Link><a href="mailto:hello@wisconnect.co?subject=Partnership%20Interest"><span>02 · Partnership</span><strong>Partner with WisConnect</strong><p>Explore institutional collaboration.</p><b><ArrowUpRightIcon/></b></a><a href="#business-directory"><span>03 · Business</span><strong>Discover Member Businesses</strong><p>Explore the people and enterprises.</p><b><ArrowUpRightIcon/></b></a></div></div></section>
 
-    <section id="contact-info" className={`section ${styles.contentSection}`} aria-labelledby="contact-info-title"><div className="shell">
+    <section id="contact-info" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="contact-info-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title">Start with a conversation.</h2></div><p>Use the contact form to prepare an email about membership, partnerships, business listings or a general question.</p></div>
       <div className={styles.contentGrid}><article><h3>Write to WisConnect</h3><Link className={styles.contentLink} href="/contact">Open the contact form <ArrowUpRightIcon/></Link><a className={styles.contentLink} href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><p>The receiving inbox and acknowledgement process await final confirmation.</p></article><article><h3>Locations & social channels</h3><p>Approved office or service-area details and official social links are awaiting confirmation. The map above illustrates a connection vision.</p></article></div>
     </div></section>

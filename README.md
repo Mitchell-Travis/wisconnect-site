@@ -11,12 +11,32 @@ WisConnect is a worker-owned cooperative platform connecting women entrepreneurs
 
 ## Local setup
 
-Requirements: Node.js 22+, Python 3.13+, and Docker.
+Requirements: Node.js 22+, Python 3.13+, and Docker with Compose. On Windows, start Docker Desktop with Linux containers enabled.
+
+Install the frontend dependencies:
+
+```sh
+npm ci
+```
+
+If PowerShell blocks `npm.ps1`, use `npm.cmd` in place of `npm` in these commands; no execution-policy change is needed.
+
+Create the Python environment on Windows (PowerShell):
+
+```powershell
+py -3.13 -m venv .venv
+```
+
+On macOS/Linux, use `python3` version 3.13 or newer:
 
 ```bash
-npm install
 python3 -m venv .venv
-.venv/bin/pip install -r backend/requirements.txt
+```
+
+Then run these commands on any platform; activating the virtual environment is not required:
+
+```sh
+node scripts/python.mjs -m pip install -r backend/requirements.txt
 npm run db:up
 npm run db:migrate
 ```
@@ -50,7 +70,7 @@ npm run auth:check
 
 This is a **local pilot**, not a production authentication launch. Use `localhost`, not a LAN address or tunnel. Public navigation leads to website content and membership inquiries; there is no public account-registration link.
 
-Start the existing Docker runtime first (on this machine: `colima start`), then:
+Start your Docker runtime first (Docker Desktop on Windows/macOS, Docker Engine on Linux, or Colima on macOS), then:
 
 ```bash
 npm run auth:up

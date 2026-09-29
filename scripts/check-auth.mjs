@@ -2,6 +2,8 @@
 // Uses isolated Chrome/CDP on 9222; the Python runner supplies disposable accounts.
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 let input = '';
 for await (const chunk of process.stdin) input += chunk;
@@ -79,7 +81,7 @@ async function signOut() {
 }
 async function screenshot(name) {
   const {data} = await send('Page.captureScreenshot', {format: 'png'});
-  await writeFile(`/tmp/wisconnect-auth-${name}.png`, Buffer.from(data, 'base64'));
+  await writeFile(join(tmpdir(), `wisconnect-auth-${name}.png`), Buffer.from(data, 'base64'));
 }
 try {
   await send('Page.enable');

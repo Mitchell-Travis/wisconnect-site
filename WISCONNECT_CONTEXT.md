@@ -1,6 +1,52 @@
 # WisConnect master context
 
-Last updated: 2026-09-24. Read the next-session handoff below first; dated entries further down retain historical decisions and verification.
+Last updated: 2026-09-29. Read the team profile update first, then the local startup update, then the Windows checkout and product handoffs; dated entries further down retain historical decisions and verification.
+
+## September 29 release
+
+- Mitchell authorized committing and pushing the accumulated work to `main`: seven team profiles and portraits, responsive team grid/swipe layout, supplied Purpose statements and stock photography, section-boundary refinement, mobile cooperative card overlap, desktop rail extension, and Windows backend launcher/loopback fixes.
+- Include the 12 new optimized website WebP assets. Unreferenced source portraits, generated master PNGs, PDFs and membership DOCX remain local; they are not part of this release. The portrait optimization script requires those local source files.
+- The entries below record work as it was completed; their “local/unpublished” labels predate this release authorization. The existing push-to-main workflow deploys the static frontend to GitHub Pages only. Backend authentication remains a local pilot. Check Git/Actions for the release commit and deployment result.
+
+## Desktop cooperative card extension (2026-09-29)
+
+- The user approved Clay-like desktop panels outside the rails. Above 980px, the cooperative stack extends up to 48px beyond each rail, reducing to 8px on smaller desktops with a 16px minimum screen inset. Heading/body content stays aligned with the surrounding page content. Panels paint over the rails while navigation remains above them. Existing sticky scrolling, typography and the mobile connected stack remain intact. See docs/cooperative-mobile-stack-2026-09-29.md for verification.
+
+## Mobile cooperative card stack (2026-09-29)
+
+- Following the Clay mobile comparison, the People/Capital/Communities panels now meet the page rails below 761px. Removed the shell's nested horizontal padding for this stack only. Panels overlap by 48px with rounded tops; a reserved bottom tail keeps photos and controls clear. Scrolling remains native, and desktop sticky behavior and typography are unchanged. See docs/cooperative-mobile-stack-2026-09-29.md.
+
+## Purpose & identity design (2026-09-29)
+
+- Refined Purpose into two complementary photographic panels: a warm mission panel with laptop collaboration, and a plum vision panel with a group discussion image. New PICHA Stock / Pexels photographs illustrate connection, technology and community; exact supplied mission/vision text is preserved. The section uses the existing `--type-section`, display/sans fonts, 28px subheading, 16px body text and card-radius token. Phones stack mission then vision with both photographs first, wider cards, reduced nested padding and secondary labels hidden. Original image proportions and 16px body text are preserved; the approved desktop composition is unchanged. Sources, research and checks: docs/purpose-design-2026-09-29.md. Local and unpublished.
+
+## Section boundary refinement (2026-09-29)
+
+- Homepage section dividers are suppressed at explicit color transitions via data-divider=background. Same-color adjacent sections keep their separator. This includes the team, service, impact/story, participation and footer transitions; internal card/list borders and vertical rails are preserved. Browser computed-style checks verified all 19 section boundaries.
+
+## Team portraits and biographies (2026-09-29)
+
+- Replaced Elizabeth's displayed portrait and biography; added Nikki Bravo, Tiffany “Chef Mama” Williams and Brandi Davis-Fitch using supplied biographies and photographs. Seven profiles now appear together in an equal portrait grid: four above three centered cards on desktop, two columns on tablet, and a horizontal swipe rail on phones. The original flowing purple/gold line background is restored. The biography popup is preserved; floating animation and paging were removed. Directory entries share the same profile data.
+- Distinct new studio backgrounds, optimized WebP sizes, full square dialog portraits and paragraph-formatted biographies. See `docs/team-profiles-2026-09-29.md` for asset sources, prompt specifications and verification.
+- Production build and typecheck passed. In-app browser checks covered all seven dialogs, paging, keyboard/focus behavior and desktop/tablet/phone fitting, including 320px width. Local and unpublished.
+
+## Windows local backend startup (2026-09-29)
+
+- Python 3.14.7 is installed at `C:\Python314\python.exe`. Created the project's `.venv` and installed `backend/requirements.txt`. Password and bootstrap validation checks passed.
+- Docker Desktop is running. Started the configured PostgreSQL and Mailpit containers; both reported healthy. Applied migration `0001_member_access`. The local API's `/health` returned `status: ok` and `database: connected`; Mailpit on port 8025 returned HTTP 200.
+- `npm run auth:check` passed against its disposable schema, covering invitations, SMTP rollback, redemption concurrency, revocation/expiry, role boundaries, member deletion, sessions, validation, CSRF, throttling and local opt-in. Its test data was cleaned up; no browser suite was run.
+- PostgreSQL connection through `localhost` hung on this Windows machine. Using `127.0.0.1` succeeded; updated the database fallback, Alembic configuration and `.env.example` accordingly. `npm run db:migrate` also passed without an environment override afterward.
+- Frontend: `http://localhost:3000`; API: `http://localhost:8001`; API docs: `http://localhost:8001/docs`; local invitation inbox: `http://localhost:8025`. Check existing processes before starting duplicates. No real administrator was created; Mitchell must run `npm run auth:admin` in his own terminal to choose private credentials. Nothing was pushed or deployed.
+
+## Windows checkout update (2026-09-28)
+
+- Active checkout: `C:\Users\champ\Desktop\wisconnect-site`, freshly cloned from the existing GitHub repository at `dead46f` (`Style terms and conditions page`), on `main` tracking `origin/main`. All 134 commits were downloaded and `git fsck --full` passed. This does not independently verify the live deployment.
+- The prior source-archive copy and incomplete Git metadata are preserved at `C:\Users\champ\Desktop\wisconnect-site-backup-20260928`. All 230 original source files matched the downloaded archive before applying the Windows changes to the fresh checkout.
+- Backend npm commands now use `scripts/python.mjs`, selecting `.venv/Scripts/python.exe` on Windows and `.venv/bin/python` on macOS/Linux. The API command sets its existing local-auth flag through the child environment. Startup security boundaries are unchanged. The auth browser check now saves screenshots in the operating system's temporary directory.
+- README includes platform-specific environment creation and Docker guidance. Launcher checks passed for Windows interpreter selection, working directory, arguments with spaces, local-auth opt-in, missing-environment guidance, and child exit-code propagation. These checks used an isolated Python 3.12 environment only to exercise the launcher; the application's Python 3.13+ requirement is unchanged.
+- Node.js is installed at `C:\Program Files\nodejs`; frontend dependencies were installed with `npm ci`. Python 3.13+ and Docker were not found in the checked locations or session PATH. Full API/database/auth verification requires those prerequisites and a project virtual environment. No real accounts, database records, commits, pushes, or deployments were created by this repair.
+- Frontend verification: `npm run build` and `npm run typecheck` passed on Windows. Generated `next-env.d.ts` changes were restored to the downloaded version. No browser interaction or database-backed checks were run for this command-portability change.
+
 
 ## Start here — next WisConnect session (2026-09-24)
 
