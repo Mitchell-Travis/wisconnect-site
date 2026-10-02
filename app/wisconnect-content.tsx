@@ -1,29 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { assetPath } from './assets';
 import styles from './wisconnect-content.module.css';
+export { BusinessDirectory } from './business-directory';
 
 function ArrowIcon(){
   return <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 14 14 6M7 6h7v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 }
 
-// Client-supplied biographies, Liberia overview and September 26–30 correspondence.
-// Publication summaries and provenance are recorded in docs/reviews/2026-10-02/content-structure.md.
-export const businesses = [
-  {id:'bdavis',name:'BDavis Designs',person:'Brandi Davis-Fitch',country:'United States',location:'Chicago',sector:'Design & apparel',description:'Graphic design, web design and apparel production for entrepreneurs, small businesses and community organisations.',profile:'Brandi Davis-Fitch'},
-  {id:'bunnyland',name:'Bunnyland Developmental Child Care Center',person:'Kailyn Harrington · Managing owner',country:'United States',location:'Roseland, Chicago',sector:'Child care',description:'A family-founded early childhood education organisation serving Roseland since 1979, now led by its second generation.',profile:'Kailyn Harrington'},
-  {id:'czl',name:'CZL P.C.',person:'Chipo Nyambuya · Co-founder & managing partner',country:'United States',location:'Chicago',sector:'Legal & professional services',description:'A legal and consulting practice represented by Chipo, whose experience connects law, governance and corporate social responsibility.',profile:'Chipo Nyambuya, Esq'},
-  {id:'exquisite-catering',name:'Exquisite Catering & Events',person:'Tiffany “Chef Mama” Williams',country:'United States',location:'Chicago',sector:'Food & hospitality',description:'Creative, made-from-scratch catering rooted in Chicago’s South Side, serving events, productions and entertainment clients.',profile:'Tiffany “Chef Mama” Williams'},
-  {id:'exquisite-kitchen',name:'Exquisite Kitchen',person:'Tiffany “Chef Mama” Williams',country:'United States',location:'Chicago',sector:'Shared kitchens',description:'A licensed shared commercial kitchen supporting food entrepreneurs with kitchen space, mentorship and operational guidance.',profile:'Tiffany “Chef Mama” Williams'},
-  {id:'jennima',name:'Jennima’s Juice',person:'Jennima Merriam',country:'Liberia',location:'Liberia',sector:'Food & beverage',description:'A juice enterprise in WisConnect’s Liberia network, bringing food and beverage entrepreneurship into the cooperative.',profile:null},
-  {id:'momentum',name:'Momentum Coffee',person:'Nikki Bravo & Tracy Powell · Co-founders',country:'United States',location:'Chicago',sector:'Coffee & community',description:'A coffee business connecting hospitality, entrepreneurship and community investment, with support for emerging food entrepreneurs.',profile:'Nikki Bravo'},
-  {id:'river-cess-agriculture',name:'River Cess Agriculture',person:null,country:'Liberia',location:'River Cess',sector:'Agriculture',description:'Part of the Liberia network’s agricultural enterprise, connecting the cooperative to its focus on local land, knowledge and community opportunity.',profile:null},
-  {id:'river-cess-mining',name:'River Cess Mining',person:null,country:'Liberia',location:'River Cess',sector:'Mining',description:'A mining enterprise in the Liberia network, one of the economic sectors included in WisConnect’s community development approach.',profile:null},
-  {id:'wisinsup',name:'WisInSup Inc.',person:null,country:'Liberia',location:'Liberia',sector:'Enterprise',description:'Part of WisConnect Liberia’s member-business network. Connect with the cooperative to learn more about its work.',profile:null},
-  {id:'zead',name:'ZE’AD Advisors and Consultants',person:'Ade Wede Wee-Wee Kekuleh · Partner',country:'Liberia',location:'Liberia',sector:'Professional services',description:'A professional practice represented in the network by Ade Wede, whose experience spans law, accounting and human rights.',profile:'Ade Wede Wee-Wee Kekuleh'},
-].sort((a,b)=>a.name.localeCompare(b.name));
+import { businesses } from './businesses';
+export { businesses } from './businesses';
 
 export function CooperativeOverview(){
   return <section id="cooperative-model" className={`section ${styles.overview}`} aria-labelledby="model-title"><div className="shell">
@@ -33,41 +20,6 @@ export function CooperativeOverview(){
       <article><span>02 · The cooperative</span><h3>A shared structure.</h3><p>Members pool experience, build relationships and take part in decisions. WisConnect’s current members make collective decisions by consensus.</p></article>
       <article><span>03 · The community</span><h3>Value that stays close.</h3><p>The ambition reaches beyond individual enterprise: commercial space, local livelihoods and community ownership that support lasting growth.</p></article>
     </div>
-  </div></section>;
-}
-
-export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
-  const [location,setLocation]=useState('All locations');
-  useEffect(()=>{
-    // Location and biography links must reach businesses hidden by a current filter.
-    const revealBusiness=(id:string)=>{
-      if(!businesses.some(b=>`business-${b.id}`===id))return;
-      setLocation('All locations');
-      requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({block:'start'}));
-    };
-    const revealLinkedBusiness=()=>revealBusiness(window.location.hash.slice(1));
-    const followBusinessLink=(event:MouseEvent)=>{
-      if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
-      const link=event.target instanceof Element?event.target.closest<HTMLAnchorElement>('a[href^="#business-"]'):null;
-      if(link)revealBusiness(link.hash.slice(1));
-    };
-    revealLinkedBusiness();
-    window.addEventListener('hashchange',revealLinkedBusiness);
-    document.addEventListener('click',followBusinessLink);
-    return()=>{
-      window.removeEventListener('hashchange',revealLinkedBusiness);
-      document.removeEventListener('click',followBusinessLink);
-    };
-  },[]);
-  const visible=businesses.filter(b=>location==='All locations'||b.country===location);
-  return <section id="business-directory" data-divider="background" className={`section ${styles.directory}`} aria-labelledby="directory-title"><div className="shell">
-    <div className="section-heading split-heading"><div><p className="eyebrow">The business directory</p><h2 id="directory-title">Get to know<br/><em>the enterprises.</em></h2></div><p>Discover businesses represented in WisConnect’s network. Meet the people behind them and find a starting point for your next connection.</p></div>
-    <div className={styles.directoryToolbar}><div className={styles.filters} role="group" aria-label="Filter businesses by location">{['All locations','United States','Liberia'].map(place=><button key={place} type="button" aria-pressed={location===place} onClick={()=>setLocation(place)}>{place==='United States'?'Chicago, US':place}</button>)}</div><p role="status">{visible.length} businesses <span>· A–Z</span></p></div>
-    <div className={styles.businessList}>{visible.map(b=><article id={`business-${b.id}`} key={b.id} className={styles.businessRow}>
-      <div className={styles.businessIdentity}><span className={styles.tag}>{b.sector}</span><h3>{b.name}</h3>{b.person&&<p>{b.person}</p>}</div>
-      <div className={styles.businessDescription}><span className={styles.location}>{b.location}{b.location!==b.country?` · ${b.country}`:''}</span><p>{b.description}</p><div className={styles.actions}>{b.profile&&<button type="button" onClick={()=>onProfile(b.profile!)} aria-label={`Meet ${b.profile} from ${b.name}`}>Meet {b.profile.split(' ')[0]} <ArrowIcon/></button>}<Link href="/contact" aria-label={`Ask WisConnect about ${b.name}`}>Ask about this business <ArrowIcon/></Link></div></div>
-    </article>)}</div>
-    <p className={styles.directoryNote}>Looking for an introduction? WisConnect can help you connect with the people behind these businesses.</p>
   </div></section>;
 }
 

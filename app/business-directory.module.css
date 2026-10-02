@@ -1,0 +1,87 @@
+.directory { background: var(--white); }
+.heading { margin-bottom: 40px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.locations { display: flex; padding: 5px; border: 1px solid var(--line); background: #f2eef5; border-radius: 999px; }
+.locations button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); min-height: 44px; padding: 10px 18px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background .2s, color .2s; }
+.locations button[aria-pressed=true] { color: var(--white); background: var(--purple); box-shadow: 0 3px 8px #2a1b3d16; }
+.locations button span { font-size: 11px; opacity: .8; }
+.search { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 999px; min-height: 54px; width: 330px; padding: 0 18px; color: var(--muted); background: white; }
+.search > svg { flex-shrink: 0; }
+.search input { min-width: 0; width: 100%; outline: 0; border: 0; font: inherit; font-size: 13px; color: var(--plum); background: transparent; }
+.search input::-webkit-search-cancel-button { display: none; }
+.search:focus-within { outline: 2px solid var(--purple); outline-offset: 3px; }
+.search button { display: grid; place-items: center; border: 0; background: transparent; color: var(--purple); min-width: 28px; min-height: 44px; cursor: pointer; }
+.categories { display: flex; gap: 28px; border-bottom: 1px solid var(--line); margin-top: 22px; overflow-x: auto; scrollbar-width: none; }
+.categories::-webkit-scrollbar { display: none; }
+.categories button { flex-shrink: 0; position: relative; min-height: 54px; padding: 0 0 14px; background: transparent; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font-size: 13px; cursor: pointer; }
+.categories button[aria-pressed=true] { color: var(--purple); border-bottom-color: var(--purple); font-weight: 600; }
+.results { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
+.results p { font-size: 13px; color: var(--muted); margin: 0; }
+.results strong { font-weight: 600; color: var(--plum); }
+.results button { display: flex; align-items: center; gap: 6px; background: transparent; border: 0; color: var(--purple); font-size: 12px; cursor: pointer; min-height: 44px; }
+.grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px 24px; }
+.card { min-width: 0; display: flex; flex-direction: column; border: 1px solid #e3dce8; border-radius: 20px; overflow: hidden; background: white; scroll-margin-top: 110px; transition: box-shadow .25s, border-color .25s; }
+.card:hover,.card:focus-within { border-color: #baa6cf; box-shadow: 0 12px 30px #2a1b3d0b; }
+.card:target { border-color: var(--purple); box-shadow: 0 0 0 2px var(--lilac); }
+.brandPanel { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1.62; flex-shrink: 0; overflow: hidden; color: var(--purple); background: #e9e0f0; }
+.brandPanel[data-tone=sand] { background: #eee2d2; color: #573c37; }
+.brandPanel[data-tone=plum] { background: var(--plum); color: #edd4ac; }
+.brandPanel[data-tone=rose] { background: #eedde0; color: #663c58; }
+.cornerLine { position: absolute; width: 100px; height: 100px; border: 1px solid currentColor; opacity: .14; border-radius: 50%; right: -49px; top: -49px; }
+.cornerLine::after { content: ''; position: absolute; inset: -16px; border: 1px solid currentColor; border-radius: 50%; }
+.brandPanel > svg { width: 50px; height: 50px; margin-bottom: 12px; }
+.wordmark { font-family: var(--font-display); font-size: clamp(30px,3vw,42px); letter-spacing: -.04em; line-height: 1.1; }
+.brandSubline { font-size: 9px; font-weight: 550; letter-spacing: .2em; margin-top: 8px; }
+.panelLocation { position: absolute; bottom: 13px; left: 20px; font-size: 8px; letter-spacing: .18em; opacity: .75; }
+.cardBody { display: flex; flex-direction: column; flex: 1; padding: 22px; }
+.metadata { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; font-size: 11px; color: var(--purple); line-height: 1.5; }
+.location { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.location svg { width: 13px; height: 13px; flex-shrink: 0; }
+.card h3 { font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1.2; letter-spacing: -.025em; color: var(--plum); margin: 14px 0 12px; }
+.description { color: var(--muted); font-size: 14px; line-height: 1.75; margin: 0 0 22px; }
+.person,.networkPerson { display: flex; align-items: center; gap: 10px; min-height: 64px; width: 100%; padding: 14px 0; margin-top: auto; background: transparent; border: 0; border-top: 1px solid var(--line); text-align: left; color: var(--plum); }
+.person { cursor: pointer; }
+.person img { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; object-position: center 25%; }
+.person > span,.networkPerson > span:last-child { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.person strong,.networkPerson strong { font-size: 12px; font-weight: 600; line-height: 1.5; }
+.person span span,.networkPerson span span { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.person > svg { margin-left: auto; flex-shrink: 0; width: 16px; height: 16px; }
+.person:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+.networkSymbol { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--mist); font-family: var(--font-display); color: var(--purple); flex-shrink: 0; }
+.contact { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 46px; padding: 11px 14px; margin-top: 8px; background: #f5f1f8; border: 1px solid #ebe3f1; border-radius: 9px; color: var(--purple); font-size: 12px; font-weight: 550; transition: background .2s, color .2s; }
+.contact:hover { background: var(--purple); color: white; }
+.directory :is(button,a):focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+.categories button:focus-visible { outline-offset: -3px; }
+.empty { padding: 60px 24px; text-align: center; border: 1px dashed var(--line); border-radius: 20px; background: var(--sand); }
+.empty > svg { width: 28px; height: 28px; margin: auto; color: var(--purple); }
+.empty h3 { font: 400 30px/1.2 var(--font-display); color: var(--plum); margin: 20px 0 12px; }
+.empty p { color: var(--muted); font-size: 14px; }
+.empty button { display: inline-flex; align-items: center; gap: 12px; border: 0; border-radius: 999px; padding: 12px 20px; background: var(--purple); color: white; cursor: pointer; margin-top: 12px; }
+.directoryFooter { display: flex; justify-content: space-between; align-items: center; gap: 24px; border-top: 1px solid var(--line); margin-top: 36px; padding-top: 24px; }
+.directoryFooter p { font-family: var(--font-display); font-size: 22px; color: var(--plum); margin: 0; }
+.directoryFooter a { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-size: 13px; color: var(--purple); }
+.directoryFooter a:hover { text-decoration: underline; text-underline-offset: 4px; }
+@media(max-width:1100px) { .grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .wordmark { font-size: 42px; } }
+@media(max-width:760px) {
+  .toolbar { flex-direction: column; align-items: stretch; gap: 14px; }
+  .locations { align-self: flex-start; }
+  .search { width: 100%; }
+  .categories { margin-top: 12px; gap: 24px; }
+  .directoryFooter { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media(max-width:620px) {
+  .heading { margin-bottom: 28px; }
+  .grid { grid-template-columns: 1fr; gap: 24px; }
+  .locations { align-self: stretch; }
+  .locations button { flex: 1; gap: 6px; padding: 8px 9px; font-size: 11px; }
+  .locations button span { font-size: 10px; }
+  .brandPanel { aspect-ratio: 1.6; min-height: 190px; }
+  .cardBody { padding: 22px; }
+  .metadata { font-size: 11px; }
+  .description { font-size: 14px; }
+  .person strong,.networkPerson strong { font-size: 12px; }
+  .person span span,.networkPerson span span { font-size: 11px; }
+  .contact { font-size: 12px; }
+  .directoryFooter p { font-size: 24px; }
+}
+@media(prefers-reduced-motion:reduce) { .card,.locations button,.contact { transition: none; } }
