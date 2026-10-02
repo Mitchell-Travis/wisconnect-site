@@ -604,6 +604,18 @@
 .contentGrid h3, .emptyContent h3 { color: var(--plum); font-family: var(--font-display); font-size: 28px; line-height: 1.2; letter-spacing: -.025em; }
 .contentGrid p, .emptyContent p, .contentDetails p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
 .contentLabel { display: block; margin-bottom: 14px; color: var(--purple); font-size: 11px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.getInvolved { background: var(--sand); }
+.introductionSteps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; list-style: none; padding: 0; margin: 36px 0 20px; }
+.introductionSteps li { min-width: 0; border-top: 1px solid var(--line); padding-top: 24px; }
+.introductionSteps h3 { margin: 0; color: var(--plum); font-family: var(--font-display); font-size: 28px; font-weight: 400; line-height: 1.2; letter-spacing: -.025em; }
+.introductionSteps p { margin: 16px 0 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
+@media (max-width: 980px) {
+  .introductionSteps { grid-template-columns: 1fr; gap: 24px; }
+}
+.profileBusinesses { margin: 28px 0; padding-block: 20px; border-block: 1px solid var(--line); }
+.profileBusinesses h3 { font-family: var(--font-sans); font-size: 13px; color: var(--muted); margin: 0 0 12px; }
+.profileBusinesses a { display: flex; align-items: center; gap: 12px; min-height: 44px; color: var(--purple); font-size: 15px; }
+.profileBusinesses a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .contentNote { margin: 24px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; max-width: 760px; }
 .contentLink { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 12px; padding-block: 8px; color: var(--purple); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; overflow-wrap: anywhere; }
 .contentLink svg { flex-shrink: 0; width: 18px; height: 18px; }
@@ -631,6 +643,7 @@
 
 /* Purpose: two complementary moments from one photographic series. */
 .purposeSection { background: var(--white); }
+.purposeIntroduction { max-width: 760px; margin: -8px 0 36px; color: var(--muted); font-size: 16px; line-height: 1.75; }
 .purposeHeading { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 36px; }
 .purposeHeading h2 { margin: 16px 0 0; font-family: var(--font-display); font-size: var(--type-section); font-weight: 400; line-height: 1.1; letter-spacing: -.025em; color: var(--plum); }
 .purposeHeading h2 em { color: var(--purple); }

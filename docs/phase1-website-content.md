@@ -1,6 +1,18 @@
 # Phase 1 website content alignment — September 24, 2026
 
+## Latest October 2 structure
+
+Mitchell subsequently authorised hiding unfinished sections temporarily while preserving their implementation. The public homepage now has the holding-cooperative explanation, eleven network business entries with country filters, eight profiles, specific services, project context, Chicago/Liberia sections, an updated connection map and biography-based member stories. Original placeholders and editorial previews remain in source. The existing design, mission/vision, cooperative stack, Chicago sectors and short membership-interest flow remain. See [the content structure review](reviews/2026-10-02/content-structure.md) for source evidence, Mobbin research, the complete flow and restoration guidance. Earlier entries below are historical.
+
 Source: the public website inventory and Elizabeth Carter comment summaries in `WISCONNECT_CONTEXT.md`, with the story order from `DESIGN_NOTES.md`. This pass uses that recorded inventory; it does not independently re-read or approve the original presentation comments. Current client approval gaps remain visible. No publication or production service changes are included.
+
+## October 2 update — focused homepage preview
+
+**Correction:** Mitchell rejected removal of the wider content after seeing this preview. All omitted sections and their navigation, map/story interactions and contact information are now restored to the homepage. New copy, membership steps and FAQs remain. The shortened flow below is a historical preview, not the current content inventory. Preserve the existing content when refining its organization.
+
+Mitchell authorized a clearer homepage using the existing content and visual identity. The current flow is Hero → Purpose/mission/vision → People/Capital/Communities → Seven visionaries → Eight Chicago business sectors → How to get involved → FAQs → Membership/partnership/contact invitation → Footer.
+
+The empty directory, proposed programs, resources, community initiatives, unverified impact/map, editorial previews, news, events and gallery have been removed from the homepage flow. These remain content needs in the wider Phase 1 inventory below; removal from the homepage does not cancel that scope. Navigation and footer now point to available content. New copy is a draft for Mitchell's review, not newly confirmed client claims. Supplied mission/vision statements and biographies are unchanged. Membership-interest copy explains the existing email draft and manual send, without promising acceptance, funding or a response time. See `docs/reviews/2026-10-02/REVIEW.md` for validation and previews. Local only; no publication.
 
 ## September 29 update — member directory
 

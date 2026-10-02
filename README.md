@@ -115,6 +115,6 @@ The GitHub Pages build keeps Contact submission disabled and offers direct email
 
 ## Current scope
 
-The responsive public website now represents the Phase 1 content inventory, including explicit placeholders for content and decisions awaiting approval. See `docs/phase1-website-content.md`. Contact submissions are saved in the local administrator dashboard and trigger an email notification. Join still prepares an email draft; neither flow grants membership. The API also provides database health and the local-only member invitation pilot above.
+The responsive homepage includes purpose, the holding-cooperative model, eight visionaries, eight Chicago business sectors, eleven network businesses with location filters, services, community projects, Chicago/Liberia locations, a connection map, member stories, membership-interest steps, FAQs and contact/partnership next steps. Unfinished programs, resources, news, events, gallery and other placeholders are temporarily hidden with their implementation preserved. See `docs/phase1-website-content.md` for the wider inventory. Contact submissions are saved in the local administrator dashboard and trigger an email notification. Join still prepares an email draft; neither flow grants membership. The API also provides database health and the local-only member invitation pilot above.
 
 GitHub Pages remains configured for the static public website. The API and database require separate application hosting before production deployment.
