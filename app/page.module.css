@@ -21,6 +21,9 @@
 .page :global(.join-section) { background: var(--mist); }
 .page :global(.site-footer) { background: var(--plum); }
 .page :is(a, button, summary):focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
+/* Dialog focus still returns to its trigger; only pointer decoration is suppressed. */
+.page [data-dialog-control] { -webkit-tap-highlight-color: transparent; }
+.page[data-input-method=pointer] [data-dialog-control]:focus { outline: none; }
 .page main:focus { outline: none; }
 .skipLink { position: fixed; top: 12px; left: 20px; z-index: 200; padding: 12px 20px; background: white; color: var(--plum); transform: translateY(-160%); }
 .skipLink:focus { transform: none; }
@@ -236,9 +239,9 @@
 .profileDialog.visionarySheet { inset: 10dvh 0 auto; width: min(1184px, calc(100% - 64px)); max-height: 90dvh; margin: 0 auto; border: 0; border-radius: 16px; background: #fff; box-shadow: 0 24px 80px rgb(42 27 61 / 10%); }
 .visionarySheet::backdrop { background: rgb(237 232 243 / 90%); }
 .sheetToolbar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: flex-end; height: 0; overflow: visible; }
-.sheetClose { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; margin: 24px; padding: 0; border: 0; border-radius: var(--radius-control); background: #eee7f7; color: var(--purple); cursor: pointer; }
+.sheetClose { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; margin: 24px; padding: 0; border: 0; border-radius: var(--radius-control); background: transparent; color: var(--purple); cursor: pointer; }
 .sheetClose span { font-size: 28px; line-height: 1; }
-.sheetClose:hover { background: #e2d6f0; }
+.sheetClose:hover { color: var(--plum); }
 .sheetHandle { display: none; }
 .sheetGrid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 24px 64px; padding: 72px; }
 .sheetIntro .eyebrow { margin: 0 0 24px; color: var(--mauve); font-size: 11px; }

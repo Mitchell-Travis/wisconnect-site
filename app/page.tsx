@@ -421,7 +421,7 @@ export default function Home(){
     };
   },[selectedMember,selectedStory]);
   const close=()=>{cancelNavClose();setMenuOpen(false);setActiveNav(null);if(languagePicker.current)languagePicker.current.open=false};
-  return <MotionConfig reducedMotion="user"><div className={styles.page} style={backgroundAssets}>
+  return <MotionConfig reducedMotion="user"><div className={styles.page} style={backgroundAssets} onPointerDownCapture={event=>{event.currentTarget.dataset.inputMethod='pointer';}} onKeyDownCapture={event=>{if(!['Shift','Control','Alt','Meta'].includes(event.key))event.currentTarget.dataset.inputMethod='keyboard';}}>
     <a className={styles.skipLink} href="#main-content">Skip to content</a>
     {(activeNav!==null||menuOpen)&&<div className={styles.navBackdrop} aria-hidden="true" onPointerDown={close}/>}
     <header ref={header} className={styles.header} data-scrolled={scrolled} data-hidden={navHidden&&!menuOpen&&activeNav===null} data-menu-open={menuOpen} data-submenu-open={activeNav!==null}
@@ -587,7 +587,7 @@ export default function Home(){
           const next=event.key==='Home'?0:event.key==='End'?cards.length-1:Math.max(0,Math.min(cards.length-1,index+(event.key==='ArrowLeft'?-1:1)));
           cards[next]?.focus();
         }}>
-          {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
+          {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} data-dialog-control key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
             <span className={styles.memberPortrait}><img src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 699px) 78vw, (max-width: 959px) 44vw, 280px" alt="" width="800" height="800" loading="lazy" decoding="async"/></span>
             <span className={styles.memberInfo}><strong>{member.name}</strong><span className={styles.memberRole}>{member.role}</span><span className={styles.memberRead}>Read bio <ArrowUpRightIcon/></span></span>
           </button>)}
@@ -602,7 +602,7 @@ export default function Home(){
       if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)closeProfile();
     }}>
       {selectedMember!==null&&<>
-        <div className={styles.sheetToolbar}><span className={styles.sheetHandle} aria-hidden="true"/><button className={styles.sheetClose} type="button" onClick={closeProfile} aria-label="Close profile" autoFocus><span aria-hidden="true">×</span></button></div>
+        <div className={styles.sheetToolbar}><span className={styles.sheetHandle} aria-hidden="true"/><button className={styles.sheetClose} data-dialog-control type="button" onClick={closeProfile} aria-label="Close profile" autoFocus><span aria-hidden="true">×</span></button></div>
         <div className={styles.sheetGrid}>
           <div className={styles.sheetIntro}><p className="eyebrow">Meet the visionaries · {String(selectedMember+1).padStart(2,'0')} / {String(memberProfiles.length).padStart(2,'0')}</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.sheetRole}>{memberProfiles[selectedMember].role}</p></div>
           <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-studio-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>

@@ -57,7 +57,10 @@
   .sectionHeading { padding: 64px 24px 24px; }
   .sectionHeading h2 { font-size: clamp(34px,8.7vw,54px); }
   .eyebrow { font-size: 9px; letter-spacing: .15em; }
+  .opening { padding: 0 24px 24px; }
+  .staticMark { margin-top: 0; }
   .journey[data-motion=on] .track { height: 540svh; }
+  .journey[data-motion=on] .visual { mask-position: center var(--mobile-wing-position,0%); -webkit-mask-position: center var(--mobile-wing-position,0%); }
   .journey[data-motion=on] .opening { padding-top: max(90px,14svh); }
   .journey[data-motion=on] .chapters { width: calc(100% - 48px); }
   .journey[data-motion=on] .chapter { padding: 90px 0 116px; }
@@ -69,7 +72,7 @@
   .journey[data-motion=on] .storyFooter { inset: auto 24px 20px; flex-wrap: wrap; gap: 10px; }
   .journey[data-motion=on] .markers { width: 100%; gap: 12px; }
   .markers span { flex: 1; font-size: 0; padding-top: 0; border-top-width: 2px; }
-  .journey[data-motion=on] .scrollHint { font-size: 11px; bottom: 14%; }
+  .journey[data-motion=on] .scrollHint { font-size: 11px; top: calc(74.2vw + 16px); bottom: auto; }
 }
 @media(max-height:650px) {
   .journey[data-motion=on] .scrollHint { display: none; }

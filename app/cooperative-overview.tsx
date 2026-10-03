@@ -51,6 +51,8 @@ export function CooperativeOverview(){
       const opening=ramp(progress,0,.24);
       const maskWidth=frame.clientWidth*1.06*(1+Math.pow(opening,2)*23);
       root.style.setProperty('--wing-size',`${maskWidth}px`);
+      // Start the phone-sized W just below the heading, then center its expansion.
+      root.style.setProperty('--mobile-wing-position',`${opening*50}%`);
       root.style.setProperty('--opening-opacity',`${1-ramp(progress,.04,.15)}`);
       root.style.setProperty('--collage-opacity',`${1-ramp(progress,.09,.23)}`);
       root.style.setProperty('--veil-opacity',`${ramp(progress,.15,.26)}`);
