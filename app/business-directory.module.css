@@ -130,8 +130,10 @@
   .tile .brandMark[data-business=czl] .wordmark { font-size: clamp(36px,12vw,76px); }
   .tile .subline { font-size: clamp(6.5px,1.7vw,10px); letter-spacing: .09em; margin-top: 8px; max-width: 100%; }
   .tile .tileMeta { display: none; }
-  .tile[data-poster] .preview { inset: 0; transform: none; border-radius: 8px; opacity: 0; }
-  .tile:is([data-poster=photo],[data-poster=landscape]) { color: var(--brand-ink); }
+  .tile[data-poster] .preview { inset: 0 0 4px; transform: none; border-radius: 8px 8px 0 0; opacity: 1; }
+  .tile[data-poster] .preview::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg,rgba(25,12,37,.5),rgba(25,12,37,.72)); }
+  .tile[data-poster] .brandMark { color: #fffaf2; }
+  .tile[data-tone] .subline { color: inherit; }
   .wordmark { font-size: clamp(22px,5.5vw,40px); }
   .subline { font-size: 8px; letter-spacing: .08em; margin-top: 8px; }
   .tileMeta { inset: auto 14px 12px; font-size: 9px; }
