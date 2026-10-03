@@ -5,6 +5,8 @@
 .heading h2 { font: 400 clamp(38px,4.6vw,64px)/1.06 var(--font-display); letter-spacing: -.035em; color: var(--directory-text); margin: 14px 0 18px; }
 .heading h2 em { color: var(--directory-accent); }
 .introduction { font-size: clamp(14px,1.4vw,18px); line-height: 1.7; color: var(--directory-muted); margin: 0; }
+.filterToggle { display: none; }
+.filters { display: contents; }
 .toolbar { display: flex; justify-content: center; align-items: center; gap: 24px; }
 .locations { display: flex; padding: 4px; border: 1px solid var(--directory-line); background: var(--mist); border-radius: 999px; }
 .locations button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: transparent; color: var(--directory-muted); min-height: 44px; padding: 8px 18px; font-size: 13px; cursor: pointer; white-space: nowrap; }
@@ -104,21 +106,39 @@
 .detailActions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 28px; }
 .detailActions a,.detailActions button { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0; color: inherit; background: none; border: 0; font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 5px; cursor: pointer; }
 @media(max-width:760px) {
+  .directory:global(.section) { padding-block: 56px; }
+  .directory > :global(.shell) { width: calc(100% - 2 * var(--section-rail-inset)); padding-inline: 0; }
   .directoryThreads { height: min(950px,100%); }
-  .heading { margin-bottom: 24px; }
+  .heading { margin: 0 auto 22px; padding-inline: 10px; max-width: 520px; }
+  .heading h2 { font-size: clamp(28px,8.2vw,46px); margin: 14px 0 18px; }
+  .introduction { max-width: 360px; margin-inline: auto; font-size: 14px; line-height: 1.6; }
+  .filterToggle { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 auto; padding: 0 16px; min-height: 44px; border: 1px solid var(--directory-line); border-radius: 999px; background: transparent; color: var(--directory-accent); font: inherit; font-size: 12px; cursor: pointer; }
+  .filterToggle > span:last-child { font-size: 18px; padding-left: 5px; }
+  .filterIndicator { width: 6px; height: 6px; background: var(--purple); border-radius: 50%; }
+  .filters { display: none; margin-top: 18px; padding-inline: 8px; }
+  .filters[data-open=true] { display: block; }
   .toolbar { flex-direction: column; gap: 12px; }
   .search { width: min(100%,360px); }
   .categories { justify-content: flex-start; gap: 24px; }
-  .grid { gap: 6px; }
-  .tile { padding: 12px 6px; }
-  .tile:last-child:nth-child(odd) { width: calc((100% - 6px)/2); }
+  .results { min-height: 40px; padding-block: 10px; }
+  .results p { font-size: 10px; }
+  .grid { gap: 5px; }
+  .tile { height: 30vw; min-height: 0; padding: 12px; align-items: center; justify-content: center; border-radius: 8px; }
+  .tile:last-child:nth-child(odd) { width: calc((100% - 5px)/2); }
+  .tile .brandMark { align-items: center; text-align: center; }
+  .tile .brandMark .wordmark { font-size: clamp(20px,6.1vw,42px); }
+  .tile .brandMark[data-business=czl] .wordmark { font-size: clamp(36px,12vw,76px); }
+  .tile .subline { font-size: clamp(6.5px,1.7vw,10px); letter-spacing: .09em; margin-top: 8px; max-width: 100%; }
+  .tile .tileMeta { display: none; }
+  .tile[data-poster] .preview { inset: 0; transform: none; border-radius: 8px; opacity: 0; }
+  .tile:is([data-poster=photo],[data-poster=landscape]) { color: var(--brand-ink); }
   .wordmark { font-size: clamp(22px,5.5vw,40px); }
   .subline { font-size: 8px; letter-spacing: .08em; margin-top: 8px; }
   .tileMeta { inset: auto 14px 12px; font-size: 9px; }
   .tileMeta svg { width: 14px; height: 14px; }
   .preview { inset: 40% 14px 38px; }
   .tile[data-poster=split] .tileMeta { left: 10px; bottom: 14px; }
-  .tile[data-poster=landscape] { padding-bottom: 48px; }
+  .tile[data-poster=landscape] { align-items: center; padding-bottom: 12px; }
   .dialogBrand { top: 26px; left: 20px; font-size: 24px; }
   .dialogLayout { display: flex; flex-direction: column; align-items: stretch; gap: 28px; padding: 100px 20px 40px; }
   .dialogIdentity .brandMark { margin-bottom: 26px; }
@@ -133,8 +153,6 @@
   .locations { width: 100%; }
   .locations button { flex: 1; gap: 4px; padding: 8px 6px; font-size: 11px; }
   .locations button span { font-size: 10px; }
-  .tile .wordmark { font-size: clamp(20px,5.5vw,24px); }
-  .heading h2 { font-size: 38px; }
   .introduction br { display: none; }
   .directoryFooter p { font-size: 22px; }
 }

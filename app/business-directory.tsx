@@ -40,6 +40,7 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
   const [location,setLocation]=useState('All locations');
   const [category,setCategory]=useState('All sectors');
   const [query,setQuery]=useState('');
+  const [filtersOpen,setFiltersOpen]=useState(false);
   const [selected,setSelected]=useState<string|null>(null);
   const dialog=useRef<HTMLDialogElement>(null);
   const visual=useRef<HTMLDivElement>(null);
@@ -118,11 +119,14 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
     </svg>
     <div className="shell">
     <div className={styles.heading}><p className="eyebrow">The business directory</p><h2 id="directory-title">Local businesses.<br/><em>Shared possibilities.</em></h2><p className={styles.introduction}>Meet the businesses in our growing network. Each with its own story.</p></div>
+    <button type="button" className={styles.filterToggle} aria-expanded={filtersOpen} aria-controls="directory-filters" onClick={()=>setFiltersOpen(open=>!open)}><Icon kind="search"/>Search &amp; filter{isFiltered&&<span className={styles.filterIndicator} aria-label="Filters active"/>}<span aria-hidden="true">{filtersOpen?'−':'+'}</span></button>
+    <div id="directory-filters" className={styles.filters} data-open={filtersOpen}>
     <div className={styles.toolbar}>
       <div className={styles.locations} role="group" aria-label="Filter businesses by location">{['All locations','United States','Liberia'].map(place=><button key={place} type="button" aria-pressed={location===place} onClick={()=>setLocation(place)}>{place==='United States'?'Chicago, US':place}<span>{place==='All locations'?businesses.length:businesses.filter(b=>b.country===place).length}</span></button>)}</div>
       <div className={styles.search}><Icon kind="search"/><input type="search" aria-label="Search businesses" placeholder="Search businesses or people" value={query} onChange={event=>setQuery(event.target.value)}/>{query&&<button type="button" aria-label="Clear search" onClick={()=>setQuery('')}><Icon kind="close"/></button>}</div>
     </div>
     <div className={styles.categories} role="group" aria-label="Filter businesses by sector">{categories.map(item=><button key={item} type="button" aria-pressed={category===item} onClick={()=>setCategory(item)}>{item}</button>)}</div>
+    </div>
     <div className={styles.results}><p role="status" aria-live="polite">{visible.length} {visible.length===1?'business':'businesses'} · Select a business to explore</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
     <div className={styles.grid}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} type="button" className={`${styles.tile} ${styles.tone}`} data-tone={identities[b.id].tone} data-poster={identities[b.id].poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark id={b.id}/><span className={styles.preview} data-business-image><BusinessVisual id={b.id}/></span><span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="arrow"/></span></button>)}</div>
     {visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="arrow"/></button></div>}
