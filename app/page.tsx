@@ -6,6 +6,7 @@ import { animate, motion, MotionConfig, useInView } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 import { businesses, CooperativeOverview, BusinessDirectory, Places, CommunityProjects, MemberStories } from './wisconnect-content';
+import { WhatWisConnectDoes } from './what-wisconnect-does';
 
 // Retain unfinished sections and their original content for a later release.
 const showUnfinishedSections = false;
@@ -671,12 +672,7 @@ export default function Home(){
       <div className={styles.emptyContent}><h3>Listings awaiting approval.</h3><p>No business listings are published here yet. Each listing will include the business and owner’s name, sector, description, approved photo or logo, and contact link.</p><p>This directory introduces businesses. Purchases and payments are not available on this website.</p><Link className={styles.contentLink} href="/contact">Ask about listing your business <ArrowUpRightIcon/></Link></div>
     </div></section> : <BusinessDirectory onProfile={openMemberByName}/>}
 
-    <section id="what-we-do" data-divider="background" className="section what-section"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">What WisConnect does</p><h2>Turn shared ownership into shared progress.</h2></div><p>WisConnect connects members to the resources, relationships and practical support that help enterprises grow.</p></div><p className={styles.contentNote}>Talk with the team about the support available for your business and the opportunities being developed.</p><div className="program-list">
-      <article><span>01</span><div><h3>Cooperative governance & professional support</h3><p>Shared decision-making, organisational guidance and professional expertise to help enterprises address business challenges.</p></div></article>
-      <article><span>02</span><div><h3>Commercial space & community assets</h3><p>A development focus on affordable commercial space and inclusive real estate, connecting business needs to the long-term life of a neighbourhood.</p></div></article>
-      <article><span>03</span><div><h3>Business development & visibility</h3><p>Business consulting, shared marketing and connections between entrepreneurs. In Liberia, consulting work includes construction, agriculture and food and beverage enterprises.</p></div></article>
-      <article><span>04</span><div><h3>Trade & cross-border relationships</h3><p>Connections to international markets, partners and procurement, shaped around the needs of local businesses.</p></div></article>
-    </div></div></section>
+    <WhatWisConnectDoes/>
 
     {showUnfinishedSections && <section id="programs" className={`section ${styles.contentSection}`} aria-labelledby="programs-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Programs & activities</p><h2 id="programs-title">Ways to learn. Reasons to connect.</h2></div><p>Ideas raised for regular engagement with Black women business owners. These activities are proposed; no schedule or registration is confirmed.</p></div>
