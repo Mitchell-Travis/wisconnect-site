@@ -15,6 +15,8 @@
 /* Omit the bottom rule when the next surface provides its own color boundary.
    Same-color neighbors retain the default divider, including pale tinted sections. */
 .page > main > section[data-divider="background"]::after { content: none; }
+/* The business directory has an open transition on both sides. */
+.page > main > section:has(+ :global(#business-directory))::after { content: none; }
 .page :global(.what-section), .page :global(.stories-section) { background: var(--sand); }
 .page :global(.join-section) { background: var(--mist); }
 .page :global(.site-footer) { background: var(--plum); }

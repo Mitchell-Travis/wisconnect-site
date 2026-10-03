@@ -12,16 +12,7 @@ function ArrowIcon(){
 import { businesses } from './businesses';
 export { businesses } from './businesses';
 
-export function CooperativeOverview(){
-  return <section id="cooperative-model" className={`section ${styles.overview}`} aria-labelledby="model-title"><div className="shell">
-    <div className="section-heading split-heading"><div><p className="eyebrow">A cooperative of businesses</p><h2 id="model-title">Own together.<br/><em>Build for each other.</em></h2></div><div className={styles.intro}><p>WisConnect Holding Cooperative is a worker-owned cooperative connecting Black women entrepreneurs, their businesses and the communities they serve.</p><p>Its holding company model brings different enterprises into a shared structure, with professional support and a long-term vision for community-owned assets.</p></div></div>
-    <div className={styles.modelSteps}>
-      <article><span>01 · The businesses</span><h3>Distinct strengths.</h3><p>Food, child care, design, agriculture and professional expertise. Each business brings knowledge of its work and its community.</p></article>
-      <article><span>02 · The cooperative</span><h3>A shared structure.</h3><p>Members pool experience, build relationships and take part in decisions. WisConnect’s current members make collective decisions by consensus.</p></article>
-      <article><span>03 · The community</span><h3>Value that stays close.</h3><p>The ambition reaches beyond individual enterprise: commercial space, local livelihoods and community ownership that support lasting growth.</p></article>
-    </div>
-  </div></section>;
-}
+export { CooperativeOverview } from './cooperative-overview';
 
 export function Places(){
   return <section id="locations" className={`section ${styles.places}`} aria-labelledby="places-title"><div className="shell">
