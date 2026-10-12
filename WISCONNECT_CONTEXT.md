@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-12. Read the homepage pacing update and source-based structure first, then the forms/team releases and local startup updates; dated entries further down retain historical decisions and verification.
 
+## Homepage clarity and biography previews (12 October 2026)
+
+- Release approved on 12 October: Mitchell requested pushing this completed homepage pass and deferring membership-information work. Include the homepage changes, review notes and three screenshots. Check the release commit and GitHub Actions for publication status; the local-only notes below describe the review stage.
+- Mitchell approved the first improvement pass after a local site review and created a goal for clearer flow, tighter introductory copy and shorter biography previews. The opening now runs hero → practical support → visionaries → business directory; purpose, the W cooperative model and People/Capital/Communities follow as deeper context. All fourteen visible sections and the hidden unfinished sections remain.
+- The hero’s secondary action is now “Explore our support” and targets `#what-we-do`. Services name their four existing areas in plain language and retain an availability caveat. Purpose, people, belief and Chicago-sector introductions are shorter. Supplied mission/vision and all full biographies remain verbatim; no membership terms or availability claims were added.
+- All eight flip cards now show factual short summaries; open cards size to their content without a nested biography scrollbar. Original portraits, role labels, flip controls and full-profile dialogs remain. W source, imagery, scroll timing and fallbacks are unchanged.
+- Production static export (14 routes), TypeScript and whitespace checks passed. Production-browser checks covered all eight summaries at 320/390/760/1440px, all full-profile dialogs and focus return, desktop/phone navigation and filtering, support controls, FAQ, anchors, and W progression/reversal/skip. Review and screenshots: `docs/reviews/2026-10-12/homepage-clarity.md`. Local review only; no commit, push, deployment or backend changes.
+
 ## Homepage pacing and membership actions (8 October 2026)
 
 - Release approved on 12 October (FAQ, stories and visionaries): Mitchell requested pushing all pending changes. Includes the white FAQ redesign, mobile project-story stacking and final frameless visionary cards with short role labels and flip biographies, plus review notes/screenshots. Final production build/static export of all 14 routes and TypeScript passed; browser verification is recorded in the individual reviews. The local-only labels below describe earlier review stages; check this release commit and GitHub Actions for publication status.

@@ -48,7 +48,7 @@ export function WhatWisConnectDoes() {
       <header className={styles.heading}>
         <p className={styles.eyebrow}>What WisConnect does</p>
         <h2 id="what-we-do-title">Turn shared ownership<br/>{' '}into <em>shared progress.</em></h2>
-        <p className={styles.intro}>WisConnect connects members to the resources, relationships and practical support that help enterprises grow.</p>
+        <p className={styles.intro}>Professional guidance, business visibility, commercial space and trade connections are the focus of our work.</p>
         <Link className={styles.cta} href="/contact">Talk with our team <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 15 10-10M5 5h10v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
       </header>
       <div className={styles.deck}>
@@ -65,7 +65,7 @@ export function WhatWisConnectDoes() {
           <div className={styles.artwork}><div className={styles.loop}/><SupportIllustration index={index}/></div>
         </article>)}
       </div>
-      <p className={styles.note}>Talk with the team about the support available for your business and the opportunities being developed.</p>
+      <p className={styles.note}>Some opportunities are still being developed. Talk with the team to confirm what is available for your business.</p>
     </div>
   </section>;
 }

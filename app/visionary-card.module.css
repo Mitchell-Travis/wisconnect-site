@@ -1,4 +1,5 @@
-.card { position: relative; min-width: 0; perspective: 1600px; }
+.card { position: relative; display: grid; min-width: 0; perspective: 1600px; align-self: start; }
+.front, .back { grid-area: 1 / 1; }
 .front, .back { border: 0; border-radius: 8px; color: var(--plum); backface-visibility: hidden; transition: transform .6s cubic-bezier(.22,.68,0,1); }
 .front { display: flex; flex-direction: column; width: 100%; height: 100%; padding: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; transform: rotateY(0); }
 .portrait { position: relative; display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 8px; background: #eee7f1; }
@@ -12,16 +13,13 @@
 .front:focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
 .back { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #fff; overflow: hidden; transform: rotateY(180deg); }
 .card[data-flipped="true"] .front { transform: rotateY(-180deg); }
-.card[data-flipped="true"] .back { transform: rotateY(0); }
+.card[data-flipped="true"] .back { position: relative; transform: rotateY(0); }
 .close { display: inline-flex; justify-content: flex-end; align-items: center; gap: 6px; align-self: flex-end; min-height: 44px; margin: -8px -4px -6px 0; padding: 4px; border: 0; background: transparent; color: var(--purple); font: inherit; font-size: 12px; cursor: pointer; }
 .back h3 { margin: 0; font-family: inherit; font-size: 19px; font-weight: 500; line-height: 1.25; letter-spacing: 0; }
-.bio { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: thin; scrollbar-color: #b6a3c5 transparent; padding-right: 8px; font-size: 14px; line-height: 1.65; }
-.bio p { margin: 0 0 16px; }
-.bio .bioRole { color: var(--muted); font-size: 12px; }
+.bio { flex: 1; margin: 0; font-size: 14px; line-height: 1.65; }
 .fullProfile { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; padding: 8px 0 0; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--purple); text-align: left; font: inherit; font-size: 12px; cursor: pointer; }
-.back :is(button, .bio):focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-radius: 2px; }
+.back button:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-radius: 2px; }
 @media (max-width: 760px) {
-  .card[data-flipped="true"] { min-height: 300px; }
   .view { top: 5px; right: 5px; gap: 3px; padding: 4px; font-size: 10px; }
   .view svg { width: 16px; }
   .info { padding-top: 12px; }
@@ -29,7 +27,6 @@
   .role { font-size: 12px; }
   .back { padding: 12px; gap: 8px; }
   .back h3 { font-size: 16px; }
-  .bio { font-size: 13px; padding-right: 5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .front, .back { transition: none; }
