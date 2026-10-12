@@ -53,3 +53,20 @@ class ContactInquiry(Base):
     email_status: Mapped[str] = mapped_column(String(12), default="pending")
     email_mode: Mapped[str] = mapped_column(String(10), default="local")
     email_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class NewsletterSubscriber(Base):
+    __tablename__ = "newsletter_subscribers"
+    __table_args__ = (CheckConstraint("status IN ('pending', 'subscribed', 'unsubscribed')", name="newsletter_status"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(254), unique=True)
+    status: Mapped[str] = mapped_column(String(12), default="pending")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    unsubscribed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    confirmation_hash: Mapped[str | None] = mapped_column(String(64), unique=True)
+    confirmation_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    unsubscribe_hash: Mapped[str | None] = mapped_column(String(64), unique=True)
+    last_sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    consent_version: Mapped[str] = mapped_column(String(40))

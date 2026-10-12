@@ -55,7 +55,11 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
     const revealBusiness=(id:string)=>{
       if(!businesses.some(b=>`business-${b.id}`===id))return;
       setLocation('All locations');setCategory('All sectors');setQuery('');
-      requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({block:'start'}));
+      requestAnimationFrame(()=>{
+        const tile=document.getElementById(id);
+        tile?.focus({preventScroll:true});
+        tile?.scrollIntoView({block:'start'});
+      });
     };
     const onHash=()=>revealBusiness(window.location.hash.slice(1));
     const onLink=(event:MouseEvent)=>{

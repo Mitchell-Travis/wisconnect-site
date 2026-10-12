@@ -13,7 +13,8 @@
     "db:down": "docker compose down",
     "db:migrate": "node scripts/python.mjs -m alembic -c backend/alembic.ini upgrade head",
     "build": "next build --webpack",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "newsletter:check": "node scripts/python.mjs -m backend.check_newsletter"
   },
   "dependencies": {
     "motion": "^13.4.0",

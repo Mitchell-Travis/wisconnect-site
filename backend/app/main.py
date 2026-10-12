@@ -11,6 +11,7 @@ from sqlalchemy import text
 from .database import engine
 from .auth import ORIGIN, PASSWORD_COMMON_MESSAGE, router, throttle
 from .contact import router as contact_router
+from .newsletter import router as newsletter_router
 
 
 class Health(BaseModel):
@@ -31,7 +32,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def local_auth_boundary(request: Request, call_next):
-    if request.url.path.startswith("/auth") or request.url.path == "/contact":
+    if request.url.path.startswith("/auth") or request.url.path == "/contact" or request.url.path.startswith("/newsletter/"):
         if (os.getenv("WISCONNECT_LOCAL_AUTH") != "1" or not request.client
                 or request.client.host not in {"127.0.0.1", "::1"}):
             return JSONResponse({"detail": "Local authentication pilot is unavailable."}, status_code=404)
@@ -54,6 +55,8 @@ async def local_auth_boundary(request: Request, call_next):
 
 @app.exception_handler(RequestValidationError)
 async def invalid_input(request: Request, error: RequestValidationError):
+    if request.url.path.startswith("/newsletter/"):
+        return JSONResponse({"detail": "Use a valid email and agree to receive updates, or check your confirmation link."}, status_code=422)
     if request.url.path == "/contact":
         return JSONResponse({"detail": "Check your name, email, topic and message (up to 3,000 characters)."}, status_code=422)
     # Return only fixed messages, never raw errors or submitted passwords.
@@ -69,6 +72,7 @@ async def invalid_input(request: Request, error: RequestValidationError):
 
 app.include_router(router)
 app.include_router(contact_router)
+app.include_router(newsletter_router)
 
 
 @app.get("/")

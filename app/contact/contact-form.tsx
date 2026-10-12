@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './page.module.css';
+import { sectors, type Sector } from '../business-sectors';
 
 const emptyAnswers = { name: '', email: '', topic: 'General inquiry', message: '' };
 const labels = { name: 'Full name', email: 'Email address', message: 'Your message' };
@@ -15,6 +16,7 @@ export default function ContactForm() {
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
   const [available, setAvailable] = useState(false);
+  const [sector, setSector] = useState<Sector | null>(null);
   const [busy, setBusy] = useState(false);
   const [receipt, setReceipt] = useState<{ reference: number; test_mode: boolean } | null>(null);
   const summary = useRef<HTMLDivElement>(null);
@@ -23,6 +25,12 @@ export default function ContactForm() {
   const submitting = useRef(false);
 
   useEffect(() => {
+    const requestedSector = new URLSearchParams(location.search).get('sector');
+    const matchedSector = sectors.find(item => item === requestedSector);
+    if (matchedSector) {
+      setSector(matchedSector);
+      setAnswers({ ...emptyAnswers, topic: 'Member enterprises', message: `Hello WisConnect, I’d like to learn more about ${matchedSector.toLowerCase()} in your Chicago network. Could you help me find a business or make an introduction?` });
+    }
     setAvailable(location.origin === 'http://localhost:3000' && !process.env.NEXT_PUBLIC_BASE_PATH);
     setReady(true);
   }, []);
@@ -83,6 +91,9 @@ export default function ContactForm() {
   }
 
   const invalidFields = (Object.keys(labels) as RequiredField[]).filter(key => errors[key]);
+  const emailHref = sector
+    ? `mailto:hello@wisconnect.co?subject=${encodeURIComponent(`Chicago sector inquiry: ${sector}`)}&body=${encodeURIComponent(answers.message)}`
+    : 'mailto:hello@wisconnect.co';
   const fieldProps = (key: RequiredField) => ({
     id: 'contact-' + key, name: key, value: answers[key], onChange: updateAnswer, required: true,
     'aria-invalid': Boolean(errors[key]),
@@ -100,7 +111,8 @@ export default function ContactForm() {
       <Link className={styles.returnLink} href="/">Back to WisConnect <span aria-hidden="true">→</span></Link>
     </div> : <>
       <div className={styles.formHeading}><h2 id="contact-form-title">Send us a message.</h2></div>
-      {ready && !available && <p className={styles.unavailable} role="status">Online submissions aren’t available here yet. Please email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a>.</p>}
+      {sector && <p>Ask WisConnect about {sector.toLowerCase()} in Chicago.</p>}
+      {ready && !available && <p className={styles.unavailable} role="status">Online submissions aren’t available here yet. Please email <a href={emailHref}>hello@wisconnect.co</a>.</p>}
       <form onSubmit={submit} noValidate aria-label="Contact WisConnect" aria-busy={busy}>
         {invalidFields.length > 0 && <div ref={summary} className={styles.errorSummary} role="alert" tabIndex={-1}>
           <p><strong>Check {invalidFields.length === 1 ? 'this detail' : 'these details'}.</strong></p>

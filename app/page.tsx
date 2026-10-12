@@ -7,13 +7,14 @@ import { assetPath } from './assets';
 import styles from './page.module.css';
 import { businesses, CooperativeOverview, BusinessDirectory, CommunityProjects, MemberStories } from './wisconnect-content';
 import { WhatWisConnectDoes } from './what-wisconnect-does';
+import { NextStep } from './next-step';
 import { FrequentlyAskedQuestions } from './frequently-asked-questions';
 import { VisionaryCard } from './visionary-card';
+import { sectors, sectorBusinessIds, type Sector } from './business-sectors';
 
 // Retain unfinished sections and their original content for a later release.
 const showUnfinishedSections = false;
 
-const sectors = ['Coffee shops','Day care','Shared kitchens','Restaurants','Wellness','Juice bars','Clothing stores','Screen printing'] as const;
 const allNavigationMenus = [
   {label:'About',groups:[
     {title:'Our purpose',links:[{label:'Mission & vision',description:'Connecting Black women across Africa and the diaspora.',href:'#purpose'}]},
@@ -130,7 +131,6 @@ const regions = {
   'Vietnam / Southeast Asia': 'Vietnam · A developing connection, with local business and project content to follow as the work takes shape.',
 } as const;
 
-type Sector = (typeof sectors)[number];
 type Region = keyof typeof regions;
 
 const impactPlaces: {region:Region;label:string;x:number;y:number;route?:string}[] = [
@@ -649,13 +649,17 @@ export default function Home(){
           if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();slideEnterprise(event.key==='ArrowLeft'?-1:1)}
           if(event.key==='Home'||event.key==='End'){event.preventDefault();slideEnterprise(event.key==='Home'?'start':'end')}
         }}>
-        {sectors.map((sector,index)=><li id={`enterprise-${index}`} className={styles.enterpriseCard} key={sector}>
-          <Link className={styles.enterpriseLink} href="/join" aria-label={`Introduce yourself — ${sector}`}>
+        {sectors.map((sector,index)=>{
+          const business=businesses.find(item=>item.id===sectorBusinessIds[sector]);
+          const CardLink=business?'a':Link;
+          const action=business?`View ${business.id==='bunnyland'?'Bunnyland':business.name}`:'Ask about this sector';
+          return <li id={`enterprise-${index}`} className={styles.enterpriseCard} key={sector}>
+          <CardLink className={styles.enterpriseLink} href={business?`#business-${business.id}`:`/contact?sector=${encodeURIComponent(sector)}`} aria-label={`${sector} — ${action}`}>
             <div className={styles.enterpriseImage}><img src={assetPath(`sector-${sectorStories[sector].image}-1000.webp`)} srcSet={`${assetPath(`sector-${sectorStories[sector].image}-640.webp`)} 640w, ${assetPath(`sector-${sectorStories[sector].image}-1000.webp`)} 1000w`} sizes="(max-width: 620px) 90vw, (max-width: 980px) 45vw, 340px" style={{objectPosition:sectorStories[sector].position}} alt={sectorStories[sector].alt} loading="lazy" decoding="async" draggable={false}/><h3>{sector}</h3></div>
             <p>{sectorStories[sector].description}</p>
-            <span className={styles.enterpriseCta}>Introduce yourself <ArrowDownIcon/></span>
-          </Link>
-        </li>)}
+            <span className={styles.enterpriseCta}>{action} <ArrowDownIcon/></span>
+          </CardLink>
+        </li>})}
       </ul>
       <p className={styles.contentNote}>Photography illustrates the sectors; the businesses pictured are not identified as WisConnect members.</p>
     </div></section>
@@ -802,15 +806,7 @@ export default function Home(){
 
     <FrequentlyAskedQuestions/>
 
-    <section id="join" data-divider="background" className="section join-section" aria-labelledby="join-title"><div className="shell">
-      <p className="eyebrow">Your next step</p><h2 id="join-title">Bring your experience.<br/>Help shape what grows.</h2>
-      <p className="join-lede">A business to grow. Knowledge to share. A community you care about. There is a conversation to start here.</p>
-      <div className="join-grid">
-        <Link href="/join"><span>01 · Membership interest</span><strong>Introduce yourself</strong><p>Tell us about your work and what you would like to contribute. Review your introduction, then send it by email.</p><b><ArrowUpRightIcon/></b></Link>
-        <Link href="/contact"><span>02 · Partnership</span><strong>Explore a partnership</strong><p>Have expertise, resources or a shared goal? Let’s talk about what we could build together.</p><b><ArrowUpRightIcon/></b></Link>
-        <Link href="/contact"><span>03 · A question or an idea</span><strong>Talk to WisConnect</strong><p>Ask about the cooperative, membership or an idea you would like to discuss with the team.</p><b><ArrowUpRightIcon/></b></Link>
-      </div>
-    </div></section>
+    <NextStep/>
 
     {showUnfinishedSections && <section id="contact-info" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="contact-info-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title">Start with a conversation.</h2></div><p>Get in touch about membership, partnerships, business listings or a general question.</p></div>

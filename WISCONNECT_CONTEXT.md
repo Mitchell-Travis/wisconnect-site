@@ -2,6 +2,64 @@
 
 Last updated: 2026-10-12. Read the homepage pacing update and source-based structure first, then the forms/team releases and local startup updates; dated entries further down retain historical decisions and verification.
 
+## Homepage release approved (12 October 2026)
+
+- Mitchell approved the final balanced gold artwork and continuous rails and requested pushing the changes. Release includes the closing invitation, newsletter form/local API and migration, confirmed sector-card destinations, contextual sector inquiries, and review records. Production build/static export of 15 routes passed on the final code; newsletter/contact/auth integration results are recorded below.
+- Public GitHub Pages signup remains explicitly disabled/coming soon pending production API, database and email hosting. Unused supplied image alternatives, local Mobbin inspiration material and generated development route references are not release inputs. Earlier local-only entries document design history; check this release commit and GitHub Actions for publication status.
+
+## Your next step — balanced gold artwork and continuous rails (12 October 2026, local)
+
+- Mitchell approved the gold direction but requested less empty space on the right and the page rails continuing through this section. Balanced desktop columns, reduced their gap, increased the intact gold sculpture from a 490px cap to 620px, and shifted it slightly toward the text. Removed the section stacking override so the existing vertical rails run through it. The site's existing phone rail policy and phone layout remain unchanged.
+- Desktop visual review and responsive overflow checks completed at 1100px and 390px. Latest preview: `docs/reviews/2026-10-12/next-step/desktop-gold-balanced-rails.png`. Local only, not pushed.
+
+## Your next step — gold sculpture and integrated signup (12 October 2026, local)
+
+- Mitchell supplied a community orb and a gold ribbon, then requested a preview of the recommended gold direction. Replaced the textile with his original transparent gold PNG (`next-step-gold-ribbon.png`), showing its complete shape at a restrained size on white. The main message and signup now share the left column; removed the separate signup card and duplicate invitation heading. Phone layout stacks the intact sculpture between the invitation and signup.
+- Newsletter behavior and membership/contact destinations are preserved. TypeScript and desktop/phone visual checks passed. Screenshots: `docs/reviews/2026-10-12/next-step/desktop-gold.png` and `mobile-gold.png`. Local preview, not pushed; supersedes the textile layout below.
+
+## Your next step — white background and smaller textile (12 October 2026, local)
+
+- Mitchell felt the textile was too large and rejected the ivory background, then explicitly chose clean white. Set the section to `#fff`, reduced desktop artwork from 1180px to 880px (about 25%), and reduced/repositioned the tablet and phone artwork. Full-width rail treatment, copy, white signup panel and backend behavior remain unchanged.
+- Desktop/phone visual fitting and whitespace checked. Latest screenshot: `docs/reviews/2026-10-12/next-step/desktop-white.png`. Local, not pushed. This supersedes the oversized ivory version below.
+
+## Your next step — supplied textile ribbon (12 October 2026, local)
+
+- Mitchell supplied `public/assets/0E72EE35-7D16-4212-AE45-008C1F8B6532.PNG` and requested it replace the drawn ribbons, then clarified it should have the same oversized, edge-cropped treatment. Removed the inline SVG and use the original transparent PNG, scaled through the right side and behind the signup, with CSS fading for readable text. Warm ivory palette and all signup functionality remain.
+- Responsive image sizing explicitly overrides the global image max-width, preserving the decorative crop on phones. Desktop and phone layout/load checks and TypeScript/whitespace checks passed. Latest screenshot: `docs/reviews/2026-10-12/next-step/desktop-textile.png`. Other newly supplied PNGs remain untouched. Local, not pushed.
+
+## Your next step — lighter palette (12 October 2026, local)
+
+- Mitchell approved the full-width ribbon composition and requested a lighter background. Changed only this section to warm ivory with plum headings/body text, a muted purple italic line, plum primary action and white signup panel. Gold/lilac ribbons remain with reduced shadow opacity. Layout, rails treatment and newsletter behavior are unchanged.
+- Desktop and phone visual checks completed; no horizontal overflow. Screenshot: `docs/reviews/2026-10-12/next-step/desktop-light.png`. Local and unpushed. This supersedes the dark palette below.
+
+## Your next step — full-width graphic revision (12 October 2026, local)
+
+- Mitchell rejected the inset photographic version because it clashed with the page rails and repeated an image used elsewhere. Replaced it with one full-width plum surface and original gold/lilac SVG ribbons. This section covers the fixed rails locally (z-index 89) while navigation remains above; the rest of the rail system is unchanged.
+- Removed the community photo, image import, credit and separate lilac signup band. Oversized editorial copy, cream signup panel, membership/partnership/contact destinations and all existing signup behavior remain. Mobile uses a quieter cropped ribbon composition. No new raster assets, reused photographs, backend changes, external messages or deployment.
+- Desktop/mobile review covers 1440/760/390/320px, full viewport width, rail interruption, readable controls and keyboard focus. Production export and TypeScript passed. Updated images: `docs/reviews/2026-10-12/next-step/desktop-ribbons.png` and `mobile-ribbons.png`. This supersedes the photographic design described below.
+
+## Your next step — A + F and newsletter server (12 October 2026, local)
+
+- Mitchell selected A + F (Zipline photography + GitBook signup panel), asked for a bold finish and then authorized building the email-list server because none existed. Added `next-step.tsx/.module.css`: existing credited community photograph, oversized cream/gold headline, membership action, lilac band with cream email signup and compact partnership/question links. Mobile preserves all four faces and stacks the signup. `#join` is preserved.
+- Added a PostgreSQL subscriber model/migration and FastAPI subscribe, confirm, unsubscribe and administrator list endpoints. Unique normalized addresses, atomic resend claim, explicit consent, hashed tokens, 24-hour single-use confirmation, unsubscribe/resubscribe, validation, failure feedback and rate limits are included. Only confirmed addresses appear in the default admin API list; this is separate from cooperative membership. No campaign-sending or dashboard newsletter view was added.
+- Local signup uses the existing API boundary and Mailpit capture only. GitHub Pages signup stays disabled with clear coming-soon text until API/database hosting and a verified sender are configured. No external emails, push or deployment. Operational details: `docs/design/newsletter-service.md`.
+- Docker was absent in this environment, so an isolated temporary PostgreSQL 17 database and Mailpit were started on loopback using official downloads. Database lives at `/tmp/wisconnect-newsletter-pg`; Mailpit data at `/tmp/wisconnect-mailpit/messages.db`. This did not replace old records. The normal Docker compose volume remains the intended persistent local setup.
+- Newsletter, contact and authentication PostgreSQL integration suites passed. Build/static export now includes 15 routes. Browser checks and screenshots are recorded in `docs/reviews/2026-10-12/next-step.md`. Previous sector-card changes remain intact and uncommitted.
+
+## Your next step inspiration board (12 October 2026, local)
+
+- Mitchell requested a visually striking closing “Your next step” section with a newsletter signup, and explicitly asked to research Mobbin and create an inspiration page before implementation. His later A + F selection is implemented above. The proposed Explore page is deferred while this section is designed.
+- Mobbin connector searches timed out; after Mitchell signed in, reviewed the signed-in Chrome library and downloaded six full reference assets: Zipline, Cohere, Squarespace, Ramp, Seed (video), and GitBook. Board: `docs/design/next-step-inspiration/index.html`, served locally at `http://localhost:3100/`. Source links, provenance and restart command are in its README.
+- Board includes original references, adaptation/signup notes, enlarge controls and browser-local shortlisting. Recommended A + F (Zipline photography + GitBook signup panel), with B (Cohere sculptural purple) as the strongest abstract alternative. Mitchell subsequently selected A + F and authorized a custom email-list backend; see the implementation entry above.
+- Static assets, links, anchors and JavaScript syntax checked. Browser control became unavailable at final board preview, so rendered-page checks remain pending. No homepage design changes, live subscription, commit, push or deployment for this task. Existing sector-card edits remain intact.
+
+## Sector cards and business destinations (12 October 2026, local)
+
+- Mitchell requested sector cards that lead to the right businesses. Coffee shops now links to Momentum Coffee, Day care to Bunnyland, and Shared kitchens to Exquisite Kitchen. Links reveal the directory tile, clear any filters that hide it, highlight it and transfer keyboard focus; the tile opens its existing details.
+- The five remaining Chicago sectors use “Ask about this sector” with a contextual contact link. Supplied descriptions establish catering and apparel production, but do not establish a restaurant, clothing store or screen-printing service; Jennima’s Juice is listed in Liberia. These were not treated as confirmed Chicago sector matches.
+- A shared sector list validates contact query parameters. The contact page prefills Member enterprises and a Chicago-sector inquiry, including the hosted email fallback. Generic contact behavior is preserved. No messages were sent and no backend or membership changes were made.
+- Production static export (14 routes), TypeScript and whitespace checks passed. Browser checks covered the three directory destinations and dialogs, repeat links with a filtered-out target, all five contextual inquiries, generic contact defaults, 1440/390/320px layouts, carousel arrows/keyboard/swipe and mobile navigation. Review/screenshots: `docs/reviews/2026-10-12/sector-links.md`. Not committed or pushed.
+
 ## Homepage clarity and biography previews (12 October 2026)
 
 - Release approved on 12 October: Mitchell requested pushing this completed homepage pass and deferring membership-information work. Include the homepage changes, review notes and three screenshots. Check the release commit and GitHub Actions for publication status; the local-only notes below describe the review stage.

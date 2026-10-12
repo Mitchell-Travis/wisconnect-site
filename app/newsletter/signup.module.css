@@ -1,0 +1,22 @@
+.signup h3{font-family:Georgia,serif;font-size:28px;font-weight:400;line-height:1.2;letter-spacing:-.025em;margin:0 0 8px;color:#291833}
+.description{font-size:13px;line-height:1.7;color:#64566b;margin:0 0 20px;max-width:420px}
+.signup label{display:block;font-size:12px;font-weight:650;color:#483650;margin-bottom:8px}
+.controls{display:flex;gap:8px}
+.controls input{min-width:0;flex:1;width:100%;border:1px solid #b9acbf;border-radius:4px;min-height:52px;padding:12px;font:inherit;font-size:16px;background:#fff;color:#291833}
+.controls button,.action{display:flex;align-items:center;justify-content:center;gap:18px;border:0;border-radius:4px;min-height:52px;background:#4b2e68;color:white;font:inherit;font-size:13px;font-weight:650;padding:14px 18px;cursor:pointer}
+.controls button:hover,.action:hover{background:#291833}
+.controls button span{font-size:18px}
+.controls :disabled{cursor:not-allowed;opacity:.6}
+.signup :focus-visible,.action:focus-visible{outline:3px solid #986cba;outline-offset:3px}
+.note{font-size:11px;line-height:1.6;color:#75637b;margin:14px 0 0}
+.error{font-size:13px;color:#8b2145;line-height:1.5;margin:10px 0 0}
+.error:empty{margin:0}
+.success strong{font-family:Georgia,serif;font-size:28px;font-weight:400;color:#4b2e68}
+.success p{font-size:14px;line-height:1.6;color:#604f68}
+.success .note{font-size:11px}
+.success a,.reset{text-decoration:underline;text-underline-offset:3px}
+.reset{font:inherit;font-size:12px;background:none;border:0;color:#4b2e68;padding:8px 0;cursor:pointer}
+@media(max-width:450px){.controls{flex-direction:column}}
+.page{min-height:100vh;background:#f3edf5;color:#291833}
+.panel{margin:80px auto;padding:40px;background:#fffcf7;width:min(540px,calc(100% - 32px));border-radius:8px}
+.panel h1{font-size:40px;line-height:1.1}.panel p{line-height:1.6}.panel .action{margin:24px 0}.panel>a{font-size:14px;text-decoration:underline;text-underline-offset:4px}
