@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { assetPath } from './assets';
 import styles from './wisconnect-content.module.css';
 export { BusinessDirectory } from './business-directory';
@@ -9,31 +8,11 @@ function ArrowIcon(){
   return <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 14 14 6M7 6h7v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 }
 
-import { businesses } from './businesses';
 export { businesses } from './businesses';
 
 export { CooperativeOverview } from './cooperative-overview';
 
-export function Places(){
-  return <section id="locations" className={`section ${styles.places}`} aria-labelledby="places-title"><div className="shell">
-    <div className="section-heading split-heading"><div><p className="eyebrow">Local roots · A wider network</p><h2 id="places-title">Different places.<br/><em>A shared purpose.</em></h2></div><p>WisConnect’s work takes shape around local people, businesses and needs. The connection across places is shared; the work in each community is its own.</p></div>
-    <div className={styles.placeGrid}>
-      <article className={styles.placeCard}><span className={styles.placeNumber}>01 / UNITED STATES</span><h3>Chicago</h3><p>Food, hospitality, child care, design and professional experience come together in the Chicago network. Roseland is central to the Wisdom Connection Initiative’s vision for a cooperative business hub.</p><div className={styles.placeBusinesses}><span>Meet the businesses</span>{businesses.filter(b=>b.country==='United States').map(b=><a key={b.id} href={`#business-${b.id}`}>{b.name} <ArrowIcon/></a>)}</div></article>
-      <article className={styles.placeCard}><span className={styles.placeNumber}>02 / LIBERIA</span><h3>Liberia</h3><p>WisConnect Cooperative Inc. in Liberia is an affiliate of the holding cooperative. Its focus includes agriculture, mining, industrial procurement, textiles and professional services, alongside consulting for construction, agriculture and food businesses.</p><div className={styles.placeBusinesses}><span>Meet the businesses</span>{businesses.filter(b=>b.country==='Liberia').map(b=><a key={b.id} href={`#business-${b.id}`}>{b.name} <ArrowIcon/></a>)}</div></article>
-    </div>
-    <div className={styles.futurePlaces}><span className="eyebrow">Connections taking shape</span><div><h3>Ghana &amp; Vietnam</h3><p>These are next steps in the network’s development. Local business and project stories will be introduced as the work takes shape.</p></div><a href="#impact">Explore the connections <span aria-hidden="true">↓</span></a></div>
-  </div></section>;
-}
-
-export function CommunityProjects(){
-  return <section id="community-projects" data-divider="background" className={`section ${styles.projects}`} aria-labelledby="projects-title"><div className="shell">
-    <div className="section-heading split-heading"><div><p className="eyebrow">The work taking shape</p><h2 id="projects-title">Business growth.<br/><em>Community ownership.</em></h2></div><p>The Wisdom Connection Initiative brings people, capital and land into a vision for sustainable neighbourhoods. These are development directions, with each location shaping its own approach.</p></div>
-    <div className={styles.projectGrid}>
-      <article><span className={styles.tag}>Chicago · Development vision</span><h3>The Wisdom Connection Initiative</h3><p>A proposed cooperative business hub in Greater Roseland. The vision connects affordable commercial space with community-owned groceries, renewable energy, health and opportunities for young people through arts, sports and entrepreneurship.</p><p className={styles.projectByline}>Cooperative development · Community assets · Youth opportunity</p></article>
-      <article><span className={styles.tag}>Liberia · Areas of work</span><h3>Enterprise rooted in place</h3><p>In River Cess and the wider Liberia network, the focus is on entrepreneurs, local expertise and community assets. Agriculture, mining and business support form part of the effort to build cooperative economic opportunities.</p><p className={styles.projectByline}>Local enterprise · Agriculture · Professional support</p></article>
-    </div><Link className={styles.textLink} href="/contact">Talk with WisConnect about this work <ArrowIcon/></Link>
-  </div></section>;
-}
+export { CommunityProjects } from './community-projects';
 
 const memberStories=[
   {name:'Nikki Bravo',image:'nikki',label:'Coffee & opportunity',title:'More than a place for coffee.',copy:'Nikki and Tracy’s Momentum Coffee connects hospitality with community investment. Its food incubator partnership supports emerging food entrepreneurs.'},

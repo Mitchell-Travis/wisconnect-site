@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { animate, motion, MotionConfig, useInView } from 'motion/react';
 import { assetPath } from './assets';
 import styles from './page.module.css';
-import { businesses, CooperativeOverview, BusinessDirectory, Places, CommunityProjects, MemberStories } from './wisconnect-content';
+import { businesses, CooperativeOverview, BusinessDirectory, CommunityProjects, MemberStories } from './wisconnect-content';
 import { WhatWisConnectDoes } from './what-wisconnect-does';
 
 // Retain unfinished sections and their original content for a later release.
@@ -44,7 +44,7 @@ const navigationMenus = [
     {title:'Enterprise',links:[{label:'Chicago business sectors',description:'Eight sectors at the heart of the Chicago vision.',href:'#businesses'},{label:'Member stories',description:'Experience behind the businesses.',href:'#member-stories'}]}
   ]},
   {...allNavigationMenus[2],groups:[
-    {title:'Places & connections',links:[{label:'Chicago & Liberia',description:'Local businesses and work in each place.',href:'#locations'},{label:'Our wider connections',description:'The network and its developing relationships.',href:'#impact'}]},
+    {title:'Places & connections',links:[{label:'Our wider connections',description:'The network and its developing relationships.',href:'#impact'}]},
     {title:'The work',links:[{label:'Services & support',description:'Professional expertise, commercial space and trade.',href:'#what-we-do'},{label:'Community projects',description:'The Wisdom Connection Initiative and Liberia focus.',href:'#community-projects'}]}
   ]},
   allNavigationMenus[4]
@@ -126,7 +126,6 @@ const regions = {
   'United States': 'Chicago · Businesses in food, child care, design and professional services, connected by a cooperative vision for Greater Roseland.',
   'Brazil / South America': 'Brazil · Part of the wider diaspora connection vision; no local business listings or active projects are presented here.',
   'Vietnam / Southeast Asia': 'Vietnam · A developing connection, with local business and project content to follow as the work takes shape.',
-  Ghana: 'Ghana · A developing connection, with local business and project content to follow as the work takes shape.'
 } as const;
 
 type Sector = (typeof sectors)[number];
@@ -135,7 +134,6 @@ type Region = keyof typeof regions;
 const impactPlaces: {region:Region;label:string;x:number;y:number;route?:string}[] = [
   // Approximate country anchors in the map's equirectangular projection, not office locations.
   {region:'Africa',label:'Liberia',x:474,y:220},
-  {region:'Ghana',label:'Ghana',x:498,y:218},
   {region:'United States',label:'United States',x:228,y:129,route:'M474 220 Q355 20 228 129'},
   {region:'Brazil / South America',label:'Brazil',x:356,y:277,route:'M474 220 Q388 167 356 277'},
   {region:'Vietnam / Southeast Asia',label:'Vietnam',x:800,y:199,route:'M474 220 Q658 40 800 199'}
@@ -697,8 +695,6 @@ export default function Home(){
       <div className={styles.emptyContent}><h3>Community initiatives awaiting approval.</h3><p>We are making space for members to describe their work, why it matters, the people involved and the contributions behind it. Project details and outcomes will be shared after verification and publication consent.</p><Link className={styles.contentLink} href="/join">Tell us what you would like to contribute <ArrowUpRightIcon/></Link></div>
     </div></section> : <CommunityProjects/>}
 
-    <Places/>
-
     <section id="impact" data-divider="background" className={styles.impact} aria-labelledby="connections-title">
       <div className={styles.impactFrame}>
         {showUnfinishedSections && <>
@@ -715,7 +711,7 @@ export default function Home(){
         </>}
         <div id="global-reach" ref={impactVisual} className={styles.impactVisual}>
           <p className="eyebrow">Across the diaspora</p><h2 id="connections-title" className={styles.connectionTitle}>Local roots. Diaspora connections.</h2>
-          <p className={styles.connectionCopy}>From Chicago to Liberia, relationships connect local enterprise to a wider circle of knowledge and opportunity. Ghana, Vietnam and Brazil belong to the network’s developing connections and longer-term vision.</p>
+          <p className={styles.connectionCopy}>From Chicago to Liberia, relationships connect local enterprise to a wider circle of knowledge and opportunity. Vietnam and Brazil belong to the network’s developing connections and longer-term vision.</p>
           <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>Explore current roots and developing connections.</span></div>
           <svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false">
             <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
@@ -727,7 +723,7 @@ export default function Home(){
               <circle cx={place.x} cy={place.y} r="15" fill="currentColor" opacity=".12"/>
               <motion.circle cx={place.x} cy={place.y} r="15" opacity=".35" stroke="currentColor" strokeWidth="1.5" initial={false} animate={{r:animateImpact?[6,28]:15,opacity:animateImpact?[.7,0]:.35}} transition={{duration:animateImpact?2.4:0,repeat:animateImpact?Infinity:0,delay:animateImpact?index*.35:0,ease:'easeOut'}}/>
               <circle cx={place.x} cy={place.y} r="7" fill="currentColor" stroke="#fff" strokeWidth="2"/>
-              <text x={place.x+(place.region==='Ghana'?18:0)} y={place.y+(place.region==='Ghana'?-22:32)} textAnchor="middle" fill="currentColor">{place.label}</text>
+              <text x={place.x} y={place.y+32} textAnchor="middle" fill="currentColor">{place.label}</text>
             </g>)}
           </svg>
           <div className={styles.impactRegions} role="group" aria-label="Countries in the connection vision">
@@ -790,15 +786,31 @@ export default function Home(){
       <div className={styles.contentGrid}>{['Members & their work','Events & programs','Community moments'].map(label=><figure className={styles.galleryPlaceholder} key={label}><div aria-hidden="true">Photo to come</div><figcaption><strong>{label}</strong><span>Awaiting approved photography</span></figcaption></figure>)}</div>
     </div></section>}
 
-    <section id="get-involved" data-divider="background" className={`section ${styles.contentSection} ${styles.getInvolved}`} aria-labelledby="get-involved-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">How to get involved</p><h2 id="get-involved-title">Start with what<br/><em>you bring.</em></h2></div><p>You might bring a business, a professional skill, local knowledge or an idea you want to explore. Tell us about yourself and what interests you in WisConnect.</p></div>
-      <ol className={styles.introductionSteps}>
-        <li><span className={styles.contentLabel}>01 · Introduce yourself</span><h3>Tell us about your work.</h3><p>Answer five questions about who you are, where you’re based and what you would like to contribute.</p></li>
-        <li><span className={styles.contentLabel}>02 · Review &amp; email</span><h3>Share your introduction.</h3><p>Review your answers, then open the prepared draft in your email app and send it to WisConnect. Nothing is sent automatically.</p></li>
-        <li><span className={styles.contentLabel}>03 · Start a conversation</span><h3>Ask about your next step.</h3><p>Your introduction opens a conversation about membership. Ask the team about eligibility, fees and the review process before making a commitment.</p></li>
-      </ol>
-      <Link className={styles.contentLink} href="/join">Introduce yourself <ArrowUpRightIcon/></Link>
-      <p className={styles.contentNote}>This is an introduction, not membership approval. Membership terms and available opportunities are still being confirmed.</p>
+    <section id="get-involved" data-divider="background" className={styles.getInvolved} aria-labelledby="get-involved-title"><div className={styles.involvementFrame}>
+      <div className={styles.involvementComposition}>
+        <div className={styles.involvementVisual}>
+          <img src={assetPath('purpose-connection-1400.webp')} srcSet={`${assetPath('purpose-connection-640.webp')} 640w, ${assetPath('purpose-connection-1400.webp')} 1400w`} sizes="(max-width: 900px) 100vw, (max-width: 1328px) 60vw, 768px" width="1400" height="912" loading="lazy" decoding="async" alt="Three women sharing ideas and working together at a laptop"/>
+          <p className={styles.involvementEyebrow}>How to get involved</p>
+          <div className={styles.involvementHeadline}>
+            <h2 id="get-involved-title">Start with<br/>what you<br/><em>bring.</em></h2>
+            <p>Your business. Your knowledge.<br/>Your place in what comes next.</p>
+          </div>
+          <a className={styles.involvementCredit} href="https://www.pexels.com/photo/three-women-looking-at-the-computer-3894378/" target="_blank" rel="noreferrer">Illustrative photography · PICHA Stock / Pexels</a>
+        </div>
+        <div className={styles.involvementPanel}>
+          <p className={styles.involvementKicker}>Three steps to a conversation</p>
+          <ol className={styles.introductionSteps} role="list">
+            <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Introduce yourself.</h3><p>Five questions about you, your work and what you’d like to contribute.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>Review &amp; email.</h3><p>Review your introduction, then send the prepared draft from your email app. Nothing sends automatically.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Start a conversation.</h3><p>Explore your next step with the team. Ask about eligibility, fees and the membership review process.</p></div></li>
+          </ol>
+          <div className={styles.involvementAction}>
+            <Link className={styles.involvementButton} href="/join">Introduce yourself <ArrowUpRightIcon/></Link>
+            <p>This is an introduction, not membership approval. Membership terms and opportunities are still being confirmed.</p>
+          </div>
+        </div>
+      </div>
+      <div className={styles.involvementTextile} aria-hidden="true"/>
     </div></section>
 
     <section id="faq" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="faq-title"><div className="shell">
@@ -836,7 +848,7 @@ export default function Home(){
     </div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/terms">Terms &amp; Conditions</Link></div></footer> : <footer className="site-footer"><div className="shell footer-grid">
       <div className="footer-brand"><img src={assetPath('logo-horizontal.webp')} alt="WisConnect"/><p>People · Capital · Communities</p><p>WisConnect Holding Cooperative</p></div>
       <div><strong>Explore WisConnect</strong><a href="#purpose">Mission &amp; vision</a><a href="#cooperative-model">The cooperative model</a><a href="#members">Meet the visionaries</a><a href="#business-directory">Business directory</a><a href="#businesses">Chicago business sectors</a></div>
-      <div><strong>Our work</strong><a href="#locations">Chicago &amp; Liberia</a><a href="#impact">Our wider connections</a><a href="#what-we-do">Services &amp; support</a><a href="#community-projects">Community projects</a><a href="#member-stories">Member stories</a></div>
+      <div><strong>Our work</strong><a href="#impact">Our wider connections</a><a href="#what-we-do">Services &amp; support</a><a href="#community-projects">Community projects</a><a href="#member-stories">Member stories</a></div>
       <div><strong>Get involved</strong><a href="#get-involved">How to get involved</a><Link href="/join">Membership interest</Link><Link href="/contact">Contact WisConnect</Link><a href="#faq">Your questions, answered</a><a href="#languages">Language availability</a></div>
     </div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/terms">Terms &amp; Conditions</Link></div></footer>}
   </main></div></MotionConfig>

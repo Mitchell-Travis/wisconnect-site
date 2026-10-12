@@ -68,6 +68,7 @@
 
 /* A readable first frame: movement never gates the headline or action. */
 .hero { --hero-frame-edge: 24px; --hero-inset: var(--content-gutter); padding-top: var(--nav-height); background: #fff; }
+.hero :global(.hero-textile-ribbon) { height: 16px; }
 /* Keep the composition inset from the fixed outer rails, including the artwork. */
 .heroGrid, .heroFoot { width: min(calc(1280px - 2 * var(--hero-inset)), calc(100% - 2 * (var(--hero-frame-edge) + var(--hero-inset)))); margin-inline: auto; }
 .heroGrid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); }
@@ -332,6 +333,7 @@
 @media (max-width: 620px) {
   .page { --section-rail-inset: 12px; --section-space-y: 56px; --section-content-gap: 28px; }
   .hero { --hero-frame-edge: 12px; }
+  .hero :global(.hero-textile-ribbon) { height: 12px; }
 }
 @media (max-width: 959px) {
   .page { --nav-height: 66px; }
@@ -613,13 +615,66 @@
 .contentGrid h3, .emptyContent h3 { color: var(--plum); font-family: var(--font-display); font-size: 28px; line-height: 1.2; letter-spacing: -.025em; }
 .contentGrid p, .emptyContent p, .contentDetails p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
 .contentLabel { display: block; margin-bottom: 14px; color: var(--purple); font-size: 11px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
-.getInvolved { background: var(--sand); }
-.introductionSteps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; list-style: none; padding: 0; margin: 36px 0 20px; }
-.introductionSteps li { min-width: 0; border-top: 1px solid var(--line); padding-top: 24px; }
-.introductionSteps h3 { margin: 0; color: var(--plum); font-family: var(--font-display); font-size: 28px; font-weight: 400; line-height: 1.2; letter-spacing: -.025em; }
-.introductionSteps p { margin: 16px 0 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
-@media (max-width: 980px) {
-  .introductionSteps { grid-template-columns: 1fr; gap: 24px; }
+/* A photographic invitation, framed by the existing page rails. */
+.getInvolved { padding: 0; background: #fff; }
+.involvementFrame { width: min(1280px, calc(100% - 2 * var(--section-rail-inset))); margin-inline: auto; }
+.involvementComposition { display: grid; grid-template-columns: 3fr 2fr; background: var(--plum); }
+.involvementVisual { position: relative; isolation: isolate; min-width: 0; min-height: 760px; overflow: hidden; background: #211528; color: #fff; }
+.involvementVisual > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 72%; object-fit: cover; object-position: 49% center; mask-image: linear-gradient(#000 65%, transparent 100%); }
+.involvementVisual::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(24 15 31 / 65%), transparent 24%, rgb(24 15 31 / 4%) 40%, rgb(24 15 31 / 78%) 74%, #211528 100%); }
+.involvementEyebrow { margin: 0; padding: 42px 48px; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .2em; }
+.involvementHeadline { position: absolute; inset: auto 48px 76px; }
+.involvementHeadline h2 { color: #fff; font-family: var(--font-display); font-size: clamp(62px, 6.3vw, 90px); font-weight: 400; line-height: .96; letter-spacing: -.04em; }
+.involvementHeadline h2 em { color: #e6c99d; font-weight: 400; }
+.involvementHeadline p { margin: 24px 0 0; color: #f0e8ed; font-size: 15px; line-height: 1.65; }
+.involvementCredit { position: absolute; left: 48px; right: 32px; bottom: 16px; display: flex; align-items: center; min-height: 44px; color: #d7c9da; font-size: 10px; line-height: 1.5; text-underline-offset: 4px; }
+.involvementCredit:hover { text-decoration: underline; }
+.involvementPanel { display: flex; flex-direction: column; min-width: 0; padding: 46px 40px 36px; color: #fff; }
+.involvementKicker { margin: 0 0 28px; color: #dfc297; font-size: 10px; font-weight: 650; line-height: 1.6; text-transform: uppercase; letter-spacing: .15em; }
+.introductionSteps { display: grid; gap: 0; list-style: none; padding: 0; margin: 0; }
+.introductionSteps li { display: grid; grid-template-columns: 52px minmax(0, 1fr); column-gap: 20px; min-width: 0; padding: 25px 0; border-top: 1px solid rgb(220 207 228 / 22%); }
+.introductionNumber { color: #dfc297; font-family: var(--font-display); font-size: 44px; line-height: 1; letter-spacing: -.05em; }
+.introductionSteps h3 { margin: 0; color: #fff; font-family: var(--font-display); font-size: 25px; font-weight: 400; line-height: 1.2; letter-spacing: -.025em; }
+.introductionSteps p { margin: 12px 0 0; color: #d4c7da; font-size: 14px; line-height: 1.75; }
+.involvementAction { margin-top: auto; padding-top: 20px; }
+.involvementButton { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 58px; padding: 16px 22px; border: 1px solid transparent; border-radius: var(--radius-control); background: #f3e9dc; color: var(--plum); font-size: 14px; font-weight: 650; transition: background .2s; }
+.involvementButton svg { width: 20px; height: 20px; flex-shrink: 0; }
+.involvementButton:hover { background: #e6c99d; }
+.involvementAction > p { margin: 18px 0 0; color: #c5b4cd; font-size: 11px; line-height: 1.7; }
+.page .getInvolved a:focus-visible { outline-color: #e6c99d; }
+.involvementTextile { height: 12px; background: var(--textile-background) center 46% / cover no-repeat; border-top: 1px solid rgb(212 175 124 / 40%); }
+@media (max-width: 1100px) and (min-width: 901px) {
+  .involvementComposition { grid-template-columns: 1.25fr 1fr; }
+  .involvementPanel { padding-inline: 28px; }
+  .introductionSteps li { column-gap: 14px; grid-template-columns: 42px minmax(0, 1fr); }
+  .introductionNumber { font-size: 38px; }
+  .introductionSteps h3 { font-size: 23px; }
+}
+@media (max-width: 900px) {
+  .involvementComposition { grid-template-columns: 1fr; }
+  .involvementVisual { min-height: 740px; }
+  .involvementVisual > img { height: auto; object-position: center; }
+  .involvementHeadline h2 { font-size: 76px; }
+  .involvementPanel { padding: 40px 48px; }
+  .involvementAction { padding-top: 16px; }
+}
+@media (max-width: 620px) {
+  .involvementVisual { min-height: 500px; }
+  .involvementVisual > img { object-position: 50% top; }
+  .involvementEyebrow { padding: 28px 24px; font-size: 10px; }
+  .involvementHeadline { left: 24px; right: 24px; bottom: 66px; }
+  .involvementHeadline h2 { font-size: clamp(52px, 14vw, 72px); }
+  .involvementHeadline p { margin-top: 20px; font-size: 14px; }
+  .involvementCredit { left: 24px; right: 24px; bottom: 10px; font-size: 9px; }
+  .involvementPanel { padding: 32px 24px; }
+  .involvementKicker { font-size: 9px; margin-bottom: 24px; }
+  .introductionSteps li { grid-template-columns: 42px minmax(0, 1fr); gap: 16px; padding: 24px 0; }
+  .introductionNumber { font-size: 38px; }
+  .introductionSteps h3 { font-size: 23px; }
+  .introductionSteps p { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .involvementButton { transition: none; }
 }
 .profileBusinesses { margin: 28px 0; padding-block: 20px; border-block: 1px solid var(--line); }
 .profileBusinesses h3 { font-family: var(--font-sans); font-size: 13px; color: var(--muted); margin: 0 0 12px; }
