@@ -41,6 +41,7 @@
 }
 .header[data-scrolled="true"] { box-shadow: 0 1px 0 var(--line); }
 .header[data-hidden="true"]:not(:focus-within):not(:has(details[open])) { transform: translateY(-100%); }
+.page:has(.header[data-hidden="true"]):not(:has(.header:focus-within)):not(:has(.header details[open])) { --project-stack-top: 0px; }
 .navShell { position: relative; width: min(1280px, calc(100% - 48px)); min-height: 64px; margin: auto; padding: 8px 24px; display: flex; align-items: center; gap: 28px; background: white; border-radius: 6px; }
 .brand { flex-shrink: 0; width: 144px; }
 .brand img { width: 100%; height: auto; }
@@ -88,44 +89,23 @@
 .heroFoot p { margin: 0; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .14em; color: #6b5876; }
 .heroFoot a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 13px; color: var(--plum); }
 
-/* Equal portrait cards keep every member visible; biographies open in the existing dialog. */
+/* Mammoth-inspired leadership gallery, using WisConnect portraits and colours. */
 .page section.members { width: 100%; margin: 0; padding: var(--section-space-y) 0; background: var(--mist); scroll-margin-top: 80px; position: relative; isolation: isolate; }
-.memberThreads { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .13; pointer-events: none; z-index: -1; }
-.memberSwipeHint { display: none; }
-.membersHeading { margin-bottom: var(--section-content-gap); }
-.memberIntroduction { min-width: 0; }
-.memberConnection { margin-top: 24px; }
-.memberLede { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
-.memberHint { margin: 18px 0 0; color: var(--purple); font-size: 13px; }
-.memberGrid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 40px 24px; }
-.memberCard { grid-column: span 2; display: flex; flex-direction: column; min-width: 0; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--plum); text-align: left; font: inherit; cursor: pointer; }
-.memberCard:nth-child(5):nth-last-child(3) { grid-column: 2 / span 2; }
-.memberPortrait { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 8px; background: #eee7f1; }
-.memberPortrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; transition: transform .3s ease; }
-.memberCard:hover .memberPortrait img { transform: scale(1.025); }
-.memberCard:focus-visible { outline: 2px solid var(--purple); outline-offset: 6px; }
-.memberInfo { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding-top: 18px; }
-.memberInfo strong { font-size: 18px; line-height: 1.35; font-weight: 600; }
-.memberRole { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.6; }
-.memberRead { display: inline-flex; align-items: center; gap: 9px; margin-top: auto; padding-top: 16px; color: var(--purple); font-size: 13px; font-weight: 600; }
-.memberRead svg { width: 16px; height: 16px; }
-.memberCard:hover .memberRead { text-decoration: underline; text-underline-offset: 4px; }
-@media (max-width: 959px) {
-  .memberGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .memberCard:nth-child(5):nth-last-child(3) { grid-column: span 2; }
-  .memberCard:last-child:nth-child(odd) { grid-column: 2 / span 2; }
+.membersHeading { max-width: 850px; margin: 0 auto 48px; text-align: center; }
+.membersHeading h2 { margin: 12px 0 20px; font-size: clamp(42px, 5.6vw, 80px); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
+.memberLede { max-width: 620px; margin: 0 auto; color: var(--muted); font-size: 16px; line-height: 1.7; }
+.memberHint { margin: 16px 0 0; color: var(--purple); font-size: 12px; }
+.memberGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 12px; }
+.memberConnection { margin-top: 28px; text-align: center; }
+@media (min-width: 761px) and (max-width: 1100px) {
+  .memberGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (max-width: 699px) {
-  .memberGrid { display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--content-gutter); margin-inline: calc(-1 * var(--content-gutter)); padding: 6px var(--content-gutter) 18px; scrollbar-width: thin; scrollbar-color: #b9a5ce transparent; }
-  .memberCard { flex: 0 0 82%; scroll-snap-align: start; }
-  .memberSwipeHint { display: inline; }
-  .memberCard, .memberCard:nth-child(5):nth-last-child(3), .memberCard:last-child:nth-child(odd) { grid-column: auto; }
-  .memberInfo strong { font-size: 20px; }
-  .memberRole { font-size: 14px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .memberPortrait img { transition: none; }
-  .memberCard:hover .memberPortrait img { transform: none; }
+@media (max-width: 760px) {
+  .membersHeading { margin-bottom: 32px; }
+  .membersHeading h2 { font-size: clamp(40px, 9vw, 64px); }
+  .memberLede { font-size: 14px; }
+  .memberGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 8px; }
+  .memberConnection { text-align: left; }
 }
 
 /* Stripe-inspired enterprise cards; native touch scrolling and keyboard access remain. */
@@ -613,7 +593,7 @@
 .contentGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 28px; margin-top: 36px; }
 .contentGrid > article { padding-top: 24px; border-top: 1px solid var(--line); min-width: 0; }
 .contentGrid h3, .emptyContent h3 { color: var(--plum); font-family: var(--font-display); font-size: 28px; line-height: 1.2; letter-spacing: -.025em; }
-.contentGrid p, .emptyContent p, .contentDetails p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
+.contentGrid p, .emptyContent p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
 .contentLabel { display: block; margin-bottom: 14px; color: var(--purple); font-size: 11px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
 /* A photographic invitation, framed by the existing page rails. */
 .getInvolved { padding: 0; background: #fff; }
@@ -685,11 +665,6 @@
 .contentLink svg { flex-shrink: 0; width: 18px; height: 18px; }
 .emptyContent { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
 .emptyContent h3:not(:first-child) { margin-top: 32px; }
-.contentDetails { border-bottom: 1px solid var(--line); padding-block: 12px; scroll-margin-top: 100px; }
-.contentDetails:first-of-type { margin-top: 32px; border-top: 1px solid var(--line); }
-.contentDetails summary { padding-block: 12px; color: var(--plum); font-size: 17px; font-weight: 550; cursor: pointer; }
-.contentDetails p { margin: 8px 0 20px; }
-.contentDetails a { display: inline-block; padding-block: 8px; color: var(--purple); text-decoration: underline; text-underline-offset: 3px; }
 .galleryPlaceholder { margin: 0; }
 .galleryPlaceholder > div { display: grid; place-items: center; aspect-ratio: 4 / 3; border: 1px dashed var(--mauve); border-radius: 6px; background: var(--sand); color: var(--muted); font-size: 14px; }
 .galleryPlaceholder figcaption { display: grid; gap: 6px; margin-top: 16px; color: var(--plum); font-size: 15px; }
@@ -702,7 +677,6 @@
 .languageDropdown .contentLink { margin: 0; padding-inline: 10px; font-size: 12px; }
 @media (max-width: 760px) {
   .contentGrid { gap: 24px; }
-  .contentDetails summary { font-size: 16px; }
 }
 
 /* Purpose: two complementary moments from one photographic series. */

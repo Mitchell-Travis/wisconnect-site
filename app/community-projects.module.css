@@ -3,6 +3,7 @@
 .intro p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.8; }
 .contact { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 18px; color: var(--purple); font-size: 14px; font-weight: 550; }
 .contact:hover { text-decoration: underline; text-underline-offset: 4px; }
+.storyStack { isolation: isolate; }
 .story { border-bottom: 1px solid var(--line); }
 .story + .story { border-top: 0; }
 .storyHeader { display: flex; align-items: center; gap: 24px; min-height: 88px; padding-block: 20px; }
@@ -36,4 +37,11 @@
   .facts { grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
   .mobileRead { display: inline-flex; margin-top: 22px; }
   .panelInner { padding-bottom: 28px; }
+}
+@media(max-width:760px) and (prefers-reduced-motion:no-preference) {
+  .storyStack[data-stack=true] .story { position: sticky; top: calc(var(--project-stack-top,88px) + var(--story-index) * 48px); z-index: calc(var(--story-index) + 1); background: #fff; transition: top .28s ease; }
+  .storyStack[data-stack=true] .storyHeader { padding-top: 12px; }
+  .storyStack[data-stack=true] .mobileTitle { align-items: flex-start; }
+  /* Keyboard users can visit every story link without another card covering it. */
+  .storyStack[data-stack=true]:has(a:focus-visible) .story { position: relative; top: auto; }
 }

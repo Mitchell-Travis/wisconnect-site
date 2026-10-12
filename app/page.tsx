@@ -7,6 +7,8 @@ import { assetPath } from './assets';
 import styles from './page.module.css';
 import { businesses, CooperativeOverview, BusinessDirectory, CommunityProjects, MemberStories } from './wisconnect-content';
 import { WhatWisConnectDoes } from './what-wisconnect-does';
+import { FrequentlyAskedQuestions } from './frequently-asked-questions';
+import { VisionaryCard } from './visionary-card';
 
 // Retain unfinished sections and their original content for a later release.
 const showUnfinishedSections = false;
@@ -77,17 +79,17 @@ const cooperativeCards = [
   {id:'communities',label:'Communities',step:'03',heading:'Stronger businesses.',accent:'Stronger communities.',description:beliefPillars[2].description,detail:beliefPillars[2].title,image:'cooperative-market.jpg',alt:'A Nairobi market vendor at her place of work'}
 ] as const;
 const memberProfiles = [
-  {name:'Chipo Nyambuya, Esq',role:'International Legal, Governance, and Economic Development Leader',bio:`Chipo C. Nyambuya is a co-founder and legal counsel of WisConnect and a co-founder and Managing Partner of CZL P.C. Her work brings together corporate law, governance, economic development and corporate social responsibility. She has advised corporations, social enterprises, start-ups, international development agencies and governments.
+  {name:'Chipo Nyambuya, Esq',cardRole:'Co-founder & legal counsel',role:'International Legal, Governance, and Economic Development Leader',bio:`Chipo C. Nyambuya is a co-founder and legal counsel of WisConnect and a co-founder and Managing Partner of CZL P.C. Her work brings together corporate law, governance, economic development and corporate social responsibility. She has advised corporations, social enterprises, start-ups, international development agencies and governments.
 
 A certified mediator, Chipo has supported healthcare agencies with regulatory audit and compliance requirements. She previously served as Director of Experiential Learning and Professional Development at Loyola University Chicago School of Law and has taught at Loyola and Northwestern University.
 
 In Liberia, she worked with UNDP to support post-conflict rule of law and governance, including work with the Ministry of Justice and the Judiciary. She also serves on the Board of Survivors’ Truths Liberia.
 
 The daughter of a Liberian mother and a Zimbabwean father, Chipo brings a cross-cultural perspective to peacebuilding, economic opportunity and connections across Africa and the wider world.`,expertise:['International law','Governance','Economic development'],image:'chipo'},
-  {name:'Elizabeth L. Carter',role:'WisConnect co-founder, inclusive redeveloper and co-op builder',bio:'Elizabeth is an inclusive redeveloper, co-op builder, community planner and commercial real estate and finance attorney. She is a co-founder of WisConnect, responsible for providing leadership, vision, and overall direction of the co-op’s affairs, especially as it concerns the Wisdom Connection Initiative, a 103,000 gsf alternative neighborhood system and cooperative business hub on the far south side of Chicago providing a variety of goods and services to the Greater Roseland community, including locally sourced, community-owned groceries, community-owned renewable energy, affordable commercial space, community health, and workforce development opportunities for youth through the arts, sports, and entrepreneurship.',expertise:['Cooperative development','Community planning','Commercial real estate','Finance law'],image:'elizabeth-carter'},
-  {name:'Priscilla Cadette',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'},
-  {name:'Ade Wede Wee-Wee Kekuleh',role:'Advocate, legal professional and chartered accountant',bio:'Ade Wede Wee-Wee Kekuleh is a Liberian advocate, legal professional, chartered accountant, journalist, lecturer and published author. Her work focuses on gender, human rights, peacebuilding and social justice, with particular attention to women, children and underserved communities. She is a Partner at ZE’AD Advisors and Consultants and teaches Managerial Accounting and Legal Aspects of Business at the United Methodist University Graduate School.',expertise:['Gender & human rights','Peacebuilding','Social justice','Law & accounting'],image:'ade-wede'},
-  {name:'Nikki Bravo',role:'Entrepreneur, business leader and small-business advocate',bio:`Nikki Bravo is an entrepreneur, business leader, and small-business advocate with more than two decades of experience across city government, nonprofit workforce development, economic development, and business ownership.
+  {name:'Elizabeth L. Carter',cardRole:'Co-founder & co-op builder',role:'WisConnect co-founder, inclusive redeveloper and co-op builder',bio:'Elizabeth is an inclusive redeveloper, co-op builder, community planner and commercial real estate and finance attorney. She is a co-founder of WisConnect, responsible for providing leadership, vision, and overall direction of the co-op’s affairs, especially as it concerns the Wisdom Connection Initiative, a 103,000 gsf alternative neighborhood system and cooperative business hub on the far south side of Chicago providing a variety of goods and services to the Greater Roseland community, including locally sourced, community-owned groceries, community-owned renewable energy, affordable commercial space, community health, and workforce development opportunities for youth through the arts, sports, and entrepreneurship.',expertise:['Cooperative development','Community planning','Commercial real estate','Finance law'],image:'elizabeth-carter'},
+  {name:'Priscilla Cadette',cardRole:'Entrepreneur & mentor',role:'Entrepreneur, mentor and fundraising specialist',bio:'Her experience connects entrepreneurship, mentorship and fundraising support.',expertise:['Entrepreneurship','Mentorship','Fundraising'],image:'priscilla'},
+  {name:'Ade Wede Wee-Wee Kekuleh',cardRole:'Advocate & accountant',role:'Advocate, legal professional and chartered accountant',bio:'Ade Wede Wee-Wee Kekuleh is a Liberian advocate, legal professional, chartered accountant, journalist, lecturer and published author. Her work focuses on gender, human rights, peacebuilding and social justice, with particular attention to women, children and underserved communities. She is a Partner at ZE’AD Advisors and Consultants and teaches Managerial Accounting and Legal Aspects of Business at the United Methodist University Graduate School.',expertise:['Gender & human rights','Peacebuilding','Social justice','Law & accounting'],image:'ade-wede'},
+  {name:'Nikki Bravo',cardRole:'Entrepreneur & advocate',role:'Entrepreneur, business leader and small-business advocate',bio:`Nikki Bravo is an entrepreneur, business leader, and small-business advocate with more than two decades of experience across city government, nonprofit workforce development, economic development, and business ownership.
 
 She earned a Bachelor of Science in Business Administration from Florida A&M University and continued her studies in real estate, systems analysis, and organizational development. Nikki began her career with the Chicago Department of Planning and Development as an economic development coordinator. During nearly 20 years in public service, she advanced into senior leadership roles, including Deputy Commissioner for the City of Chicago and Chief Administrative Officer of the Public Building Commission of Chicago. Her responsibilities included finance, administration, operations, human resources, and organizational development.
 
@@ -100,12 +102,12 @@ Nikki is an alumna of the Goldman Sachs 10,000 Small Businesses program, Founder
 As a small-business advocate, Nikki brings the perspective of an active business owner to conversations about access to capital, responsible lending, workforce development, public policy, and the realities of growing a business. She serves on both the National and Illinois Small Business Councils of Small Business Majority. In 2025, she was recognized as an Enterprising Women of the Year Award recipient.
 
 Nikki is a first-generation American, wife, mother, and two-time marathon finisher.`,expertise:['Entrepreneurship','Workforce development','Economic development','Small-business advocacy'],image:'nikki'},
-  {name:'Tiffany “Chef Mama” Williams',role:'Chef, entrepreneur and community builder',bio:`Chef Tiffany “Chef Mama” Williams is a celebrated Chicago chef, entrepreneur, and community builder whose work bridges culinary excellence with meaningful social impact. Raised in the Woodlawn neighborhood on Chicago’s South Side, she founded Exquisite Catering & Events in 2017 to bring elevated, globally inspired cuisine to a community long overlooked by diverse dining experiences. Her creative, made-from-scratch menus quickly distinguished her as a sought-after chef, leading to production catering for film and TV sets, concert tours, festivals, and major entertainment clients across the country and abroad.
+  {name:'Tiffany “Chef Mama” Williams',cardRole:'Chef & entrepreneur',role:'Chef, entrepreneur and community builder',bio:`Chef Tiffany “Chef Mama” Williams is a celebrated Chicago chef, entrepreneur, and community builder whose work bridges culinary excellence with meaningful social impact. Raised in the Woodlawn neighborhood on Chicago’s South Side, she founded Exquisite Catering & Events in 2017 to bring elevated, globally inspired cuisine to a community long overlooked by diverse dining experiences. Her creative, made-from-scratch menus quickly distinguished her as a sought-after chef, leading to production catering for film and TV sets, concert tours, festivals, and major entertainment clients across the country and abroad.
 
 Guided by a deep commitment to her hometown, Tiffany expanded her vision with Exquisite Kitchen, a licensed shared commercial kitchen designed to support and scale local food entrepreneurs. Through accessible kitchen space, business mentorship, and operational guidance, she helps emerging chefs and small food businesses navigate licensing, compliance, and growth with confidence. Her partnerships span youth workforce programs, neighborhood organizations, and fellow small businesses, reflecting her dedication to economic mobility and community collaboration.
 
 Known affectionately as “Chef Mama,” Tiffany is recognized not only for her culinary talent but for her leadership, generosity, and unwavering belief in second chances. Her work continues to create pathways to employment, entrepreneurship, and stability for South Side residents. Today, Exquisite Catering Co. and Exquisite Kitchen stand as vibrant hubs of creativity, opportunity, and cultural expression—rooted in tradition, powered by community, and driven by a vision for generational impact.`,expertise:['Culinary arts','Food entrepreneurship','Business mentorship','Community development'],image:'tiffany'},
-  {name:'Brandi Davis-Fitch',role:'Founder of BDavis Designs, designer and educator',bio:`Since 2003, BDavis Designs, LLC has been a trusted creative partner for entrepreneurs, small business owners, and community organizations throughout Chicago and beyond. With over 20 years of expertise in graphic design, web design, and apparel production, the firm specializes in helping clients discover their unique creative voice and bring bold visions to life through custom graphics, apparel designs, and engaging websites.
+  {name:'Brandi Davis-Fitch',cardRole:'Designer & educator',role:'Founder of BDavis Designs, designer and educator',bio:`Since 2003, BDavis Designs, LLC has been a trusted creative partner for entrepreneurs, small business owners, and community organizations throughout Chicago and beyond. With over 20 years of expertise in graphic design, web design, and apparel production, the firm specializes in helping clients discover their unique creative voice and bring bold visions to life through custom graphics, apparel designs, and engaging websites.
 
 Founded and led by Brandi Davis, the business draws on extensive corporate experience from roles at Johnson Publishing Company, Inc., Blue Cross and Blue Shield of Illinois, Career Builder, and Modern Tribe. Brandi also serves as an Online Adjunct Professor in graphic design and media arts at Southern New Hampshire University, bringing academic rigor and industry insight to every client engagement.
 
@@ -115,7 +117,7 @@ BDavis Designs takes pride in every detail of every project, ensuring meticulous
 
 BDavis Designs operates from a philosophy of healing, confidence, and culture—creating work that not only looks exceptional but resonates with purpose and meaning.`,expertise:['Graphic design','Web design','Apparel production','Design education'],image:'brandi'}
 ,
-  {name:'Kailyn Harrington',role:'Managing owner of Bunnyland Developmental Child Care Center',bio:`Kailyn Harrington is the Managing Owner of Bunnyland Developmental Child Care Center, a family-founded early childhood education organization that has served Chicago’s Roseland community since 1979. As a second-generation leader, Kailyn carries forward a legacy established by her grandparents while helping position Bunnyland for its next chapter of growth and community impact.
+  {name:'Kailyn Harrington',cardRole:'Childcare business owner',role:'Managing owner of Bunnyland Developmental Child Care Center',bio:`Kailyn Harrington is the Managing Owner of Bunnyland Developmental Child Care Center, a family-founded early childhood education organization that has served Chicago’s Roseland community since 1979. As a second-generation leader, Kailyn carries forward a legacy established by her grandparents while helping position Bunnyland for its next chapter of growth and community impact.
 
 A graduate of Tennessee State University with a Bachelor of Science in Business Administration and a concentration in Supply Chain Management, Kailyn brings a business and operations-focused approach to early childhood education. She oversees Bunnyland’s day-to-day operations, regulatory compliance, staffing, facilities, and organizational development while remaining focused on providing dependable, high-quality care for working families.
 
@@ -566,30 +568,15 @@ export default function Home(){
     </div></section>
 
     <section id="members" data-divider="background" className={`section ${styles.members}`} aria-labelledby="members-title">
-      <svg className={styles.memberThreads} viewBox="0 0 1600 1000" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
-        {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*55-130} C430 ${i*30+90} 940 ${i*13+345} 1260 535 S1510 ${i*34+150} 1700 ${i*39+50}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
-      </svg>
       <div className="shell">
-        <div className={`section-heading split-heading ${styles.membersHeading}`}>
-          <div><p className="eyebrow">Meet the visionaries</p>
-          <h2 id="members-title">Individual strengths.<br/><em>A shared vision.</em></h2></div>
-          <div className={styles.memberIntroduction}>
-            <p className={styles.memberLede}>Business owners, legal professionals, educators and community builders. Meet the women whose experience is helping shape WisConnect.</p>
-            <p className={styles.memberHint}><span className={styles.memberSwipeHint}>Swipe to explore. </span>Select a portrait to read her story.</p>
-          </div>
+        <div className={styles.membersHeading}>
+          <p className="eyebrow">Individual strengths. A shared vision.</p>
+          <h2 id="members-title">Meet the visionaries</h2>
+          <p className={styles.memberLede}>Business owners, legal professionals, educators and community builders. Meet the women whose experience is helping shape WisConnect.</p>
+          <p className={styles.memberHint}>Select a portrait to read her story.</p>
         </div>
-        <div id="member-cards" className={styles.memberGrid} role="group" aria-label="Visionary profiles" onKeyDown={event=>{
-          if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-          event.preventDefault();
-          const cards=Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button'));
-          const index=cards.indexOf(document.activeElement as HTMLButtonElement);
-          const next=event.key==='Home'?0:event.key==='End'?cards.length-1:Math.max(0,Math.min(cards.length-1,index+(event.key==='ArrowLeft'?-1:1)));
-          cards[next]?.focus();
-        }}>
-          {memberProfiles.map((member,index)=><button type="button" className={styles.memberCard} data-dialog-control key={member.name} onClick={event=>{event.currentTarget.focus({preventScroll:true});setSelectedMember(index);}} aria-label={`View profile for ${member.name}`} aria-haspopup="dialog">
-            <span className={styles.memberPortrait}><img src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 699px) 78vw, (max-width: 959px) 44vw, 280px" alt="" width="800" height="800" loading="lazy" decoding="async"/></span>
-            <span className={styles.memberInfo}><strong>{member.name}</strong><span className={styles.memberRole}>{member.role}</span><span className={styles.memberRead}>Read bio <ArrowUpRightIcon/></span></span>
-          </button>)}
+        <div id="member-cards" className={styles.memberGrid} role="group" aria-label="Visionary profiles">
+          {memberProfiles.map((member,index)=><VisionaryCard key={member.name} member={member} onReadProfile={()=>setSelectedMember(index)}/>)}
         </div>
         <div className={styles.memberConnection}><Link className={styles.contentLink} href="/contact">Ask WisConnect about an introduction <ArrowUpRightIcon/></Link></div>
       </div>
@@ -813,15 +800,7 @@ export default function Home(){
       <div className={styles.involvementTextile} aria-hidden="true"/>
     </div></section>
 
-    <section id="faq" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="faq-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">Frequently asked questions</p><h2 id="faq-title">Before you take the next step.</h2></div>
-      <details className={styles.contentDetails}><summary>Who is WisConnect for?</summary><p>Our focus is Black women entrepreneurs and visionaries across Africa and the diaspora. If you have a business, expertise or an idea to contribute, <Link href="/join">introduce yourself</Link>. The team can discuss membership eligibility and next steps with you.</p></details>
-      <details className={styles.contentDetails}><summary>What does shared ownership mean?</summary><p>WisConnect brings businesses into a holding cooperative, with members participating in collective decisions by consensus. The aim is to build shared value across enterprises and community assets. Membership agreements set out each member’s rights, responsibilities and financial terms.</p></details>
-      <details className={styles.contentDetails}><summary>How do I express interest in membership?</summary><p>Complete the <Link href="/join">five-question introduction</Link>, review your answers and send the prepared draft from your own email app. Completing the form does not send it automatically or make you a member.</p></details>
-      <details className={styles.contentDetails}><summary>What can I contribute?</summary><p>Your business experience, professional skills, mentorship, local knowledge and relationships can all be part of the conversation. Tell us what you know, what you care about and where you would like to take part.</p></details>
-      <details className={styles.contentDetails}><summary>What opportunities are available now?</summary><p>You can introduce yourself or <Link href="/contact">contact the team</Link> about membership and partnership ideas. Funding, program schedules and business support services are still being developed; ask WisConnect what is available for your situation.</p></details>
-      <details id="languages" className={styles.contentDetails}><summary>Is the website available in French?</summary><p>English is available now. French content is awaiting translation, review and an agreed launch date.</p><p lang="fr">La version française est en préparation. La date de publication reste à confirmer.</p></details>
-    </div></section>
+    <FrequentlyAskedQuestions/>
 
     <section id="join" data-divider="background" className="section join-section" aria-labelledby="join-title"><div className="shell">
       <p className="eyebrow">Your next step</p><h2 id="join-title">Bring your experience.<br/>Help shape what grows.</h2>

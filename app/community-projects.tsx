@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'motion/react';
 import { cooperativeStories as stories } from './cooperative-stories';
@@ -13,6 +13,8 @@ function Arrow(){
 export function CommunityProjects(){
   const [desktop,setDesktop]=useState(false);
   const [active,setActive]=useState<number|null>(0);
+  const [stackEnabled,setStackEnabled]=useState(false);
+  const storyStack=useRef<HTMLDivElement>(null);
   const reducedMotion=useReducedMotion();
 
   useEffect(()=>{
@@ -22,15 +24,31 @@ export function CommunityProjects(){
     return()=>query.removeEventListener('change',update);
   },[]);
 
+  useEffect(()=>{
+    const stack=storyStack.current;
+    if(!stack)return;
+    // Keep every story's reading link reachable on short screens and at larger text sizes.
+    const update=()=>{
+      const cards=Array.from(stack.children) as HTMLElement[];
+      const fits=cards.every((card,index)=>card.offsetHeight+88+index*48+24<=window.innerHeight);
+      setStackEnabled(!desktop&&!reducedMotion&&fits);
+    };
+    const observer=new ResizeObserver(update);
+    Array.from(stack.children).forEach(card=>observer.observe(card));
+    window.addEventListener('resize',update);
+    update();
+    return()=>{observer.disconnect();window.removeEventListener('resize',update);};
+  },[desktop,reducedMotion]);
+
   return <section id="community-projects" data-divider="background" className={`section ${styles.section}`} aria-labelledby="projects-title"><div className="shell">
     <div className={`section-heading split-heading ${styles.heading}`}>
       <div><p className="eyebrow">The work taking shape</p><h2 id="projects-title">Business growth.<br/><em>Community ownership.</em></h2></div>
       <div className={styles.intro}><p>Stories, project updates and development visions from across the cooperative. See how local people, businesses and communities shape the work.</p><Link href="/contact" className={styles.contact}>Talk with WisConnect <Arrow/></Link></div>
     </div>
-    <div>
+    <div ref={storyStack} className={styles.storyStack} data-stack={stackEnabled}>
       {stories.map((item,index)=>{
         const expanded=!desktop||active===index;
-        return <article key={item.id} className={styles.story} data-open={expanded}>
+        return <article key={item.id} className={styles.story} data-open={expanded} style={{'--story-index':index} as CSSProperties}>
           <div className={styles.storyHeader}>
             <h3 id={`project-heading-${item.id}`}>
               <button type="button" className={styles.toggle} aria-expanded={expanded} aria-controls={`project-panel-${item.id}`} onClick={()=>setActive(active===index?null:index)}>
