@@ -721,3 +721,7 @@
   .purposeVision .purposePhoto { order: -1; margin: 0; border-radius: 0; }
   .purposeCredits { margin-top: 12px; }
 }
+
+/* Original WisConnect artwork supplied by Elizabeth, 12 October 2026. */
+.page :global(.footer-brand) .footerLogo { width: 180px; height: auto; filter: none; margin-bottom: 16px; }
+.sheetLocation { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }

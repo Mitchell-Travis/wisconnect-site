@@ -31,3 +31,5 @@
 @media (prefers-reduced-motion: reduce) {
   .front, .back { transition: none; }
 }
+
+.location { color: var(--muted); font-size: 12px; line-height: 1.5; }

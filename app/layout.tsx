@@ -5,7 +5,7 @@ import { assetPath } from "./assets";
 export const metadata: Metadata = {
   title: "WisConnect | People · Capital · Communities",
   description: "WisConnect brings Black women entrepreneurs across Africa and the diaspora together to share knowledge, build business relationships and pursue shared ownership.",
-  icons: { icon: assetPath("logo-symbol.webp") }
+  icons: { icon: { url: assetPath("wisconnect-logo-approved.png"), type: "image/png" } }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
