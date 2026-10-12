@@ -1,6 +1,14 @@
 # WisConnect master context
 
-Last updated: 2026-10-03. Read the source-based structure and release notes first, then the forms/team releases and local startup updates; dated entries further down retain historical decisions and verification.
+Last updated: 2026-10-12. Read the homepage pacing update and source-based structure first, then the forms/team releases and local startup updates; dated entries further down retain historical decisions and verification.
+
+## Homepage pacing and membership actions (8 October 2026)
+
+- Mitchell requested a homepage review and created a goal to refine pacing, spacing and membership actions while preserving the current design/content. Local changes shorten the W scroll track from 520/540svh to 380/400svh (desktop/phone), keep all three photographs/chapters, reduce homepage section spacing and cooperative-card gaps, and tighten the support introduction spacing. Rails, photos, directory sizing, navigation behavior and hidden unfinished sections remain.
+- Main membership actions now say “Introduce yourself”; the header uses “Membership”. The hero explains the five-question introduction and manual email send. Existing Join behavior and all destinations remain; no new submission service or membership approval is implied.
+- At 900px viewport height, the production homepage is 22,935 → 21,243px tall at 1440px width, 25,894 → 24,370px at 390px, and 27,340 → 25,802px at 320px. Profiles appear 1,341–1,388px sooner. All fifteen visible sections remain in their original order.
+- TypeScript, production build/static export and whitespace checks passed. Chromium checks cover desktop/phone rendering, filters, dialog Escape/focus return, navigation, support cards, FAQs, all three W chapters, forward progression and scroll reversal, skip link and reduced-motion/short-viewport fallback. No broken loaded images, unresolved homepage anchors or horizontal page overflow at 1440/390/320px. See `docs/reviews/2026-10-08/homepage-pacing.md` for evidence and limitations.
+- Release approved on 12 October: Mitchell requested committing and pushing this homepage refinement, review notes and three screenshots. Check the release commit and GitHub Actions for publication status. Earlier local-only notes describe the review stage. Website/API background processes were started during the October 8 session; database/Mailpit setup was still awaiting the container runtime installation. This refinement does not complete the unfinished Phase 1 dashboard workflows.
 
 ## Source-based structure and temporary hiding (latest updates)
 

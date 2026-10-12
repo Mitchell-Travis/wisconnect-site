@@ -469,7 +469,7 @@ export default function Home(){
         <div className={styles.mobileNavActions}><Link href="/join" onClick={close}>Membership interest <ArrowUpRightIcon/></Link><Link href="/contact" onClick={close}>Contact us</Link></div>
         </div>
         <Link className={styles.navContact} href="/contact" onClick={close}>Contact</Link>
-        <Link className={styles.navJoin} href="/join" onClick={close}>Join us <ArrowUpRightIcon/></Link>
+        <Link className={styles.navJoin} href="/join" onClick={close}>Membership <ArrowUpRightIcon/></Link>
       </div>
     </header>
 
@@ -482,9 +482,10 @@ export default function Home(){
           <h1 id="hero-title">Build your business.<br/><em>Share in <br/>what grows.</em></h1>
           <p className={styles.heroLede}>WisConnect is a worker-owned holding cooperative bringing Black women entrepreneurs together across Africa and the diaspora to connect businesses, share knowledge and build community wealth.</p>
           <div className={styles.heroActions}>
-            <Link className={styles.primaryAction} href="/join">Express your interest <ArrowUpRightIcon/></Link>
+            <Link className={styles.primaryAction} href="/join" aria-describedby="membership-introduction-note">Introduce yourself <ArrowUpRightIcon/></Link>
             <a className={styles.secondaryAction} href="#purpose">Explore WisConnect <ArrowDownIcon/></a>
           </div>
+          <p id="membership-introduction-note" className={styles.heroNote}>Five questions. Review your introduction, then send it by email.</p>
         </div>
         <div className={styles.heroArt}>
           <span className={styles.heroThread} aria-hidden="true"/>
@@ -606,7 +607,7 @@ export default function Home(){
         <div className={styles.sheetGrid}>
           <div className={styles.sheetIntro}><p className="eyebrow">Meet the visionaries · {String(selectedMember+1).padStart(2,'0')} / {String(memberProfiles.length).padStart(2,'0')}</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.sheetRole}>{memberProfiles[selectedMember].role}</p></div>
           <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-studio-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
-          <div className={styles.sheetBio}>{memberProfiles[selectedMember].bio.split('\n\n').map((paragraph,index)=><p key={index}>{paragraph}</p>)}{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).length>0&&<div className={styles.profileBusinesses}><h3>Her business connections</h3>{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).map(b=><a key={b.id} href={`#business-${b.id}`} onClick={()=>profileDialog.current?.close()}>{b.name} <ArrowUpRightIcon/></a>)}</div>}<ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Find your place in the cooperative <ArrowUpRightIcon/></Link></div>
+          <div className={styles.sheetBio}>{memberProfiles[selectedMember].bio.split('\n\n').map((paragraph,index)=><p key={index}>{paragraph}</p>)}{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).length>0&&<div className={styles.profileBusinesses}><h3>Her business connections</h3>{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).map(b=><a key={b.id} href={`#business-${b.id}`} onClick={()=>profileDialog.current?.close()}>{b.name} <ArrowUpRightIcon/></a>)}</div>}<ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Introduce yourself <ArrowUpRightIcon/></Link></div>
         </div>
       </>}
     </dialog>
@@ -657,10 +658,10 @@ export default function Home(){
           if(event.key==='Home'||event.key==='End'){event.preventDefault();slideEnterprise(event.key==='Home'?'start':'end')}
         }}>
         {sectors.map((sector,index)=><li id={`enterprise-${index}`} className={styles.enterpriseCard} key={sector}>
-          <Link className={styles.enterpriseLink} href="/join" aria-label={`Explore membership in ${sector}`}>
+          <Link className={styles.enterpriseLink} href="/join" aria-label={`Introduce yourself — ${sector}`}>
             <div className={styles.enterpriseImage}><img src={assetPath(`sector-${sectorStories[sector].image}-1000.webp`)} srcSet={`${assetPath(`sector-${sectorStories[sector].image}-640.webp`)} 640w, ${assetPath(`sector-${sectorStories[sector].image}-1000.webp`)} 1000w`} sizes="(max-width: 620px) 90vw, (max-width: 980px) 45vw, 340px" style={{objectPosition:sectorStories[sector].position}} alt={sectorStories[sector].alt} loading="lazy" decoding="async" draggable={false}/><h3>{sector}</h3></div>
             <p>{sectorStories[sector].description}</p>
-            <span className={styles.enterpriseCta}>Explore membership <ArrowDownIcon/></span>
+            <span className={styles.enterpriseCta}>Introduce yourself <ArrowDownIcon/></span>
           </Link>
         </li>)}
       </ul>
@@ -796,7 +797,7 @@ export default function Home(){
         <li><span className={styles.contentLabel}>02 · Review &amp; email</span><h3>Share your introduction.</h3><p>Review your answers, then open the prepared draft in your email app and send it to WisConnect. Nothing is sent automatically.</p></li>
         <li><span className={styles.contentLabel}>03 · Start a conversation</span><h3>Ask about your next step.</h3><p>Your introduction opens a conversation about membership. Ask the team about eligibility, fees and the review process before making a commitment.</p></li>
       </ol>
-      <Link className={styles.contentLink} href="/join">Express your membership interest <ArrowUpRightIcon/></Link>
+      <Link className={styles.contentLink} href="/join">Introduce yourself <ArrowUpRightIcon/></Link>
       <p className={styles.contentNote}>This is an introduction, not membership approval. Membership terms and available opportunities are still being confirmed.</p>
     </div></section>
 

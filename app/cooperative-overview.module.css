@@ -23,7 +23,8 @@
 .storyFooter p { margin: 0; }
 .storyFooter a,.markers { display: none; }
 .end { height: 1px; scroll-margin-top: var(--nav-height); }
-.journey[data-motion=on] .track { height: 520svh; }
+/* Keep room for all three chapters without delaying the member stories below. */
+.journey[data-motion=on] .track { height: 380svh; }
 .journey[data-motion=on] .end { position: absolute; bottom: 0; left: 0; width: 1px; }
 .journey[data-motion=on] .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; }
 .journey[data-motion=on] .visual { display: block; position: absolute; inset: 0; background: var(--plum); mask-image: var(--wing-mask); mask-repeat: no-repeat; mask-position: center; mask-size: var(--wing-size) auto; -webkit-mask-image: var(--wing-mask); -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-size: var(--wing-size) auto; }
@@ -59,7 +60,7 @@
   .eyebrow { font-size: 9px; letter-spacing: .15em; }
   .opening { padding: 0 24px 24px; }
   .staticMark { margin-top: 0; }
-  .journey[data-motion=on] .track { height: 540svh; }
+  .journey[data-motion=on] .track { height: 400svh; }
   .journey[data-motion=on] .visual { mask-position: center var(--mobile-wing-position,0%); -webkit-mask-position: center var(--mobile-wing-position,0%); }
   .journey[data-motion=on] .opening { padding-top: max(90px,14svh); }
   .journey[data-motion=on] .chapters { width: calc(100% - 48px); }
