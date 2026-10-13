@@ -1,5 +1,12 @@
 # WisConnect master context
 
+## Homepage and account styling release (13 October 2026)
+
+- Mitchell requested publishing the approved account-page work, then added final homepage changes before the push. Hero now uses the supplied `6FF9F42D-855C-4BB6-B9DF-2FF17D70EE05.PNG`, delivered as transparent 640/960px WebP files. Kept the exact prior hero CSS/dimensions (desktop measured 530.77 × 560px before and after; mobile retains its existing frame). Removed the decorative circle; footer logo reduced from 180px to 144px.
+- People behind the businesses now has a lilac/cream/gold background retaining the requested curved-thread artwork. Four stable portrait slots crossfade every six seconds through Nikki, Tiffany, Kailyn, Brandi, Chipo and Ade Wede. Labels and business destinations change with the portraits. Rotation waits while scrolling and pauses offscreen, in background tabs, during hover/focus, with an open dialog, or under reduced motion. A Pause/Resume portraits control is available; existing scroll-driven spread remains.
+- Release includes the shared login/activation/password-recovery styling, Google coming-soon placeholder, prior approved announcement refinements and faster cooperative story. Backend/dashboard migration, infrastructure and CI changes remain separate local work. Published account-service availability restrictions remain unchanged.
+- Validation: local LAN build and an isolated GitHub Pages production export both passed TypeScript/build. Desktop and 390/320px layouts checked; same hero dimensions, no horizontal overflow or captured console warnings/errors. Observed automatic portrait changes without scrolling and verified the rotating Ade Wede portrait opens ZE’AD business details. Phone/desktop screenshots saved locally under `docs/reviews/2026-10-13/home-final/`. Viewport restored.
+
 ## Website publication prepared (13 October 2026)
 
 - Mitchell requested pushing the current website changes. Release scope is the public homepage/Contact/Join/story styling, shared icons, refreshed imagery, consistent rails/type, mobile pillar autoplay/bridge, floating desktop/mobile nav, animated launch announcement without playback button, mobile profile links and single textile story indicator.

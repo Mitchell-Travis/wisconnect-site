@@ -3,6 +3,7 @@ import styles from "./site-icon.module.css";
 // Rounded, fine-line site drawings inspired by kolejain.com.
 // Bell geometry retained from Feather (MIT: public/licenses/feather.txt).
 const icons = {
+  globe: <><circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="3.8" ry="8.5"/><path d="M3.5 12h17M5 7.5h14M5 16.5h14"/></>,
   home: <><path d="m3 9.5 6-3.4c1.5-.9 2.2-1.3 3-1.3s1.5.4 3 1.3l6 3.4M5 8.5l.5 5.5c.3 2.6.4 3.9 1.2 4.7.9.8 2.2.8 4.8.8h1c2.6 0 3.9 0 4.8-.8.8-.8.9-2.1 1.2-4.7l.5-5.5M9 16.5h6"/></>,
   people: <><circle cx="9" cy="8" r="3.3"/><path d="M3.5 19v-1.5A4.5 4.5 0 0 1 8 13h2a4.5 4.5 0 0 1 4.5 4.5V19M16 5a3.3 3.3 0 0 1 0 6.4M17 14a4.5 4.5 0 0 1 3.5 4.4V19"/></>,
   email: <><rect x="3.5" y="5.5" width="17" height="13" rx="4"/><path d="m4 7 5.8 4.6c1.4 1.1 3 1.1 4.4 0L20 7"/></>,

@@ -83,7 +83,6 @@
 .secondaryAction:hover { text-decoration: underline; }
 .heroArt { position: relative; display: flex; align-items: flex-end; justify-content: center; min-width: 0; isolation: isolate; overflow: hidden; }
 .heroPortrait { position: relative; z-index: 1; width: 100%; max-width: 100%; max-height: 620px; height: auto; align-self: flex-end; object-fit: contain; object-position: bottom; }
-.heroThread { position: absolute; z-index: -1; width: 86%; aspect-ratio: 1; right: 4%; bottom: 10%; border: 1px solid rgb(185 149 90 / 35%); border-radius: 50%; pointer-events: none; }
 .heroFoot { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 14px; }
 .heroFoot p { margin: 0; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .14em; color: #6b5876; }
 .heroFoot a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 13px; color: var(--plum); }
@@ -262,7 +261,6 @@
   .heroGrid { padding-top: 28px; }
   .heroCopy h1 { font-size: clamp(50px, 5vw, 66px); }
   .heroPortrait { width: 92%; max-height: 560px; }
-  .heroThread { width: 80%; right: 7%; }
 }
 @media (min-width: 960px) and (prefers-reduced-motion: no-preference) {
   .heroCopy { animation: settle .7s var(--ease) both; }
@@ -337,7 +335,6 @@
   .secondaryAction { font-size: 12px; }
   .heroArt { height: clamp(280px, 75vw, 380px); margin-top: 16px; }
   .heroPortrait { width: auto; max-width: 100%; height: 100%; object-fit: contain; object-position: bottom; }
-  .heroThread { right: 8%; bottom: 8%; width: min(82%, 300px); }
   .heroFoot { padding-block: 14px; }
   .heroFoot p { display: none; }
   .heroFoot a { width: 100%; justify-content: space-between; font-size: 12px; gap: 12px; }
@@ -750,7 +747,7 @@
 }
 
 /* Original WisConnect artwork supplied by Elizabeth, 12 October 2026. */
-.page :global(.footer-brand) .footerLogo { width: 180px; height: auto; filter: none; margin-bottom: 16px; }
+.page :global(.footer-brand) .footerLogo { width: 144px; height: auto; filter: none; margin-bottom: 16px; }
 .sheetLocation { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 
 /* Homepage layout and type system. Calendly-inspired proportions, WisConnect
@@ -839,6 +836,7 @@
 .page[data-home-system] .hero { background: var(--sand); }
 .page[data-home-system] :global(#community-projects),
 .page[data-home-system] :global(#member-stories) { background: #fff; }
+.page[data-home-system] :global(#member-stories) { padding-block: 0; }
 .page[data-home-system] .impact::before { border-radius: inherit; }
 .page[data-home-system] .impactVisual { margin-top: 0; padding: 0; }
 .page[data-home-system] .connectionTitle { margin: 16px 0 0; padding-top: 0; }
@@ -895,21 +893,21 @@
 .page[data-home-system][data-nav-scrolled=true] { --nav-float: 16px; }
 .page[data-home-system] .hero { padding-top: 0; }
 .page[data-home-system] section[id] { scroll-margin-top: calc(var(--nav-offset) + 16px); }
-.announcement { position: relative; display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 44px; padding: 0 56px; background: var(--lilac); color: var(--plum); }
-.announcementMessage { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; min-height: 44px; font-size: 13px; line-height: 1.4; }
-.announcementStatic { margin: 0; padding-block: 6px; }
-.announcementWindow { display: none; height: 44px; overflow: hidden; }
-.announcementTrack > span { display: flex; align-items: center; height: 44px; white-space: nowrap; }
+.announcement { position: relative; display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 40px; padding: 8px 48px 8px 32px; background: var(--lilac); color: var(--plum); }
+.announcementMessage { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; min-height: 24px; font-size: 14px; font-weight: 500; line-height: 20px; text-align: left; }
+.announcementStatic { margin: 0; }
+.announcementWindow { display: none; height: 24px; overflow: hidden; }
+.announcementTrack > span { display: flex; align-items: center; height: 24px; white-space: nowrap; }
 .announcement[data-animated=true] .announcementStatic { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .announcement[data-animated=true] .announcementWindow { display: block; }
 .announcement[data-animated=true] .announcementTrack { animation: announcementScroll 10s cubic-bezier(.22,1,.36,1) infinite; }
 .announcement:hover .announcementTrack, .announcement:focus-within .announcementTrack { animation-play-state: paused; }
-@keyframes announcementScroll { 0%,40% { transform: translateY(0); } 50%,90% { transform: translateY(-44px); } 100% { transform: translateY(-88px); } }
+@keyframes announcementScroll { 0%,40% { transform: translateY(0); } 50%,90% { transform: translateY(-24px); } 100% { transform: translateY(-48px); } }
 .announcement svg { flex-shrink: 0; }
-.announcement > button { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 40px; min-height: 44px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--plum); cursor: pointer; }
+.announcement > button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 32px; min-height: 32px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--plum); cursor: pointer; }
 .announcement > button:hover { background: rgb(255 255 255 / 55%); }
 @media (prefers-reduced-motion: reduce) {
-  .announcement[data-animated=true] .announcementStatic { position: static; width: auto; height: auto; padding-block: 6px; overflow: visible; clip-path: none; white-space: normal; }
+  .announcement[data-animated=true] .announcementStatic { position: static; width: auto; height: auto; padding: 0; overflow: visible; clip-path: none; white-space: normal; }
   .announcement[data-animated=true] .announcementWindow { display: none; }
   .announcementTrack { animation: none !important; }
 }
@@ -944,9 +942,10 @@
   .page[data-home-system] .navTrigger { min-height: 56px; padding-inline: 8px; font-size: 18px; border-bottom-style: solid; border-radius: 0; }
   .page[data-home-system] .megaPanel { border: 0; border-radius: 0; max-height: none; box-shadow: none; }
   .page[data-home-system] .megaColumns a { padding: 8px 0; }
-  .announcement { padding: 0 48px; }
-  .announcementMessage { gap: 8px; font-size: 12px; }
-  .announcement > button { right: 4px; }
+  .announcement { justify-content: flex-start; padding: 8px 48px 8px 24px; }
+  .announcementMessage { gap: 8px; font-size: 12px; justify-content: flex-start; }
+  .announcementMessage > svg { align-self: flex-start; margin-top: 4px; }
+  .announcement > button { right: 8px; }
 }
 
 /* Immediate press feedback; each arrow keeps its original direction. */

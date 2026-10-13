@@ -4,10 +4,12 @@ import Icon from "./site-icon";
 
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
+import localFont from 'next/font/local';
 import { animate, motion, MotionConfig, useInView } from 'motion/react';
 import { accountAvailable } from './account-api';
 import { assetPath } from './assets';
 import styles from './page.module.css';
+import type { BusinessDirectoryHandle } from './business-directory';
 import { businesses, CooperativeOverview, BusinessDirectory, CommunityProjects, MemberStories } from './wisconnect-content';
 import { WhatWisConnectDoes } from './what-wisconnect-does';
 import { NextStep } from './next-step';
@@ -198,6 +200,8 @@ function ArrowDownIcon(){
   return <Icon kind="arrowDown" className="inline-icon"/>;
 }
 
+const announcementFont = localFont({ src: './fonts/geist-latin.woff2', weight: '100 900', display: 'swap' });
+
 const backgroundAssets = {
   '--belief-background': `url("${assetPath('bg-light.webp')}")`,
   '--textile-background': `url("${assetPath('Royal Purple and Gold Ornamental Textile.png')}")`
@@ -230,6 +234,7 @@ function browseCards(track:HTMLElement|null,direction:number|'start'|'end'){
 }
 
 export default function Home(){
+  const businessDirectory=useRef<BusinessDirectoryHandle>(null);
   const [directIntroductions,setDirectIntroductions]=useState(false);
   useEffect(()=>setDirectIntroductions(accountAvailable()),[]);
   const [reducedMotion,setReducedMotion]=useState<boolean|null>(null);
@@ -470,9 +475,9 @@ export default function Home(){
   const close=()=>{cancelNavClose();setMenuOpen(false);setActiveNav(null);if(languagePicker.current)languagePicker.current.open=false};
   return <MotionConfig reducedMotion="user"><div className={styles.page} data-home-system data-nav-scrolled={scrolled} style={backgroundAssets} onPointerDownCapture={event=>{event.currentTarget.dataset.inputMethod='pointer';}} onKeyDownCapture={event=>{if(!['Shift','Control','Alt','Meta'].includes(event.key))event.currentTarget.dataset.inputMethod='keyboard';}}>
     <a className={styles.skipLink} href="#main-content">Skip to content</a>
-    {announcementOpen&&<aside className={styles.announcement} aria-label="WisConnect announcement" data-animated={reducedMotion===false}>
+    {announcementOpen&&<aside className={`${styles.announcement} ${announcementFont.className}`} aria-label="WisConnect announcement" data-animated={reducedMotion===false}>
       <div className={styles.announcementMessage}>
-        <Icon kind="announcement" size={18}/>
+        <Icon kind="announcement" size={16}/>
         <p className={styles.announcementStatic}>Something powerful is coming. WisConnect launches soon.</p>
         <div className={styles.announcementWindow} aria-hidden="true"><div className={styles.announcementTrack}>
           <span>Something powerful is coming.</span><span>WisConnect launches soon.</span><span>Something powerful is coming.</span>
@@ -544,8 +549,7 @@ export default function Home(){
           <p id="membership-introduction-note" className={styles.heroNote}>{directIntroductions ? 'Five questions. Review and submit your introduction.' : 'Five questions. Review your introduction, then send it by email.'}</p>
         </div>
         <div className={styles.heroArt}>
-          <span className={styles.heroThread} aria-hidden="true"/>
-          <img className={styles.heroPortrait} src={assetPath('hero-visionary-960.webp')} srcSet={`${assetPath('hero-visionary-640.webp')} 640w, ${assetPath('hero-visionary-960.webp')} 960w`} sizes="(max-width: 699px) 90vw, 50vw" width="1122" height="1402" fetchPriority="high" alt="Portrait of a woman in a purple and gold headwrap, looking ahead"/>
+          <img className={styles.heroPortrait} src={assetPath('hero-cooperative-women-960.webp')} srcSet={`${assetPath('hero-cooperative-women-640.webp')} 640w, ${assetPath('hero-cooperative-women-960.webp')} 960w`} sizes="(max-width: 699px) 90vw, 50vw" width="1122" height="1402" fetchPriority="high" alt="Three women in purple and gold textiles, looking ahead"/>
         </div>
       </div>
       <div className={styles.heroFoot}>
@@ -588,7 +592,7 @@ export default function Home(){
     {showUnfinishedSections ? <section id="business-directory" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="business-directory-title"><div className="shell">
       <div className="section-heading split-heading"><div><p className="eyebrow">Business directory</p><h2 id="business-directory-title" data-section-headline>Discover member-owned businesses.</h2></div><p>Meet the enterprises behind the cooperative, with approved details and a direct way to connect.</p></div>
       <div className={styles.emptyContent}><h3>Listings awaiting approval.</h3><p>No business listings are published here yet. Each listing will include the business and owner’s name, sector, description, approved photo or logo, and contact link.</p><p>This directory introduces businesses. Purchases and payments are not available on this website.</p><Link className={styles.contentLink} href="/contact">Ask about listing your business <ArrowUpRightIcon/></Link></div>
-    </div></section> : <BusinessDirectory onProfile={openMemberByName}/>}
+    </div></section> : <BusinessDirectory ref={businessDirectory} onProfile={openMemberByName}/>}
 
     <section id="purpose" className={`section ${styles.purposeSection}`} aria-labelledby="purpose-title"><div className="shell">
       <div className={styles.purposeHeading} data-home-reveal>
@@ -796,7 +800,7 @@ export default function Home(){
       </div>
     </section>
 
-    <MemberStories onProfile={openMemberByName}/>
+    <MemberStories onBusiness={(id,trigger)=>businessDirectory.current?.open(id,trigger)}/>
 
     {showUnfinishedSections && <section id="stories" data-divider="background" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
       <div className={styles.storiesHeader}>

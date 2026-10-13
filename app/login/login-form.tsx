@@ -3,6 +3,8 @@
 import Icon from "../site-icon";
 
 import Link from "next/link";
+import { assetPath } from "../assets";
+import AccountField from "../account-field";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "../member-access.module.css";
 
@@ -49,21 +51,21 @@ export default function LoginForm({ busy, error, onEdit, onSignIn }: {
     {error && <p ref={serviceError} className={styles.loginErrors} role="alert" tabIndex={-1}>{error}</p>}
     <fieldset disabled={busy} className={styles.loginFields}>
       <legend className={styles.srOnly}>Sign in with your member account</legend>
-      <div className={styles.loginField}>
-        <label htmlFor="email">Email address</label>
-        <input id="email" name="email" type="email" placeholder="e.g. maya@example.com" autoComplete="username" autoCapitalize="none" spellCheck={false} required maxLength={254} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'login-email-error' : undefined} onChange={() => { setErrors(previous => ({ ...previous, email: undefined })); onEdit(); }}/>
+      <AccountField id="email" label="Enter your email" name="email" type="email" aria-label="Email address" autoComplete="username" autoCapitalize="none" spellCheck={false} required maxLength={254} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'login-email-error' : undefined} onChange={() => { setErrors(previous => ({ ...previous, email: undefined })); onEdit(); }}>
         {errors.email && <p className={styles.loginFieldError} id="login-email-error">{errors.email}</p>}
-      </div>
-      <div className={styles.loginField}>
-        <label htmlFor="password">Password</label>
-        <div className={styles.passwordControl}>
-          <input id="password" name="password" type={show ? 'text' : 'password'} placeholder="Enter your password" autoComplete="current-password" required aria-invalid={!!errors.password} aria-describedby={errors.password ? 'login-password-error' : undefined} onChange={() => { setErrors(previous => ({ ...previous, password: undefined })); onEdit(); }}/>
-          <button type="button" className={styles.revealPassword} aria-label={show ? 'Hide password' : 'Show password'} aria-controls="password" aria-pressed={show} onClick={() => setShow(value => !value)}>{show ? 'Hide' : 'Show'}</button>
-        </div>
+      </AccountField>
+      <AccountField id="password" label="Password" name="password" type={show ? 'text' : 'password'} autoComplete="current-password" required aria-invalid={!!errors.password} aria-describedby={errors.password ? 'login-password-error' : undefined} onChange={() => { setErrors(previous => ({ ...previous, password: undefined })); onEdit(); }} control={<button type="button" className={styles.revealPassword} aria-label={show ? 'Hide password' : 'Show password'} aria-controls="password" aria-pressed={show} onClick={() => setShow(value => !value)}>{show ? 'Hide' : 'Show'}</button>}>
         {errors.password && <p className={styles.loginFieldError} id="login-password-error">{errors.password}</p>}
-      </div>
-      <Link className={styles.loginHelp} href="/contact">Need help signing in?</Link>
+      </AccountField>
+      <Link className={styles.loginHelp} href="/reset-password">Forgot your password?</Link>
       <button type="submit" className={styles.signInButton}>{busy ? 'Signing in…' : 'Sign in'}<Icon kind="arrow" size={16}/></button>
     </fieldset>
+    <div className={styles.socialSignIn}>
+      <div className={styles.signInDivider} aria-hidden="true"><span>or</span></div>
+      <button className={styles.googleButton} type="button" disabled aria-label="Continue with Google" aria-describedby="google-coming-soon">
+        <img src={assetPath("google-g-logo.png")} alt="" width="20" height="20" aria-hidden="true"/>
+        <span className={styles.googleButtonLabel}><span>Continue with Google</span><span className={styles.comingSoon} id="google-coming-soon">Coming soon</span></span>
+      </button>
+    </div>
   </form>;
 }

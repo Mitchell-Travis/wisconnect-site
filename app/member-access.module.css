@@ -73,37 +73,78 @@
 .content form .passwordFeedback[data-invalid="true"] { color: #842e42; }
 .loginPage .content input[aria-invalid="true"] { border-color: #842e42; }
 
-/* Returning-member flow: a quiet frame and compact, labelled controls. */
-.focusedLogin .main { min-height: 570px; padding: 64px 24px; background: radial-gradient(ellipse at 100% 0, #f2e5c9, transparent 52%), radial-gradient(ellipse at 0 100%, #e9dff2, transparent 55%), #faf8fb; }
-.focusedLogin .content { width: min(480px, 100%); padding: 40px; border: 1px solid rgb(86 53 120 / 10%); box-shadow: 0 10px 32px rgb(41 24 51 / 4%); }
-.focusedLogin .content .entryEyebrow { margin-bottom: 16px; font-size: 11px; }
+/* Returning-member flow: a white card within a purple-and-gold color field. */
+.focusedLogin .main {
+  width: calc(100% - 48px); min-height: 640px; margin-top: 0; padding: 56px 24px;
+  /* Broad, overlapping pools of color: amethyst, lilac light and warm gold. */
+  background:
+    radial-gradient(ellipse 72% 105% at -8% 112%, #321743 0%, #583072 32%, transparent 70%),
+    radial-gradient(ellipse 68% 95% at 108% -8%, #694083 0%, transparent 72%),
+    radial-gradient(ellipse 76% 76% at 92% 108%, #d7a955 0%, #f0d9a5 34%, transparent 72%),
+    radial-gradient(ellipse 64% 74% at 16% -12%, #d4bee9 0%, transparent 74%),
+    linear-gradient(125deg, #80569e 0%, #c4a9db 36%, #eee4f1 57%, #fbefcf 76%, #b98e4c 100%);
+}
+.focusedLogin .content { width: min(464px, 100%); padding: 32px 48px; border-radius: 24px; box-shadow: 0 18px 32px -16px rgb(41 24 51 / 30%); }
+.focusedLogin .content h1 { margin: 0; font-size: 34px; line-height: 1.15; scroll-margin-top: 144px; }
 .focusedLogin .content > p { line-height: 1.75; }
-.focusedLogin .content .signInForm { display: block; margin: 28px 0 0; }
-.loginFields { display: grid; gap: 22px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.focusedLogin .content h1 ~ p:not(.membershipPrompt) { margin-top: 16px; }
+.focusedLogin .content .signInForm { display: block; margin: 24px 0 0; }
+.loginFields { display: grid; gap: 24px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .loginFields:disabled { opacity: .7; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .loginField { display: grid; gap: 8px; min-width: 0; }
 .focusedLogin .content .loginField label { font-size: 14px; }
-.focusedLogin .content .loginField input { padding-inline: 14px; background: #fff; }
+.focusedLogin .content .loginField input { min-height: 48px; padding: 12px 16px; border-color: #c5bec9; border-radius: 8px; background: #fff; line-height: 1.4; transition: border-color .15s, box-shadow .15s; scroll-margin-block: 144px 32px; }
+.focusedLogin .content .loginField input:focus { border-color: var(--purple); outline: none; box-shadow: 0 0 0 4px rgb(86 53 120 / 20%); }
+.focusedLogin .content .loginField input[aria-invalid="true"] { border-color: #842e42; box-shadow: 0 0 0 4px rgb(132 46 66 / 20%); }
+.floatingControl { position: relative; }
+.focusedLogin .content .floatingControl label { position: absolute; top: 50%; left: 16px; max-width: calc(100% - 32px); transform: translateY(-50%); padding: 0; color: #65566e; font-size: 16px; font-weight: 400; line-height: 1.4; pointer-events: none; white-space: nowrap; transition: top .15s, left .15s, font-size .15s, padding .15s; }
+.focusedLogin .content .floatingControl input:focus + label,
+.focusedLogin .content .floatingControl input:not(:placeholder-shown) + label,
+.focusedLogin .content .floatingControl input:autofill + label { top: 0; left: 12px; padding: 0 4px; background: #fff; font-size: 14px; }
 .passwordControl { position: relative; }
 .focusedLogin .content .passwordControl input { padding-right: 76px; }
-.focusedLogin .content .revealPassword { position: absolute; right: 4px; top: 4px; min-width: 64px; min-height: 44px; padding: 8px; border: 0; background: transparent; color: var(--purple); font: inherit; font-size: 13px; font-weight: 600; }
+.focusedLogin .content .revealPassword { position: absolute; right: 2px; top: 2px; min-width: 60px; min-height: 44px; padding: 8px; border: 0; background: transparent; color: var(--purple); font: inherit; font-size: 13px; font-weight: 600; }
 .focusedLogin .content .revealPassword:hover { background: var(--mist); }
 .focusedLogin .content .revealPassword:focus-visible { outline-offset: -2px; }
 .loginHelp { justify-self: end; display: inline-flex; align-items: center; min-height: 44px; margin-top: -18px; color: var(--purple); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
-.focusedLogin .content .signInButton { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: -8px; }
-.focusedLogin .content .loginErrors { margin: 0 0 22px; padding: 14px 16px; border-left: 3px solid #842e42; background: #fff3f3; color: #842e42; font-size: 14px; line-height: 1.6; }
+.focusedLogin .content .signInButton { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 50px; margin-top: -8px; border-radius: 12px; font-size: 15px; }
+.socialSignIn { margin-top: 16px; text-align: center; }
+.signInDivider { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; color: var(--muted); font-size: 12px; line-height: 16px; }
+.signInDivider::before, .signInDivider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.focusedLogin .content .googleButton { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 50px; padding: 10px 12px; border: 1px solid #747775; border-radius: 12px; background: #fff; color: #1f1f1f; font: inherit; font-size: 14px; font-weight: 500; opacity: 1; cursor: not-allowed; }
+.googleButton img { display: block; flex: none; width: 20px; height: 20px; object-fit: contain; }
+.googleButtonLabel { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px 10px; }
+.focusedLogin .content .comingSoon { display: inline-block; padding: 2px 7px; border-radius: 20px; background: var(--mist); color: var(--purple); font-size: 10px; font-weight: 600; line-height: 16px; white-space: nowrap; }
+.focusedLogin .content .membershipPrompt { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 12px; margin: 16px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.5; }
+.membershipPrompt a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--purple); font-weight: 600; }
+.membershipPrompt a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.membershipPrompt svg { flex: none; }
+.focusedLogin .content .loginErrors { margin: 0 0 22px; padding: 14px 16px; border-left: 3px solid #842e42; background: #fff3f3; color: #842e42; font-size: 14px; line-height: 1.6; scroll-margin-top: 144px; }
 .loginErrors:focus { outline: 2px solid #842e42; outline-offset: 3px; }
 .loginErrors ul { padding-left: 18px; margin: 8px 0 0; }
 .loginErrors li + li { margin-top: 6px; }
 .loginErrors a { text-decoration: underline; text-underline-offset: 3px; }
 .focusedLogin .content .loginFieldError { margin: 0; color: #842e42; font-size: 13px; line-height: 1.6; }
-.focusedLogin .loginFooter { width: min(480px, calc(100% - 48px)); padding-top: 24px; }
-.focusedLogin .loginFooter .membershipPrompt { margin: 0; font-size: 14px; }
-.focusedLogin .loginFooter a { display: inline-flex; align-items: center; min-height: 44px; }
-.focusedLogin .loginFooter > p + p { margin: 0; }
+.focusedLogin .content .accountForm { display: block; margin: 24px 0 0; }
+.accountForm .loginFields { gap: 20px; }
+.focusedLogin .content .fieldHint, .focusedLogin .content .fieldFeedback { margin: 0; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.focusedLogin .content .fieldFeedback[data-invalid=true] { color: #842e42; }
+.focusedLogin .content .accountSubmit { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 50px; margin: 0; border-radius: 12px; font-size: 14px; }
+.focusedLogin .content .continueLink { border-radius: 12px; min-height: 50px; }
+.accountBackLink { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; margin-top: 16px; color: var(--purple); font-size: 13px; }
+.accountBackLink:hover { text-decoration: underline; text-underline-offset: 4px; }
+.focusedLogin .content .accountTextButton { display: block; width: 100%; min-height: 44px; margin-top: 12px; padding: 8px; border: 0; background: transparent; color: var(--purple); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+.accountHelp { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.accountHelp summary { min-height: 44px; padding-block: 12px; color: var(--purple); font-size: 13px; cursor: pointer; }
+.accountHelp p { margin: 0 0 8px; font-size: 13px; line-height: 1.7; }
+.accountHelp a { color: var(--purple); text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 620px) {
-  .focusedLogin .main { align-items: start; min-height: 0; padding: 40px 24px 24px; background: linear-gradient(180deg, #f8f3fb, #fff 260px); }
-  .focusedLogin .content { margin: 0 auto; padding: 0; border: 0; box-shadow: none; background: transparent; }
-  .focusedLogin .loginFooter { padding-top: 8px; }
+  .focusedLogin .main { flex: none; width: calc(100% - 16px); min-height: 0; margin: 0 auto; padding: 32px 16px; border-radius: 32px; }
+  .focusedLogin .content { margin: 0 auto; padding: 28px 24px; }
+  .focusedLogin .content h1 { font-size: 28px; }
+  .focusedLogin .content .signInForm { margin-top: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .focusedLogin .content .floatingControl label, .focusedLogin .content .loginField input { transition: none; }
 }

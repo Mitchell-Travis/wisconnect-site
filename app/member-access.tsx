@@ -3,7 +3,8 @@
 import Icon from "./site-icon";
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import EntryHeader from "./entry-header";
+import AccountShell from "./account-shell";
+import AccountField from "./account-field";
 import LoginForm from "./login/login-form";
 import styles from "./member-access.module.css";
 import DashboardView, { DashboardGate, View } from "./dashboard/dashboard-view";
@@ -182,15 +183,10 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   const isSignup = mode === "signup";
   const invitationProblem = isSignup && ready && local && !invitedEmail && !!error;
   const title = isSignup ? (created ? "You’re part of WisConnect." : invitationProblem ? "Let’s get you connected." : "Activate your member account.")
-    : user ? "You’re signed in." : "Welcome back.";
+    : user ? "You’re signed in." : "Log in to your account";
   const retryAccess = () => { if (isSignup) setReady(false); setError(""); setSessionError(""); setSessionAttempt(value => value + 1); };
 
-  return <div className={`${styles.page} ${styles.loginPage} ${!isSignup ? styles.focusedLogin : ""}`}>
-    <EntryHeader/>
-    <main className={styles.main} aria-labelledby="access-title">
-      <div className={styles.content} aria-busy={!ready || busy}>
-        <p className={styles.entryEyebrow}>{isSignup ? "People. Capital. Communities." : "Member sign in"}</p>
-        <h1 id="access-title">{title}</h1>
+  return <AccountShell title={title} busy={!ready || busy}>
         <noscript><p>Enable JavaScript to access your account, or <Link href="/contact">contact WisConnect</Link> for help.</p></noscript>
         {!ready ? <p className={styles.loading} role="status">{isSignup ? "Checking your invitation…" : "Checking your access…"}</p> : !local ? <>
           <p>Online member access is not available here yet. Contact the cooperative for help with your account or invitation.</p>
@@ -202,15 +198,20 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
           {isSignup ? <>
             {invitedEmail && !created && <>
               <p className={styles.invitationEmail}>Your invitation is for <strong>{invitedEmail}</strong>.</p>
-              <form onSubmit={submit} aria-label="Create your member account">
-                <label htmlFor="member-name">Your name<input id="member-name" name="name" placeholder="Full name" autoComplete="name" required maxLength={100} onChange={event=>event.currentTarget.setCustomValidity("")} /></label>
-                <label htmlFor="new-password">Choose a password<input id="new-password" name="password" type={showPasswords ? "text" : "password"} placeholder="Create a password" autoComplete="new-password" required value={password} onChange={event => { setPassword(event.target.value); setError(""); }} onBlur={() => setPasswordBlurred(true)} aria-invalid={passwordBlurred && !passwordLengthValid} aria-describedby="password-help password-length" /></label>
-                <p id="password-help" className={styles.hint}>Use at least 15 characters. Try four unrelated words or a password manager. Spaces are welcome; numbers and symbols are optional.</p>
-                <p id="password-length" className={styles.passwordFeedback} data-invalid={passwordBlurred && !passwordLengthValid} role="status">{passwordLength === 0 ? "15–128 characters" : passwordLength > 128 ? "Too long — use no more than 128 characters." : passwordLength < 15 ? `${15 - passwordLength} more ${15 - passwordLength === 1 ? "character" : "characters"} needed` : <><Icon kind="check" size={16}/> Length requirement met</>}</p>
-                <label htmlFor="confirm-password">Confirm password<input id="confirm-password" name="confirm" type={showPasswords ? "text" : "password"} placeholder="Repeat your password" autoComplete="new-password" required value={confirmation} onChange={event => { setConfirmation(event.target.value); setError(""); }} onBlur={() => setConfirmationBlurred(true)} aria-invalid={confirmationBlurred && confirmation !== password} aria-describedby="password-match" /></label>
-                <p id="password-match" className={styles.passwordFeedback} data-invalid={confirmationBlurred && confirmation !== password} role="status">{confirmation ? confirmation === password ? <><Icon kind="check" size={16}/> Passwords match</> : "Passwords do not match yet." : "Enter the same password again."}</p>
+              <form className={styles.accountForm} onSubmit={submit} aria-label="Create your member account">
+                <fieldset disabled={busy} className={styles.loginFields}>
+                <legend className={styles.srOnly}>Activate your member account</legend>
+                <AccountField id="member-name" label="Your name" name="name" autoComplete="name" required maxLength={100} onChange={event=>event.currentTarget.setCustomValidity("")} />
+                <AccountField id="new-password" label="Choose a password" name="password" type={showPasswords ? "text" : "password"} autoComplete="new-password" required value={password} onChange={event => { setPassword(event.target.value); setError(""); }} onBlur={() => setPasswordBlurred(true)} aria-invalid={passwordBlurred && !passwordLengthValid} aria-describedby="password-help password-length">
+                  <p id="password-help" className={styles.fieldHint}>Use 15–128 characters. Try four unrelated words or a password manager. Spaces are welcome.</p>
+                  <p id="password-length" className={styles.fieldFeedback} data-invalid={passwordBlurred && !passwordLengthValid} role="status">{passwordLength === 0 ? "15–128 characters" : passwordLength > 128 ? "Too long — use no more than 128 characters." : passwordLength < 15 ? `${15 - passwordLength} more ${15 - passwordLength === 1 ? "character" : "characters"} needed` : <><Icon kind="check" size={16}/> Length requirement met</>}</p>
+                </AccountField>
+                <AccountField id="confirm-password" label="Confirm password" name="confirm" type={showPasswords ? "text" : "password"} autoComplete="new-password" required value={confirmation} onChange={event => { setConfirmation(event.target.value); setError(""); }} onBlur={() => setConfirmationBlurred(true)} aria-invalid={confirmationBlurred && confirmation !== password} aria-describedby="password-match">
+                  <p id="password-match" className={styles.fieldFeedback} data-invalid={confirmationBlurred && confirmation !== password} role="status">{confirmation ? confirmation === password ? <><Icon kind="check" size={16}/> Passwords match</> : "Passwords do not match yet." : "Enter the same password again."}</p>
+                </AccountField>
                 <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="new-password confirm-password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide passwords" : "Show passwords"}</button>
-                <button type="submit" disabled={busy}>{busy ? "Creating your account…" : "Create my account"}</button>
+                <button className={styles.accountSubmit} type="submit" disabled={busy}>{busy ? "Creating your account…" : "Create my account"}<Icon kind="arrow" size={16}/></button>
+                </fieldset>
               </form>
             </>}
             {invitationProblem && <>
@@ -219,8 +220,8 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
               <Link className={styles.continueLink} href="/contact">Get help with your invitation</Link>
             </>}
             <Link className={created ? styles.continueLink : styles.textLink} href="/login">{created ? "Sign in to your account" : "Already activated? Sign in"}</Link>
+            {!created && <details className={styles.accountHelp}><summary>Need help with your invitation?</summary><p>Use the invitation from your cooperative administrator to activate your account. <Link href="/contact">Contact WisConnect</Link> if you need help.</p></details>}
           </> : !user ? <>
-            <p>Your cooperative. Your member workspace.</p>
             {sessionError && <button className={styles.retryButton} type="button" onClick={retryAccess}>Try connecting again</button>}
             <LoginForm busy={busy} error={error || sessionError} onEdit={() => setError("")} onSignIn={(email, password) => action(async () => {
               const result: User = await api("/login", "POST", { email, password });
@@ -228,17 +229,12 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
               setUser(result);
               if (mode === "login") location.assign("/dashboard/");
             })}/>
+            <p className={styles.membershipPrompt}><span>New to WisConnect?</span><Link href="/join">Explore membership <Icon kind="arrow" size={16}/></Link></p>
           </> : <>
             <p>You’re already signed in as {user.email}.</p>
             <Link className={styles.continueLink} href="/dashboard">Open member workspace</Link>
             <button type="button" className={styles.secondary} disabled={busy} onClick={signOut}>{busy ? "Signing out…" : "Sign out"}</button>
           </>}
         </>}
-      </div>
-    </main>
-    <footer className={styles.loginFooter}>
-      {!isSignup ? <><p className={styles.membershipPrompt}>New to WisConnect? <Link href="/join">Explore membership</Link></p><p>Member access by invitation <span aria-hidden="true">·</span> <Link href="/terms">Terms & Conditions</Link></p></> : <><details><summary>Help</summary><p>Accounts are invitation-only. To activate yours, use the link from your cooperative administrator. <Link href="/contact">Contact WisConnect</Link> if you need help.</p></details>
-      <p>Member access by invitation</p></>}
-    </footer>
-  </div>;
+  </AccountShell>;
 }
