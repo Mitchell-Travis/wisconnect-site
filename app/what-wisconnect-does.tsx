@@ -5,10 +5,10 @@ import Link from 'next/link';
 import styles from './what-wisconnect-does.module.css';
 
 const areas = [
-  { name: 'Governance', title: 'Cooperative governance & professional support', summary: 'Shared decisions. Experience you can draw on.', description: 'Shared decision-making, organisational guidance and professional expertise to help enterprises address business challenges.', points: ['Shared decision-making', 'Organisational guidance', 'Professional expertise'] },
-  { name: 'Spaces', title: 'Commercial space & community assets', summary: 'Room for enterprise. Roots in the community.', description: 'A development focus on affordable commercial space and inclusive real estate, connecting business needs to the long-term life of a neighbourhood.', points: ['Affordable commercial space', 'Inclusive real estate', 'Community assets'] },
-  { name: 'Growth', title: 'Business development & visibility', summary: 'Practical support to help good businesses grow.', description: 'Business consulting, shared marketing and connections between entrepreneurs. In Liberia, consulting work includes construction, agriculture and food and beverage enterprises.', points: ['Business consulting', 'Shared marketing', 'Entrepreneur connections'] },
-  { name: 'Connections', title: 'Trade & cross-border relationships', summary: 'Local businesses. A wider world of relationships.', description: 'Connections to international markets, partners and procurement, shaped around the needs of local businesses.', points: ['International markets', 'Partnerships', 'Procurement connections'] },
+  { name: 'Guidance', title: 'Cooperative governance & professional advice', summary: 'Advice for your business. A voice in shared decisions.', description: 'Navigate business challenges and shared decisions with professional guidance.', points: ['Professional advice', 'Business guidance', 'Shared decision-making'] },
+  { name: 'Spaces', title: 'Commercial space & community ownership', summary: 'Space to work, grow and serve your community.', description: 'Our vision includes affordable commercial space and community-owned assets for local businesses.', points: ['Affordable commercial space', 'Inclusive development', 'Community-owned assets'] },
+  { name: 'Growth', title: 'Business development & visibility', summary: 'Build your business. Help more people discover it.', description: 'Consulting, shared marketing and introductions. In Liberia, this includes construction, agriculture, and food and beverage businesses.', points: ['Business consulting', 'Shared marketing', 'Entrepreneur introductions'] },
+  { name: 'Connections', title: 'Trade & relationships across borders', summary: 'Reach beyond your local market.', description: 'Explore markets and relationships with potential partners, buyers and suppliers across borders.', points: ['International markets', 'Business partnerships', 'Procurement connections'] },
 ];
 
 function SupportIllustration({ index }: { index: number }) {
@@ -45,14 +45,14 @@ export function WhatWisConnectDoes() {
 
   return <section id="what-we-do" data-divider="background" className={styles.section} aria-labelledby="what-we-do-title">
     <div className={styles.inner}>
-      <header className={styles.heading}>
+      <header className={styles.heading} data-home-reveal>
         <p className={styles.eyebrow}>What WisConnect does</p>
-        <h2 id="what-we-do-title">Turn shared ownership<br/>{' '}into <em>shared progress.</em></h2>
-        <p className={styles.intro}>Professional guidance, business visibility, commercial space and trade connections are the focus of our work.</p>
-        <Link className={styles.cta} href="/contact">Talk with our team <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 15 10-10M5 5h10v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
+        <h2 id="what-we-do-title">Expertise, space<br/>{' '}and <em>connections.</em></h2>
+        <p className={styles.intro}>Share expertise, find room to grow and build relationships across Africa and the diaspora.</p>
+        <Link className={styles.cta} href="/contact">Talk about your business <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 15 10-10M5 5h10v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
       </header>
       <div className={styles.deck}>
-        {areas.map((area, index) => <article key={area.name} className={styles.card} data-active={active === index} onPointerEnter={event => { if (event.pointerType === 'mouse' && window.matchMedia('(min-width: 1151px) and (hover: hover)').matches) setActive(index); }}>
+        {areas.map((area, index) => <article data-home-reveal key={area.name} className={styles.card} data-active={active === index} onPointerEnter={event => { if (event.pointerType === 'mouse' && window.matchMedia('(min-width: 1151px) and (hover: hover)').matches) setActive(index); }}>
           <h3 className={styles.cardHeading}><button type="button" aria-expanded={active === index} aria-controls={`support-detail-${index}`} onClick={() => setActive(index)} onFocus={() => setActive(index)}>
             <span className={styles.number}>0{index + 1}</span><span>{area.name}</span><span className={styles.toggle} aria-hidden="true">{active === index ? '−' : '+'}</span>
           </button></h3>
@@ -65,7 +65,7 @@ export function WhatWisConnectDoes() {
           <div className={styles.artwork}><div className={styles.loop}/><SupportIllustration index={index}/></div>
         </article>)}
       </div>
-      <p className={styles.note}>Some opportunities are still being developed. Talk with the team to confirm what is available for your business.</p>
+      <p className={styles.note}>Opportunities are developing. Ask the team what is available for your business.</p>
     </div>
   </section>;
 }

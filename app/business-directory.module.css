@@ -159,3 +159,22 @@
   .directoryFooter p { font-size: 22px; }
 }
 @media(prefers-reduced-motion:reduce) { .preview > img,.tileMeta svg { transition: none; } .tile:is(:hover,:focus-visible) .preview > img { transform: none; } }
+
+/* The preview keeps the existing directory artwork and card proportions. */
+.tile[hidden] { display: none; }
+.grid[data-preview=true] .tile:last-child:nth-child(odd) { grid-column: auto; width: 100%; }
+.browse { display: flex; justify-content: center; margin-top: 28px; }
+.browse button { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; padding: 12px 20px; border: 1px solid var(--directory-accent); border-radius: var(--radius-control); background: transparent; color: var(--directory-accent); font: 600 15px/1.4 var(--font-sans); cursor: pointer; transition: background .15s; }
+.browse button:hover { background: #fff; }
+.browse button:active { background: var(--lilac); }
+@media(prefers-reduced-motion:reduce) { .browse button { transition: none; } }
+
+@media(prefers-reduced-motion:no-preference) {
+  .tile { transition: transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s; }
+  .browse button { transition: background .15s,transform .2s; }
+  .browse button:active { transform: scale(.98); transition-duration: 80ms; }
+  @media(hover:hover) and (pointer:fine) {
+    .tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -16px rgb(41 24 51 / 45%); }
+  }
+  .tile:active { transform: scale(.99); transition-duration: 80ms; }
+}

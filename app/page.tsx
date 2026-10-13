@@ -71,9 +71,9 @@ const networkStories = [
   ]}
 ] as const;
 const beliefPillars = [
-  {label:'People',title:'Bring what you know. Learn from each other.',description:'A business lesson, a professional skill or a useful introduction can be the starting point for someone else.'},
-  {label:'Capital',title:'Make room for the next step.',description:'Our ambition is to connect business ideas with the resources and relationships they need. Funding opportunities and terms are still being developed.'},
-  {label:'Communities',title:'Let business growth reach further.',description:'A thriving business can support a family, serve a neighborhood and create work for others. That is the kind of growth our cooperative aims to support.'}
+  {label:'People',title:'Bring what you know. Learn from each other.',description:'Your experience or introduction could be someone else’s next step.'},
+  {label:'Capital',title:'Make room for the next step.',description:'We aim to connect ideas with resources. Funding opportunities and terms are still being developed.'},
+  {label:'Communities',title:'Let business growth reach further.',description:'We aim for growth that supports families, serves neighborhoods and creates local work.'}
 ] as const;
 const cooperativeCards = [
   {id:'capital',label:'Capital',step:'02',heading:'Give good ideas',accent:'room to grow.',description:beliefPillars[1].description,detail:beliefPillars[1].title,image:'cooperative-shop.jpg',alt:'A Tanzanian shop owner inside her business'},
@@ -354,7 +354,7 @@ export default function Home(){
   useEffect(()=>{
     if(reducedMotion!==false||!('IntersectionObserver' in window))return;
     // Content stays readable before hydration and if motion is unavailable.
-    const targets=document.querySelectorAll('#main-content :is(.section-heading > *, #enterprise-cards > li, .program-list > article, #impact-title, #impact-metrics > div, #story-gallery, #join > .shell > :not(.join-grid), .join-grid > a, .footer-grid > div, .footer-bottom)');
+    const targets=document.querySelectorAll('#main-content :is([data-home-reveal], #member-cards > article, #directory-businesses > button, .section-heading > *, #enterprise-cards > li, .program-list > article, #impact-title, #impact-metrics > div, #story-gallery, #join > .shell > :not(.join-grid), .join-grid > a, .footer-grid > div, .footer-bottom)');
     const observer=new IntersectionObserver(entries=>{
       for(const entry of entries){
         if(!entry.isIntersecting)continue;
@@ -482,7 +482,7 @@ export default function Home(){
         <div className={styles.heroCopy}>
           <p className={styles.identity}>Black Women Business Development<br/>&amp; Resource Center</p>
           <h1 id="hero-title">Build your business.<br/><em>Share in <br/>what grows.</em></h1>
-          <p className={styles.heroLede}>WisConnect is a worker-owned holding cooperative bringing Black women entrepreneurs together across Africa and the diaspora to connect businesses, share knowledge and build community wealth.</p>
+          <p className={styles.heroLede}>A worker-owned holding cooperative connecting Black women entrepreneurs across Africa and the diaspora to build community wealth.</p>
           <div className={styles.heroActions}>
             <Link className={styles.primaryAction} href="/join" aria-describedby="membership-introduction-note">Introduce yourself <ArrowUpRightIcon/></Link>
             <a className={styles.secondaryAction} href="#what-we-do">Explore our support <ArrowDownIcon/></a>
@@ -504,11 +504,10 @@ export default function Home(){
 
     <section id="members" data-divider="background" className={`section ${styles.members}`} aria-labelledby="members-title">
       <div className="shell">
-        <div className={styles.membersHeading}>
+        <div className={styles.membersHeading} data-home-reveal>
           <p className="eyebrow">Individual strengths. A shared vision.</p>
           <h2 id="members-title">Meet the visionaries</h2>
-          <p className={styles.memberLede}>Meet the business owners, advisers and community builders helping shape WisConnect.</p>
-          <p className={styles.memberHint}>Select a portrait to read her story.</p>
+          <p className={styles.memberLede}>The business owners, advisers and community builders behind WisConnect.</p>
         </div>
         <div id="member-cards" className={styles.memberGrid} role="group" aria-label="Visionary profiles">
           {memberProfiles.map((member,index)=><VisionaryCard key={member.name} member={member} onReadProfile={()=>setSelectedMember(index)}/>)}
@@ -538,11 +537,11 @@ export default function Home(){
     </div></section> : <BusinessDirectory onProfile={openMemberByName}/>}
 
     <section id="purpose" className={`section ${styles.purposeSection}`} aria-labelledby="purpose-title"><div className="shell">
-      <div className={styles.purposeHeading}>
+      <div className={styles.purposeHeading} data-home-reveal>
         <div><p className="eyebrow">Purpose & identity</p><h2 id="purpose-title">Why we come <em>together.</em></h2></div>
         <p>Africa & the Diaspora</p>
       </div>
-      <p className={styles.purposeIntroduction}>Our purpose starts with the knowledge, relationships and ideas Black women bring to their businesses and communities.</p>
+      <p className={styles.purposeIntroduction}>Black women’s knowledge, ideas and relationships are our starting point.</p>
       <div className={styles.purposeGrid}>
         <article className={styles.purposeMission} aria-labelledby="purpose-mission-title">
           <figure className={styles.purposePhoto}>
@@ -576,7 +575,7 @@ export default function Home(){
           <div>
             <p className={styles.beliefEyebrow}><span>People · What we bring together</span></p>
             <h2 id="belief-title">When women own,<span>communities grow.</span></h2>
-            <p className={styles.beliefDescription}>Business experience, access to resources and local knowledge each have a part to play. These three priorities guide our cooperative vision.</p>
+            <p className={styles.beliefDescription}>Shared expertise, resources and local knowledge guide our work.</p>
           </div>
           <div className={styles.beliefBottom}>
             <div className={styles.beliefChoices} role="group" aria-label="Explore our cooperative belief">
@@ -606,7 +605,7 @@ export default function Home(){
       </article>)}
     </div></section>
 
-    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Chicago</p><h2 id="enterprises-title">Different businesses. Common ground.</h2></div><p>From cafés and shared kitchens to child care and design, these eight sectors are part of the Chicago cooperative vision.</p></div>
+    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Chicago</p><h2 id="enterprises-title">Different businesses. Common ground.</h2></div><p>Eight sectors in the Chicago vision, from coffee and shared kitchens to child care and design.</p></div>
       <div className={styles.enterpriseControls}>
         <p>Explore {sectors.length} Chicago sectors</p>
         <button type="button" aria-label="Previous enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.start} onClick={()=>slideEnterprise(-1)}><ArrowDownIcon/></button>
@@ -703,8 +702,8 @@ export default function Home(){
         <p id="impact-note" className={styles.impactNote}>Awaiting verification. Member totals, business totals, project activity and community outcomes will be published with sources and reporting dates once approved.</p>
         </>}
         <div id="global-reach" ref={impactVisual} className={styles.impactVisual}>
-          <p className="eyebrow">Across the diaspora</p><h2 id="connections-title" className={styles.connectionTitle}>Local roots. Diaspora connections.</h2>
-          <p className={styles.connectionCopy}>From Chicago to Liberia, relationships connect local enterprise to a wider circle of knowledge and opportunity. Vietnam and Brazil belong to the network’s developing connections and longer-term vision.</p>
+          <p className="eyebrow">Across the diaspora</p><h2 id="connections-title" className={styles.connectionTitle} data-home-reveal>Local roots. Diaspora connections.</h2>
+          <p className={styles.connectionCopy}>Rooted in Chicago and Liberia, with developing connections in Brazil and Vietnam.</p>
           <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>Explore current roots and developing connections.</span></div>
           <svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false">
             <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
@@ -793,13 +792,13 @@ export default function Home(){
         <div className={styles.involvementPanel}>
           <p className={styles.involvementKicker}>Three steps to a conversation</p>
           <ol className={styles.introductionSteps} role="list">
-            <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Introduce yourself.</h3><p>Five questions about you, your work and what you’d like to contribute.</p></div></li>
-            <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>Review &amp; email.</h3><p>Review your introduction, then send the prepared draft from your email app. Nothing sends automatically.</p></div></li>
-            <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Start a conversation.</h3><p>Explore your next step with the team. Ask about eligibility, fees and the membership review process.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Introduce yourself.</h3><p>Five questions about you, your work and your interests.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>Review &amp; email.</h3><p>Review your answers, then send the draft from your email app.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Start a conversation.</h3><p>Discuss eligibility, fees and next steps with the team.</p></div></li>
           </ol>
           <div className={styles.involvementAction}>
             <Link className={styles.involvementButton} href="/join">Introduce yourself <ArrowUpRightIcon/></Link>
-            <p>This is an introduction, not membership approval. Membership terms and opportunities are still being confirmed.</p>
+            <p>An introduction does not confirm membership. Terms and opportunities are still being finalized.</p>
           </div>
         </div>
       </div>

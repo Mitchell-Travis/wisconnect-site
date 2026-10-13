@@ -33,3 +33,14 @@
 }
 
 .location { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+@media(prefers-reduced-motion:no-preference) {
+  .portrait { transition: translate .25s cubic-bezier(.22,1,.36,1),filter .15s; }
+  .view { transition: background .2s,color .2s; }
+  .front:active .portrait { translate: 0 0; filter: brightness(.94); transition-duration: 80ms; }
+  @media(hover:hover) and (pointer:fine) {
+    .front:hover .portrait { translate: 0 -3px; }
+    .front:hover .view { background: var(--purple); color: white; }
+    .front:active .portrait { translate: 0 0; }
+  }
+}

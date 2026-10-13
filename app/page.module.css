@@ -3,8 +3,8 @@
   --nav-height: 76px;
   --gutter: clamp(20px, 4vw, 64px);
   --section-rail-inset: 24px;
-  --section-space-y: 80px;
-  --section-content-gap: 40px;
+  --section-space-y: 72px;
+  --section-content-gap: 36px;
   --ease: cubic-bezier(.22, 1, .36, 1);
   font-family: var(--font-sans), Arial, sans-serif;
   isolation: isolate;
@@ -91,7 +91,7 @@
 
 /* Mammoth-inspired leadership gallery, using WisConnect portraits and colours. */
 .page section.members { width: 100%; margin: 0; padding: var(--section-space-y) 0; background: var(--mist); scroll-margin-top: 80px; position: relative; isolation: isolate; }
-.membersHeading { max-width: 850px; margin: 0 auto 48px; text-align: center; }
+.membersHeading { max-width: 850px; margin: 0 auto 36px; text-align: center; }
 .membersHeading h2 { margin: 12px 0 20px; font-size: clamp(42px, 5.6vw, 80px); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
 .memberLede { max-width: 620px; margin: 0 auto; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .memberHint { margin: 16px 0 0; color: var(--purple); font-size: 12px; }
@@ -284,12 +284,12 @@
 
 /* One shared entrance rhythm; native scrolling and existing hover transforms stay intact. */
 @media (prefers-reduced-motion: no-preference) {
-  .page [data-scroll-reveal="visible"] { animation: scroll-arrive .4s var(--ease) both; }
+  .page [data-scroll-reveal="visible"] { animation: scroll-arrive .5s var(--ease) both; }
   .page [data-scroll-reveal]:focus-within { animation: none; }
   @media (min-width: 760px) {
     .page [data-scroll-reveal="visible"]:nth-child(2) { animation-delay: .08s; }
-    .page [data-scroll-reveal="visible"]:nth-child(3) { animation-delay: .16s; }
-    .page [data-scroll-reveal="visible"]:nth-child(n+4) { animation-delay: .24s; }
+    .page [data-scroll-reveal="visible"]:nth-child(3) { animation-delay: .12s; }
+    .page [data-scroll-reveal="visible"]:nth-child(n+4) { animation-delay: .16s; }
   }
   @supports (animation-timeline: view()) {
     @media (min-width: 760px) {
@@ -298,10 +298,10 @@
   }
 }
 @media (max-width: 759px) and (prefers-reduced-motion: no-preference) {
-  .page [data-scroll-reveal="visible"] { --arrival-distance: 12px; animation-duration: .3s; animation-delay: 0s; }
+  .page [data-scroll-reveal="visible"] { --arrival-distance: 12px; animation-duration: .4s; animation-delay: 0s; }
 }
 @keyframes scroll-arrive {
-  from { opacity: .65; translate: 0 var(--arrival-distance, 12px); }
+  from { opacity: .45; translate: 0 var(--arrival-distance, 18px); }
   to { opacity: 1; translate: 0 0; }
 }
 @keyframes photo-settle { from { scale: 1.06; } to { scale: 1; } }
@@ -311,7 +311,7 @@
   .hero { --hero-frame-edge: 18px; }
 }
 @media (max-width: 620px) {
-  .page { --section-rail-inset: 12px; --section-space-y: 56px; --section-content-gap: 28px; }
+  .page { --section-rail-inset: 12px; --section-space-y: 52px; --section-content-gap: 28px; }
   .hero { --hero-frame-edge: 12px; }
   .hero :global(.hero-textile-ribbon) { height: 12px; }
 }
@@ -725,3 +725,16 @@
 /* Original WisConnect artwork supplied by Elizabeth, 12 October 2026. */
 .page :global(.footer-brand) .footerLogo { width: 180px; height: auto; filter: none; margin-bottom: 16px; }
 .sheetLocation { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+/* Immediate press feedback; each arrow keeps its original direction. */
+@media(prefers-reduced-motion:no-preference) {
+  .primaryAction:active,.navJoin:active { transform: translateY(0) scale(.98); transition-duration: 80ms; }
+  .secondaryAction svg,.heroFoot svg,.contentLink svg,.involvementButton svg { transition: transform .22s var(--ease); }
+  .involvementButton { transition: transform .2s var(--ease),background .2s; }
+  .involvementButton:active { transform: scale(.98); transition-duration: 80ms; }
+  .enterpriseControls button:active:not(:disabled) { scale: .94; }
+  @media(hover:hover) and (pointer:fine) {
+    .secondaryAction:hover svg,.heroFoot a:hover svg { transform: translateY(3px); }
+    .contentLink:hover svg,.involvementButton:hover svg { transform: translate(2px,-2px); }
+  }
+}

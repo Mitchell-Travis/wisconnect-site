@@ -20,3 +20,12 @@
 @media(max-width:1000px){.inner{width:calc(100% - 64px);padding:64px 16px 0}.composition{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);column-gap:20px}.statement h2{font-size:clamp(60px,8vw,80px)}.eyebrow{letter-spacing:.12em;font-size:9px}.art{width:100%;max-width:490px;transform:none;align-self:start;margin-top:80px}.otherSteps{gap:24px}}
 @media(max-width:700px){.inner{width:100%;padding:48px 24px 0}.composition{grid-template-columns:1fr;grid-template-areas:"statement" "art" "connection";gap:0;padding-bottom:28px}.statement h2{font-size:clamp(58px,13.5vw,82px)}.statement h2 em{font-size:.59em}.eyebrow{margin-bottom:26px}.lede{font-size:14px}.art{width:240px;max-width:70%;margin:20px auto 0}.connection{max-width:none;margin-top:20px;padding-top:24px}.otherSteps{gap:12px;flex-wrap:wrap}.otherSteps p{flex-basis:100%}}
 @media(max-width:400px){.statement h2{font-size:56px}.statement h2 em{font-size:.57em}.eyebrow{font-size:8px}.lede br{display:none}.otherSteps{display:grid;gap:4px}.otherSteps a{justify-content:space-between}.art{width:210px}}
+
+@media(prefers-reduced-motion:no-preference) {
+  .primary { transition: background .2s,transform .2s; }
+  .primary span,.otherSteps a span { transition: transform .22s cubic-bezier(.22,1,.36,1); }
+  @media(hover:hover) and (pointer:fine) {
+    .primary:hover span,.otherSteps a:hover span { transform: translate(2px,-2px); }
+  }
+  .primary:active { transform: scale(.98); transition-duration: 80ms; }
+}

@@ -20,6 +20,7 @@ const identities: Record<string, {name:string; sub:string; tone:string; poster:s
   wisinsup:{name:'WisInSup',sub:'INCORPORATED',tone:'mauve',poster:'editorial',group:'Industry',image:'business-professional.webp',alt:'A workspace arranged for business planning'},
   zead:{name:'ZE’AD',sub:'ADVISORS & CONSULTANTS',tone:'purple',poster:'split',group:'Professional',image:'business-professional.webp',alt:'Documents and a notebook in a professional advisory workspace'},
 };
+const previewIds=['bunnyland','jennima','momentum','zead'];
 const categories=['All sectors','Food & hospitality','Design','Child care','Professional','Industry'];
 const normalize=(value:string)=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘]/g,"'").toLowerCase();
 
@@ -40,6 +41,7 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
   const [location,setLocation]=useState('All locations');
   const [category,setCategory]=useState('All sectors');
   const [query,setQuery]=useState('');
+  const [expanded,setExpanded]=useState(false);
   const [filtersOpen,setFiltersOpen]=useState(false);
   const [selected,setSelected]=useState<string|null>(null);
   const dialog=useRef<HTMLDialogElement>(null);
@@ -49,11 +51,12 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
   const animations=useRef<Animation[]>([]);
   const closing=useRef(false);
   const business=businesses.find(b=>b.id===selected);
-  const reset=()=>{setLocation('All locations');setCategory('All sectors');setQuery('');};
+  const reset=()=>{setLocation('All locations');setCategory('All sectors');setQuery('');setExpanded(true);};
 
   useEffect(()=>{
     const revealBusiness=(id:string)=>{
       if(!businesses.some(b=>`business-${b.id}`===id))return;
+      setExpanded(true);
       setLocation('All locations');setCategory('All sectors');setQuery('');
       requestAnimationFrame(()=>{
         const tile=document.getElementById(id);
@@ -122,7 +125,7 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
       {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*28+350} C360 ${i*17+700} 790 ${i*12+140} 1120 ${i*20+240} S1510 ${i*35+500} 1700 ${i*29+320}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
     </svg>
     <div className="shell">
-    <div className={styles.heading}><p className="eyebrow">The business directory</p><h2 id="directory-title">Local businesses.<br/><em>Shared possibilities.</em></h2><p className={styles.introduction}>Meet the businesses in our growing network. Each with its own story.</p></div>
+    <div className={styles.heading} data-home-reveal><p className="eyebrow">The business directory</p><h2 id="directory-title">Local businesses.<br/><em>Shared possibilities.</em></h2><p className={styles.introduction}>Independent businesses. One growing network.</p></div>
     <button type="button" className={styles.filterToggle} aria-expanded={filtersOpen} aria-controls="directory-filters" onClick={()=>setFiltersOpen(open=>!open)}><Icon kind="search"/>Search &amp; filter{isFiltered&&<span className={styles.filterIndicator} aria-label="Filters active"/>}<span aria-hidden="true">{filtersOpen?'−':'+'}</span></button>
     <div id="directory-filters" className={styles.filters} data-open={filtersOpen}>
     <div className={styles.toolbar}>
@@ -131,8 +134,14 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
     </div>
     <div className={styles.categories} role="group" aria-label="Filter businesses by sector">{categories.map(item=><button key={item} type="button" aria-pressed={category===item} onClick={()=>setCategory(item)}>{item}</button>)}</div>
     </div>
-    <div className={styles.results}><p role="status" aria-live="polite">{visible.length} {visible.length===1?'business':'businesses'} · Select a business to explore</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
-    <div className={styles.grid}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} type="button" className={`${styles.tile} ${styles.tone}`} data-tone={identities[b.id].tone} data-poster={identities[b.id].poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark id={b.id}/><span className={styles.preview} data-business-image><BusinessVisual id={b.id}/></span><span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="arrow"/></span></button>)}</div>
+    <div className={styles.results}><p role="status" aria-live="polite">{!expanded&&!isFiltered?`Showing ${previewIds.length} of ${visible.length}`:visible.length} {visible.length===1?'business':'businesses'} · Select a business to explore</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
+    <div id="directory-businesses" className={styles.grid} data-preview={!expanded&&!isFiltered}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} hidden={!expanded&&!isFiltered&&!previewIds.includes(b.id)} type="button" className={`${styles.tile} ${styles.tone}`} data-tone={identities[b.id].tone} data-poster={identities[b.id].poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark id={b.id}/><span className={styles.preview} data-business-image><BusinessVisual id={b.id}/></span><span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="arrow"/></span></button>)}</div>
+    {!isFiltered&&<div className={styles.browse}><button type="button" aria-expanded={expanded} aria-controls="directory-businesses" onClick={event=>{
+      const control=event.currentTarget;
+      setExpanded(open=>!open);
+      if(expanded)requestAnimationFrame(()=>control.scrollIntoView({block:'center',behavior:'instant'}));
+      else requestAnimationFrame(()=>document.getElementById(`business-${businesses.find(b=>!previewIds.includes(b.id))?.id}`)?.focus());
+    }}>{expanded?'Show fewer businesses':`Explore all ${businesses.length} businesses`} <span aria-hidden="true">{expanded?'−':'+'}</span></button></div>}
     {visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="arrow"/></button></div>}
     <div className={styles.directoryFooter}><p>A local business. A wider circle of possibility.</p><Link href="/contact">Ask us for an introduction <Icon kind="arrow"/></Link></div>
   </div>
