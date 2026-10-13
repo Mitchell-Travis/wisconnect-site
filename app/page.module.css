@@ -81,8 +81,8 @@
 .heroNote { max-width: 410px; margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .secondaryAction { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; color: var(--plum); font-size: 13px; font-weight: 650; text-underline-offset: 5px; }
 .secondaryAction:hover { text-decoration: underline; }
-.heroArt { position: relative; display: flex; align-items: flex-end; justify-content: center; min-width: 0; isolation: isolate; overflow: hidden; }
-.heroPortrait { position: relative; z-index: 1; width: 100%; max-width: 100%; max-height: 620px; height: auto; align-self: flex-end; object-fit: contain; object-position: bottom; }
+.heroArt { position: relative; display: flex; align-items: flex-end; justify-content: center; min-width: 0; isolation: isolate; overflow: visible; }
+.heroPortrait { position: relative; z-index: 1; box-sizing: border-box; width: 100%; max-width: 100%; max-height: 620px; height: auto; padding: 16px 12px 24px; align-self: flex-end; object-fit: contain; object-position: center; }
 .heroFoot { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 14px; }
 .heroFoot p { margin: 0; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .14em; color: #6b5876; }
 .heroFoot a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 13px; color: var(--plum); }
@@ -334,7 +334,7 @@
   .primaryAction { min-height: 52px; padding-inline: 20px; font-size: 13px; }
   .secondaryAction { font-size: 12px; }
   .heroArt { height: clamp(280px, 75vw, 380px); margin-top: 16px; }
-  .heroPortrait { width: auto; max-width: 100%; height: 100%; object-fit: contain; object-position: bottom; }
+  .heroPortrait { width: auto; max-width: 100%; height: 100%; padding: 12px 8px 18px; object-fit: contain; object-position: center; }
   .heroFoot { padding-block: 14px; }
   .heroFoot p { display: none; }
   .heroFoot a { width: 100%; justify-content: space-between; font-size: 12px; gap: 12px; }
