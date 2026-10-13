@@ -1,11 +1,13 @@
 'use client';
 
+import Icon from "./site-icon";
+
 import { assetPath } from './assets';
 import styles from './wisconnect-content.module.css';
 export { BusinessDirectory } from './business-directory';
 
 function ArrowIcon(){
-  return <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 14 14 6M7 6h7v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="external" size={18}/>;
 }
 
 export { businesses } from './businesses';
@@ -21,7 +23,7 @@ const memberStories=[
 ];
 export function MemberStories({onProfile}:{onProfile:(name:string)=>void}){
   return <section id="member-stories" className={`section ${styles.stories}`} aria-labelledby="member-stories-title"><div className="shell">
-    <div className="section-heading split-heading"><div><p className="eyebrow">People behind the businesses</p><h2 id="member-stories-title">Experience worth<br/><em>sharing.</em></h2></div><p>Lessons and ambition from the people doing the work.</p></div>
-    <div className={styles.storyGrid}>{memberStories.map(story=><article key={story.name} data-home-reveal><img src={assetPath(`${story.image}-studio-480.webp`)} alt={`Portrait of ${story.name}`} width="480" height="480" loading="lazy"/><div><span className={styles.tag}>{story.label}</span><h3>{story.title}</h3><p>{story.copy}</p><button type="button" onClick={()=>onProfile(story.name)}>Read {story.name.split(' ')[0]}’s story <ArrowIcon/></button></div></article>)}</div>
+    <div className="section-heading split-heading"><div><p className="eyebrow">People behind the businesses</p><h2 id="member-stories-title" data-section-headline>Experience worth<br/><em>sharing.</em></h2></div><p>Lessons and ambition from the people doing the work.</p></div>
+    <div className={styles.storyGrid}>{memberStories.map(story=><article key={story.name}><img src={assetPath(`${story.image}-studio-480.webp`)} alt={`Portrait of ${story.name}`} width="480" height="480" loading="lazy"/><div><span className={styles.tag}>{story.label}</span><h3>{story.title}</h3><p>{story.copy}</p><button type="button" onClick={()=>onProfile(story.name)}>Read {story.name.split(' ')[0]}’s story <ArrowIcon/></button></div></article>)}</div>
   </div></section>;
 }

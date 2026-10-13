@@ -46,7 +46,7 @@
 .tileMeta { position: absolute; z-index: 3; inset: auto 28px 22px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .03em; }
 .tileMeta svg { flex-shrink: 0; transition: transform .35s var(--ease); }
 .preview { position: absolute; inset: 38% 28px 54px; z-index: 0; overflow: hidden; border-radius: 3px; }
-.preview > img { height: 100%; width: 100%; object-fit: cover; object-position: center; transition: transform .7s var(--ease); }
+.preview > img { height: 100%; width: 100%; object-fit: cover; object-position: center; }
 .tile[data-poster=print] .preview { inset: 36% -5% 9% 20%; transform: rotate(-8deg); }
 .brandMark[data-business=bdavis] .wordmark { font-family: var(--font-sans); font-weight: 850; text-transform: uppercase; letter-spacing: -.07em; }
 .tile[data-poster=arch] .preview { inset: 36% 16% 12%; border-radius: 50% 50% 4px 4px; }
@@ -70,8 +70,7 @@
 .tile[data-poster=mineral] .preview { inset: 38% 0 0; }
 .tile[data-poster=mineral] .preview::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 55%,var(--plum)); }
 .brandMark[data-business=river-cess-mining] .wordmark { color: var(--gold); }
-@media(hover:hover) and (pointer:fine) { .tile:hover .preview > img { transform: scale(1.055); } .tile:hover .tileMeta svg { transform: translate(3px,-3px); } }
-.tile:focus-visible .preview > img { transform: scale(1.035); }
+@media(hover:hover) and (pointer:fine) { .tile:hover .tileMeta svg { transform: translate(3px,-3px); } }
 .tile:target { outline: 3px solid var(--directory-accent); outline-offset: 3px; }
 .directory :is(button,a):focus-visible { outline: 3px solid var(--directory-accent); outline-offset: 4px; }
 .categories button:focus-visible { outline-offset: -3px; }
@@ -109,7 +108,7 @@
   .directory:global(.section) { padding-block: 56px; }
   .directory > :global(.shell) { width: calc(100% - 2 * var(--section-rail-inset)); padding-inline: 0; }
   .directoryThreads { height: min(950px,100%); }
-  .heading { margin: 0 auto 22px; padding-inline: 10px; max-width: 520px; }
+  .heading { margin: 0 auto 22px; max-width: 520px; }
   .heading h2 { font-size: clamp(28px,8.2vw,46px); margin: 14px 0 18px; }
   .introduction { max-width: 360px; margin-inline: auto; font-size: 14px; line-height: 1.6; }
   .filterToggle { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 auto; padding: 0 16px; min-height: 44px; border: 1px solid var(--directory-line); border-radius: 999px; background: transparent; color: var(--directory-accent); font: inherit; font-size: 12px; cursor: pointer; }
@@ -170,11 +169,7 @@
 @media(prefers-reduced-motion:reduce) { .browse button { transition: none; } }
 
 @media(prefers-reduced-motion:no-preference) {
-  .tile { transition: transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s; }
   .browse button { transition: background .15s,transform .2s; }
   .browse button:active { transform: scale(.98); transition-duration: 80ms; }
-  @media(hover:hover) and (pointer:fine) {
-    .tile:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -16px rgb(41 24 51 / 45%); }
-  }
-  .tile:active { transform: scale(.99); transition-duration: 80ms; }
 }
+.visualPlaceholder { display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 9; padding: 24px; background: #efe9f5; color: #402650; font-size: 24px; text-align: center; }

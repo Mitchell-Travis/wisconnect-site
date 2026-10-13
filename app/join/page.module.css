@@ -36,10 +36,10 @@
 .fields { display: grid; gap: 24px; margin-top: 28px; }
 .fields label { display: grid; gap: 8px; font-size: 14px; font-weight: 600; }
 .fields small { color: var(--muted); font-size: 13px; line-height: 1.6; font-weight: 400; }
-.fields input, .fields textarea, .emailFallback textarea { width: 100%; min-width: 0; min-height: 52px; padding: 12px 14px; border: 1px solid #998aa3; border-radius: var(--radius-control); background: #fff; color: var(--plum); font-size: 16px; line-height: 1.5; font-weight: 400; }
+.fields input, .fields textarea, .emailFallback textarea { width: 100%; min-width: 0; min-height: 52px; padding: 12px 14px; border: 1px solid #a1a1aa; border-radius: var(--radius-control); background: #fff; color: var(--plum); font-size: 16px; line-height: 1.5; font-weight: 400; }
 .fields textarea, .emailFallback textarea { resize: vertical; }
 .fields :is(input,textarea)::placeholder { color: var(--muted); opacity: 1; }
-.fields :is(input,textarea):focus { border-color: var(--purple); }
+.page :is(input,textarea):focus { border-color: var(--form-field-focus); outline: 1px solid var(--form-field-focus); outline-offset: -2px; box-shadow: none; }
 .fields [aria-invalid="true"] { border-color: #842e42; }
 .errorSummary { margin-top: 24px; padding: 16px; border-left: 3px solid #842e42; background: #fff3f4; color: #842e42; font-size: 14px; line-height: 1.6; }
 .errorSummary:focus { outline: 2px solid #842e42; outline-offset: 3px; }

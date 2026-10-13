@@ -1,9 +1,14 @@
 "use client";
 
+import Icon from "../site-icon";
+import { newRequestId } from '../local-api';
+
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import Link from 'next/link';
 import EntryHeader from '../entry-header';
 import JoinVisual from './join-visual';
+import { accountAvailable, ApiError } from '../account-api';
+import { submitIntroduction } from './introduction-api';
 import styles from './page.module.css';
 
 const steps=['Welcome','About you','Your contribution','Review'];
@@ -19,11 +24,29 @@ type Field = keyof typeof fieldLabels;
 const emptyAnswers={name:'',email:'',location:'',expertise:'',contribution:''};
 
 function ArrowIcon(){
-  return <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="arrow"/>;
 }
 
 export default function JoinPage(){
   const [step,setStep]=useState(0);
+  const [direct,setDirect]=useState(false);
+  const [sending,setSending]=useState(false);
+  const [sendError,setSendError]=useState('');
+  const [receipt,setReceipt]=useState<number | null>(null);
+  const submission=useRef<{id: string; answers: typeof emptyAnswers} | null>(null);
+  const pending=useRef(false);
+  const receiptHeading=useRef<HTMLHeadingElement>(null);
+  useEffect(()=>setDirect(accountAvailable()),[]);
+  useEffect(()=>{if(receipt !== null)receiptHeading.current?.focus();},[receipt]);
+  async function sendIntroduction(){
+    if(pending.current || receipt !== null)return;
+    pending.current=true;setSending(true);setSendError('');
+    // Keep the same key and answers after uncertain delivery, including network timeouts.
+    if(!submission.current)submission.current={id:newRequestId(),answers:{...answers}};
+    try{const result=await submitIntroduction({...submission.current.answers,submission_id:submission.current.id});setReceipt(result.reference);}
+    catch(error){if(error instanceof ApiError && [403,422,429].includes(error.status))submission.current=null;setSendError(error instanceof Error ? error.message : 'Could not save your introduction. Try again.');}
+    finally{pending.current=false;setSending(false);}
+  }
   const [answers,setAnswers]=useState(emptyAnswers);
   const [editing,setEditing]=useState(false);
   const [prepared,setPrepared]=useState(false);
@@ -61,6 +84,7 @@ export default function JoinPage(){
 
   function continueApplication(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
+    if(step===3 && direct){void sendIntroduction();return;}
     const form=event.currentTarget;
     const nextErrors:Partial<Record<Field,string>>={};
     for(const field of form.querySelectorAll<HTMLInputElement|HTMLTextAreaElement>('input, textarea')){
@@ -104,21 +128,21 @@ export default function JoinPage(){
     <main className={styles.layout}>
       <JoinVisual/>
       <section id="application" className={styles.application} aria-labelledby="step-title">
-        {step>0&&<nav className={styles.progress} aria-label="Introduction progress">
+        {receipt===null&&step>0&&<nav className={styles.progress} aria-label="Introduction progress">
           <p><span>Membership interest</span><span>Step {step} of 3</span></p>
-          <ol>{steps.slice(1).map((label,index)=><li key={label} aria-current={step===index+1?'step':undefined} data-complete={index+1<step}><span className={styles.stepMarker} aria-hidden="true">{index+1<step?'✓':`0${index+1}`}</span><span>{label}</span></li>)}</ol>
+          <ol>{steps.slice(1).map((label,index)=><li key={label} aria-current={step===index+1?'step':undefined} data-complete={index+1<step}><span className={styles.stepMarker} aria-hidden="true">{index+1<step?<Icon kind="check" size={16}/>: `0${index+1}`}</span><span>{label}</span></li>)}</ol>
         </nav>}
 
-        <form className={styles.form} onSubmit={continueApplication} noValidate aria-labelledby="step-title">
+        {receipt === null && <form className={styles.form} onSubmit={continueApplication} noValidate aria-labelledby="step-title">
           <div key={step} className={styles.stepContent}>
             <p className={styles.eyebrow}>{step===0?'Membership interest':steps[step]}</p>
             <h1 id="step-title" ref={heading} tabIndex={-1}>{titles[step]}</h1>
-            <p className={styles.description}>{descriptions[step]}</p>
+            <p className={styles.description}>{direct && step===3 ? 'Check your introduction before submitting it to WisConnect.' : descriptions[step]}</p>
 
             {invalidFields.length>0&&<div ref={summary} className={styles.errorSummary} role="alert" tabIndex={-1}><strong>Check these details.</strong><ul>{invalidFields.map(key=><li key={key}><a href={'#'+(key==='name'?'full-name':key)} onClick={event=>{event.preventDefault();document.getElementById(key==='name'?'full-name':key)?.focus();}}>{fieldLabels[key]}: {errors[key]}</a></li>)}</ul></div>}
             {step===0&&<>
               <button className={`${styles.primaryAction} ${styles.startAction}`} type="submit">Introduce yourself<ArrowIcon/></button>
-              <p className={styles.deliveryNote}>Five questions. Review your answers, then send by email. No account needed.</p>
+              <p className={styles.deliveryNote}>{direct ? 'Five questions. Review your answers, then submit your introduction. No account needed.' : 'Five questions. Review your answers, then send by email. No account needed.'}</p>
               <details className={styles.membershipDetails}><summary>What happens next?</summary><p>Your introduction starts a conversation with WisConnect. Membership is subject to eligibility, review and the cooperative’s onboarding process.</p></details>
             </>}
 
@@ -134,21 +158,23 @@ export default function JoinPage(){
             </div>}
 
             {step===3&&<>
-              <div className={styles.reviewGroup}><div className={styles.reviewHeading}><h3>About you</h3><button type="button" onClick={()=>goToStep(1,true)} aria-label="Edit your personal details">Edit <ArrowIcon/></button></div><dl><div><dt>Full name</dt><dd>{answers.name.trim()}</dd></div><div><dt>Email address</dt><dd>{answers.email.trim()}</dd></div><div><dt>Location</dt><dd>{answers.location.trim()}</dd></div></dl></div>
-              <div className={styles.reviewGroup}><div className={styles.reviewHeading}><h3>Your contribution</h3><button type="button" onClick={()=>goToStep(2,true)} aria-label="Edit your contribution">Edit <ArrowIcon/></button></div><dl><div><dt>Business or expertise</dt><dd>{answers.expertise.trim()}</dd></div><div><dt>What you’d like to contribute</dt><dd>{answers.contribution.trim()}</dd></div></dl></div>
+              <div className={styles.reviewGroup}><div className={styles.reviewHeading}><h3>About you</h3><button type="button" disabled={sending || submission.current !== null} onClick={()=>goToStep(1,true)} aria-label="Edit your personal details">Edit <ArrowIcon/></button></div><dl><div><dt>Full name</dt><dd>{answers.name.trim()}</dd></div><div><dt>Email address</dt><dd>{answers.email.trim()}</dd></div><div><dt>Location</dt><dd>{answers.location.trim()}</dd></div></dl></div>
+              <div className={styles.reviewGroup}><div className={styles.reviewHeading}><h3>Your contribution</h3><button type="button" disabled={sending || submission.current !== null} onClick={()=>goToStep(2,true)} aria-label="Edit your contribution">Edit <ArrowIcon/></button></div><dl><div><dt>Business or expertise</dt><dd>{answers.expertise.trim()}</dd></div><div><dt>What you’d like to contribute</dt><dd>{answers.contribution.trim()}</dd></div></dl></div>
               <div className={styles.nextSteps}><h3>An introduction is the first step.</h3><p>This expresses interest in WisConnect. Membership is subject to eligibility, review and the cooperative’s onboarding process.</p></div>
               {prepared&&<div className={styles.confirmation} role="status"><strong>One last step: send your email.</strong><p>If your email app opened, check the draft and press Send there. Nothing has been submitted through this website.</p></div>}
             </>}
 
             {step>0&&<div className={styles.actions}>
-              <button className={styles.backButton} type="button" onClick={()=>{if(editing)setAnswers(beforeEdit.current);goToStep(editing?3:step-1);}}><ArrowIcon/>{editing?'Cancel edit':'Back'}</button>
-              {step<3?<button className={styles.primaryAction} type="submit">{editing?'Save and review':step===2?'Review introduction':'Continue'}<ArrowIcon/></button>:<a className={styles.primaryAction} href={emailUrl} onClick={()=>setPrepared(true)}>Open email draft<ArrowIcon/></a>}
+              <button className={styles.backButton} disabled={sending || submission.current !== null} type="button" onClick={()=>{if(editing)setAnswers(beforeEdit.current);goToStep(editing?3:step-1);}}><ArrowIcon/>{editing?'Cancel edit':'Back'}</button>
+              {step<3?<button className={styles.primaryAction} type="submit">{editing?'Save and review':step===2?'Review introduction':'Continue'}<ArrowIcon/></button>:direct?<button className={styles.primaryAction} type="submit" disabled={sending}>{sending ? 'Submitting…' : submission.current ? 'Retry submission' : 'Submit introduction'}<ArrowIcon/></button>:<a className={styles.primaryAction} href={emailUrl} onClick={()=>setPrepared(true)}>Open email draft<ArrowIcon/></a>}
             </div>}
 
-            {step===3&&<div className={styles.emailFallback}><button type="button" onClick={copyApplication}>Copy introduction</button><p role="status">{copyStatus}</p><details><summary>View introduction text</summary><label htmlFor="application-text" className={styles.textLabel}>Copy this text into an email to hello@wisconnect.co.</label><textarea id="application-text" value={application} readOnly rows={9}/></details></div>}
+            {sendError&&<div className={styles.errorSummary} role="alert"><strong>{sendError}</strong><p>{submission.current ? 'Your submitted answers are kept unchanged so a retry cannot create a duplicate.' : 'You can edit your answers before trying again.'}</p></div>}
+            {step===3&&!direct&&<div className={styles.emailFallback}><button type="button" onClick={copyApplication}>Copy introduction</button><p role="status">{copyStatus}</p><details><summary>View introduction text</summary><label htmlFor="application-text" className={styles.textLabel}>Copy this text into an email to hello@wisconnect.co.</label><textarea id="application-text" value={application} readOnly rows={9}/></details></div>}
           </div>
-        </form>
-        <p className={styles.privacyNote}>{step===0?'Already a member? ':'Your answers stay in this tab. Reloading clears them. Nothing is sent until you send the email. '}{step===0&&<><Link href="/login">Sign in</Link><span aria-hidden="true"> · </span></>} <Link href="/terms">Terms & Conditions</Link></p>
+        </form>}
+        {receipt !== null && <div className={styles.confirmation} role="status"><h1 id="step-title" ref={receiptHeading} tabIndex={-1}>Introduction received.</h1><p>Reference #{receipt}. Your answers have been saved for the WisConnect team to review.</p><p>This is an expression of interest, not membership approval or an account invitation. No confirmation email has been sent.</p><Link className={styles.primaryAction} href="/">Back to WisConnect<ArrowIcon/></Link></div>}
+        <p className={styles.privacyNote}>{step===0?'Already a member? ':direct ? (receipt !== null ? 'Your introduction is visible only to WisConnect administrators. ' : 'Your answers stay in this tab until you submit them. Submitted introductions are stored for administrator review. ') : 'Your answers stay in this tab. Reloading clears them. Nothing is sent until you send the email. '}{step===0&&<><Link href="/login">Sign in</Link><span aria-hidden="true"> · </span></>} <Link href="/terms">Terms & Conditions</Link></p>
         <noscript><p>Please enable JavaScript to use the guided application, or email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a> to introduce yourself.</p></noscript>
       </section>
     </main>

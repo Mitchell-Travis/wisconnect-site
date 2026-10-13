@@ -1,6 +1,9 @@
 'use client';
 
+import Icon from "../site-icon";
+
 import Link from 'next/link';
+import { localApiAvailable, localApiUrl, newRequestId } from '../local-api';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './page.module.css';
 import { sectors, type Sector } from '../business-sectors';
@@ -31,7 +34,7 @@ export default function ContactForm() {
       setSector(matchedSector);
       setAnswers({ ...emptyAnswers, topic: 'Member enterprises', message: `Hello WisConnect, I’d like to learn more about ${matchedSector.toLowerCase()} in your Chicago network. Could you help me find a business or make an introduction?` });
     }
-    setAvailable(location.origin === 'http://localhost:3000' && !process.env.NEXT_PUBLIC_BASE_PATH);
+    setAvailable(localApiAvailable());
     setReady(true);
   }, []);
   useEffect(() => { if (receipt) success.current?.focus(); }, [receipt]);
@@ -65,8 +68,8 @@ export default function ContactForm() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 35000);
     try {
-      submission.current ||= crypto.randomUUID();
-      const response = await fetch('http://localhost:8001/contact', {
+      submission.current ||= newRequestId();
+      const response = await fetch(localApiUrl('/contact'), {
         method: 'POST', credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer',
         headers: { 'Content-Type': 'application/json', 'X-WisConnect-Request': '1' },
         body: JSON.stringify({ ...answers, submission_id: submission.current }),
@@ -103,12 +106,12 @@ export default function ContactForm() {
 
   return <section className={styles.card} aria-labelledby="contact-form-title">
     {receipt ? <div className={styles.confirmation}>
-      <span className={styles.confirmationIcon} aria-hidden="true">✓</span>
+      <span className={styles.confirmationIcon} aria-hidden="true"><Icon kind="check" size={28}/></span>
       <h2 id="contact-form-title" ref={success} tabIndex={-1}>Thanks for reaching out.</h2>
       <p>Your message has been received. The WisConnect team can follow up using the email you provided.</p>
       <p className={styles.receipt}>Reference #{receipt.reference}</p>
       {receipt.test_mode && <p className={styles.previewNote}>Saved in the local dashboard. Email notifications currently go to the test inbox.</p>}
-      <Link className={styles.returnLink} href="/">Back to WisConnect <span aria-hidden="true">→</span></Link>
+      <Link className={styles.returnLink} href="/">Back to WisConnect <span aria-hidden="true"><Icon kind="arrow"/></span></Link>
     </div> : <>
       <div className={styles.formHeading}><h2 id="contact-form-title">Send us a message.</h2></div>
       {sector && <p>Ask WisConnect about {sector.toLowerCase()} in Chicago.</p>}
@@ -135,7 +138,7 @@ export default function ContactForm() {
             </div>
             <div className={styles.field}>
               <label htmlFor="contact-topic">Topic</label>
-              <select id="contact-topic" name="topic" value={answers.topic} onChange={updateAnswer}><option>General inquiry</option><option>Membership</option><option>Partnerships</option><option>Member enterprises</option></select>
+              <div className={styles.selectControl}><select id="contact-topic" name="topic" value={answers.topic} onChange={updateAnswer}><option>General inquiry</option><option>Membership</option><option>Partnerships</option><option>Member enterprises</option></select><Icon kind="chevronDown" size={16}/></div>
             </div>
             <div className={styles.field}>
               <label htmlFor="contact-message">Your message</label>
@@ -145,7 +148,7 @@ export default function ContactForm() {
             </div>
           </div>
           <div className={styles.formActions}>
-            <button type="submit" className={styles.primaryAction}>{busy ? 'Submitting…' : 'Submit'} <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+            <button type="submit" className={styles.primaryAction}>{busy ? 'Submitting…' : 'Submit'} <Icon kind="arrow" size={16}/></button>
           </div>
         </fieldset>
         {error && <p className={styles.submissionError} role="alert">{error}</p>}

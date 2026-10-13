@@ -1,8 +1,11 @@
 "use client";
 
+import Icon from "./site-icon";
+
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
 import { animate, motion, MotionConfig, useInView } from 'motion/react';
+import { accountAvailable } from './account-api';
 import { assetPath } from './assets';
 import styles from './page.module.css';
 import { businesses, CooperativeOverview, BusinessDirectory, CommunityProjects, MemberStories } from './wisconnect-content';
@@ -14,6 +17,7 @@ import { sectors, sectorBusinessIds, type Sector } from './business-sectors';
 
 // Retain unfinished sections and their original content for a later release.
 const showUnfinishedSections = false;
+const mobilePillarDuration = 7000;
 
 const allNavigationMenus = [
   {label:'About',groups:[
@@ -188,10 +192,10 @@ const sectorStories: Record<Sector,{image:string;alt:string;position:string;desc
 };
 
 function ArrowUpRightIcon(){
-  return <svg className="inline-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 14L14 6M8 6h6v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="external" className="inline-icon"/>;
 }
 function ArrowDownIcon(){
-  return <svg className="inline-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 4v11m0 0l-4-4m4 4l4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="arrowDown" className="inline-icon"/>;
 }
 
 const backgroundAssets = {
@@ -226,6 +230,8 @@ function browseCards(track:HTMLElement|null,direction:number|'start'|'end'){
 }
 
 export default function Home(){
+  const [directIntroductions,setDirectIntroductions]=useState(false);
+  useEffect(()=>setDirectIntroductions(accountAvailable()),[]);
   const [reducedMotion,setReducedMotion]=useState<boolean|null>(null);
   useEffect(()=>{
     const media=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -235,11 +241,58 @@ export default function Home(){
     return()=>media.removeEventListener('change',update);
   },[]);
   const [beliefPillar,setBeliefPillar]=useState(0);
+  const [mobileBelief,setMobileBelief]=useState('people');
   const beliefStack=useRef<HTMLDivElement>(null);
+  const [mobileBeliefPaused,setMobileBeliefPaused]=useState(false);
+  const [isMobileBelief,setIsMobileBelief]=useState(false);
+  const [pageVisible,setPageVisible]=useState(true);
+  const beliefInView=useInView(beliefStack,{amount:.4});
+  // Automatic motion is mobile-only and stops when reading is interrupted.
+  const mobileBeliefPlaying=isMobileBelief&&beliefInView&&pageVisible&&!mobileBeliefPaused&&reducedMotion===false;
+  useEffect(()=>{
+    const media=window.matchMedia('(max-width: 760px)');
+    const updateViewport=()=>setIsMobileBelief(media.matches);
+    const updateVisibility=()=>setPageVisible(document.visibilityState==='visible');
+    updateViewport();
+    updateVisibility();
+    media.addEventListener('change',updateViewport);
+    document.addEventListener('visibilitychange',updateVisibility);
+    return()=>{
+      media.removeEventListener('change',updateViewport);
+      document.removeEventListener('visibilitychange',updateVisibility);
+    };
+  },[]);
+  useEffect(()=>{
+    if(!mobileBeliefPlaying)return;
+    const timer=window.setTimeout(()=>{
+      const pillars=['people','capital','communities'];
+      setMobileBelief(pillars[(pillars.indexOf(mobileBelief)+1)%pillars.length]);
+    },mobilePillarDuration);
+    return()=>window.clearTimeout(timer);
+  },[mobileBelief,mobileBeliefPlaying]);
+  function selectMobileBelief(id:string){
+    // A deliberate choice stays put until the visitor presses Play again.
+    setMobileBeliefPaused(true);
+    setMobileBelief(id);
+  }
+  useEffect(()=>{
+    const revealLinkedBelief=()=>{
+      const pillar=window.location.hash.replace('#belief-','');
+      if(!['people','capital','communities'].includes(pillar))return;
+      setMobileBelief(pillar);
+      setMobileBeliefPaused(true);
+      if(window.matchMedia('(max-width: 760px)').matches){
+        requestAnimationFrame(()=>beliefStack.current?.scrollIntoView({behavior:'instant',block:'start'}));
+      }
+    };
+    revealLinkedBelief();
+    window.addEventListener('hashchange',revealLinkedBelief);
+    return()=>window.removeEventListener('hashchange',revealLinkedBelief);
+  },[]);
   useEffect(()=>{
     const stack=beliefStack.current;
     if(!stack)return;
-    const cards=Array.from(stack.children);
+    const cards=Array.from(stack.querySelectorAll('[data-pillar]'));
     const update=()=>stack.style.setProperty('--belief-card-height',`${Math.max(...cards.map(card=>card.getBoundingClientRect().height))}px`);
     const observer=new ResizeObserver(update);
     cards.forEach(card=>observer.observe(card));
@@ -282,7 +335,7 @@ export default function Home(){
   const impactInView=useInView(impactVisual,{amount:.2});
   const animateImpact=impactInView&&reducedMotion===false;
   const [scrolled,setScrolled]=useState(false);
-  const [navHidden,setNavHidden]=useState(false);
+  const [announcementOpen,setAnnouncementOpen]=useState(true);
   const [selectedMember,setSelectedMember]=useState<number|null>(null);
   function openMemberByName(name:string){
     const index=memberProfiles.findIndex(member=>member.name===name);
@@ -354,7 +407,7 @@ export default function Home(){
   useEffect(()=>{
     if(reducedMotion!==false||!('IntersectionObserver' in window))return;
     // Content stays readable before hydration and if motion is unavailable.
-    const targets=document.querySelectorAll('#main-content :is([data-home-reveal], #member-cards > article, #directory-businesses > button, .section-heading > *, #enterprise-cards > li, .program-list > article, #impact-title, #impact-metrics > div, #story-gallery, #join > .shell > :not(.join-grid), .join-grid > a, .footer-grid > div, .footer-bottom)');
+    const targets=document.querySelectorAll('#main-content :is([data-home-reveal], .section-heading > *, #impact-title, #impact-metrics > div, #join > .shell > :not(.join-grid), .join-grid > a, .footer-grid > div, .footer-bottom)');
     const observer=new IntersectionObserver(entries=>{
       for(const entry of entries){
         if(!entry.isIntersecting)continue;
@@ -368,15 +421,7 @@ export default function Home(){
     return()=>observer.disconnect();
   },[reducedMotion]);
   useEffect(()=>{
-    let previousY=Math.max(0,window.scrollY);
-    const onScroll=()=>{
-      const y=Math.max(0,window.scrollY);
-      setScrolled(y>24);
-      if(y<96){setNavHidden(false);previousY=y;return}
-      if(Math.abs(y-previousY)<12)return;
-      setNavHidden(y>previousY);
-      previousY=y;
-    };
+    const onScroll=()=>setScrolled(window.scrollY>96);
     onScroll();
     window.addEventListener('scroll',onScroll,{passive:true});
     return()=>window.removeEventListener('scroll',onScroll);
@@ -423,11 +468,20 @@ export default function Home(){
     };
   },[selectedMember,selectedStory]);
   const close=()=>{cancelNavClose();setMenuOpen(false);setActiveNav(null);if(languagePicker.current)languagePicker.current.open=false};
-  return <MotionConfig reducedMotion="user"><div className={styles.page} style={backgroundAssets} onPointerDownCapture={event=>{event.currentTarget.dataset.inputMethod='pointer';}} onKeyDownCapture={event=>{if(!['Shift','Control','Alt','Meta'].includes(event.key))event.currentTarget.dataset.inputMethod='keyboard';}}>
+  return <MotionConfig reducedMotion="user"><div className={styles.page} data-home-system data-nav-scrolled={scrolled} style={backgroundAssets} onPointerDownCapture={event=>{event.currentTarget.dataset.inputMethod='pointer';}} onKeyDownCapture={event=>{if(!['Shift','Control','Alt','Meta'].includes(event.key))event.currentTarget.dataset.inputMethod='keyboard';}}>
     <a className={styles.skipLink} href="#main-content">Skip to content</a>
+    {announcementOpen&&<aside className={styles.announcement} aria-label="WisConnect announcement" data-animated={reducedMotion===false}>
+      <div className={styles.announcementMessage}>
+        <Icon kind="announcement" size={18}/>
+        <p className={styles.announcementStatic}>Something powerful is coming. WisConnect launches soon.</p>
+        <div className={styles.announcementWindow} aria-hidden="true"><div className={styles.announcementTrack}>
+          <span>Something powerful is coming.</span><span>WisConnect launches soon.</span><span>Something powerful is coming.</span>
+        </div></div>
+      </div>
+      <button type="button" aria-label="Dismiss announcement" onClick={()=>{setAnnouncementOpen(false);header.current?.querySelector<HTMLAnchorElement>('a')?.focus({preventScroll:true});}}><Icon kind="close" size={16}/></button>
+    </aside>}
     {(activeNav!==null||menuOpen)&&<div className={styles.navBackdrop} aria-hidden="true" onPointerDown={close}/>}
-    <header ref={header} className={styles.header} data-scrolled={scrolled} data-hidden={navHidden&&!menuOpen&&activeNav===null} data-menu-open={menuOpen} data-submenu-open={activeNav!==null}
-      onFocusCapture={()=>setNavHidden(false)}
+    <header ref={header} className={styles.header} data-scrolled={scrolled} data-menu-open={menuOpen} data-submenu-open={activeNav!==null}
       onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))close()}}
       onKeyDown={event=>{
         if(event.key==='Escape'){if(activeNav!==null){event.preventDefault();cancelNavClose();backToNavigation();}else if(menuOpen){close();menuButton.current?.focus();}}
@@ -435,7 +489,7 @@ export default function Home(){
       }}>
       <div className={styles.navShell}>
         <a className={styles.brand} href="#top" aria-label="WisConnect home" onClick={close}><img src={assetPath('logo-nav.webp')} alt="WisConnect" width="480" height="160"/></a>
-        <button ref={menuButton} className={styles.menuToggle} type="button" onClick={()=>{if(menuOpen)close();else setMenuOpen(true);}} aria-controls="primary-navigation" aria-expanded={menuOpen} aria-label={menuOpen?'Close navigation':'Open navigation'}><span aria-hidden="true"/><span aria-hidden="true"/></button>
+        <button ref={menuButton} className={styles.menuToggle} type="button" onClick={()=>{if(menuOpen)close();else setMenuOpen(true);}} aria-controls="primary-navigation" aria-expanded={menuOpen} aria-label={menuOpen?'Close navigation':'Open navigation'}><Icon kind={menuOpen ? "close" : "menu"}/></button>
         {activeNav!==null&&<button type="button" className={styles.navBack} onClick={backToNavigation}><ArrowDownIcon/> Back</button>}
         <div id="primary-navigation" className={styles.navPanel} data-open={menuOpen}>
         <nav className={styles.navigation} aria-label="Primary navigation">
@@ -448,7 +502,7 @@ export default function Home(){
               onKeyDown={event=>{
                 if(event.key==='ArrowDown'){event.preventDefault();if(activeNav===index)document.querySelector<HTMLAnchorElement>(`#nav-dropdown-${index} a`)?.focus();else{navFocus.current=`#nav-dropdown-${index} a`;openNav(index);}}
                 if(window.innerWidth>=960&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?navigationMenus.length-1:(index+(event.key==='ArrowRight'?1:-1)+navigationMenus.length)%navigationMenus.length;openNav(next);document.getElementById(`nav-trigger-${next}`)?.focus();}
-              }}>{menu.label}<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.6"/></svg></button>
+              }}>{menu.label}<Icon kind="chevronDown"/></button>
             <div id={`nav-dropdown-${index}`} className={styles.megaPanel} hidden={activeNav!==index} aria-labelledby={`nav-trigger-${index}`}>
               <div className={styles.megaMain}><div className={styles.megaColumns}>
                 {menu.groups.map(group=><div key={group.title}><p>{group.title}</p><ul>{group.links.map(link=><li key={link.label}><Link href={link.href} onClick={close}><strong>{link.label}</strong><span>{link.description}</span></Link></li>)}</ul></div>)}
@@ -460,7 +514,7 @@ export default function Home(){
         <details ref={languagePicker} className={styles.languagePicker} onToggle={event=>{if(event.currentTarget.open)setActiveNav(null);}}
           onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))event.currentTarget.open=false}}
           onKeyDown={event=>{if(event.key==='Escape'&&event.currentTarget.open){event.stopPropagation();event.currentTarget.open=false;event.currentTarget.querySelector('summary')?.focus()}}}>
-          <summary aria-label="Choose language" className={styles.languageTrigger}>EN <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></summary>
+          <summary aria-label="Choose language" className={styles.languageTrigger}>EN <Icon kind="chevronDown"/></summary>
           <div className={styles.languageDropdown}>
             <p>Language</p>
             <button type="button" lang="en" aria-current="true" onClick={()=>{if(languagePicker.current){languagePicker.current.open=false;languagePicker.current.querySelector('summary')?.focus()}}}>English <span>Selected</span></button>
@@ -487,7 +541,7 @@ export default function Home(){
             <Link className={styles.primaryAction} href="/join" aria-describedby="membership-introduction-note">Introduce yourself <ArrowUpRightIcon/></Link>
             <a className={styles.secondaryAction} href="#what-we-do">Explore our support <ArrowDownIcon/></a>
           </div>
-          <p id="membership-introduction-note" className={styles.heroNote}>Five questions. Review your introduction, then send it by email.</p>
+          <p id="membership-introduction-note" className={styles.heroNote}>{directIntroductions ? 'Five questions. Review and submit your introduction.' : 'Five questions. Review your introduction, then send it by email.'}</p>
         </div>
         <div className={styles.heroArt}>
           <span className={styles.heroThread} aria-hidden="true"/>
@@ -506,8 +560,8 @@ export default function Home(){
       <div className="shell">
         <div className={styles.membersHeading} data-home-reveal>
           <p className="eyebrow">Individual strengths. A shared vision.</p>
-          <h2 id="members-title">Meet the visionaries</h2>
-          <p className={styles.memberLede}>The business owners, advisers and community builders behind WisConnect.</p>
+          <h2 id="members-title" data-section-headline>Meet the visionaries</h2>
+          <p data-section-description className={styles.memberLede}>The business owners, advisers and community builders behind WisConnect.</p>
         </div>
         <div id="member-cards" className={styles.memberGrid} role="group" aria-label="Visionary profiles">
           {memberProfiles.map((member,index)=><VisionaryCard key={member.name} member={member} onReadProfile={()=>setSelectedMember(index)}/>)}
@@ -522,26 +576,26 @@ export default function Home(){
       if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)closeProfile();
     }}>
       {selectedMember!==null&&<>
-        <div className={styles.sheetToolbar}><span className={styles.sheetHandle} aria-hidden="true"/><button className={styles.sheetClose} data-dialog-control type="button" onClick={closeProfile} aria-label="Close profile" autoFocus><span aria-hidden="true">×</span></button></div>
+        <div className={styles.sheetToolbar}><span className={styles.sheetHandle} aria-hidden="true"/><button className={styles.sheetClose} data-dialog-control type="button" onClick={closeProfile} aria-label="Close profile" autoFocus><span aria-hidden="true"><Icon kind="close"/></span></button></div>
         <div className={styles.sheetGrid}>
           <div className={styles.sheetIntro}><p className="eyebrow">Meet the visionaries · {String(selectedMember+1).padStart(2,'0')} / {String(memberProfiles.length).padStart(2,'0')}</p><h2 id="profile-name">{memberProfiles[selectedMember].name}</h2><p id="profile-role" className={styles.sheetRole}>{memberProfiles[selectedMember].role}</p>{memberProfiles[selectedMember].location && <p className={styles.sheetLocation}>{memberProfiles[selectedMember].location}</p>}</div>
           <img className={styles.sheetPortrait} src={assetPath(`${memberProfiles[selectedMember].image}-studio-800.webp`)} alt={`Portrait of ${memberProfiles[selectedMember].name}`} width="800" height="800"/>
-          <div className={styles.sheetBio}>{memberProfiles[selectedMember].bio.split('\n\n').map((paragraph,index)=><p key={index}>{paragraph}</p>)}{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).length>0&&<div className={styles.profileBusinesses}><h3>Her business connections</h3>{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).map(b=><a key={b.id} href={`#business-${b.id}`} onClick={()=>profileDialog.current?.close()}>{b.name} <ArrowUpRightIcon/></a>)}</div>}<ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Introduce yourself <ArrowUpRightIcon/></Link></div>
+          <div className={styles.sheetBio}>{memberProfiles[selectedMember].bio.split('\n\n').map((paragraph,index)=><p key={index}>{paragraph}</p>)}{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).length>0&&<div className={styles.profileBusinesses}><h3>Her business connections</h3>{businesses.filter(b=>b.profile===memberProfiles[selectedMember].name).map(b=><a key={b.id} href={`#business-${b.id}`} onClick={()=>profileDialog.current?.close()}>{b.name} <ArrowUpRightIcon/></a>)}</div>}<ul aria-label="Areas of expertise">{memberProfiles[selectedMember].expertise.map(item=><li key={item}><Icon kind="check" size={18}/>{item}</li>)}</ul><Link className={styles.sheetAction} href="/join">Introduce yourself <ArrowUpRightIcon/></Link></div>
         </div>
       </>}
     </dialog>
 
     {showUnfinishedSections ? <section id="business-directory" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="business-directory-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Business directory</p><h2 id="business-directory-title">Discover member-owned businesses.</h2></div><p>Meet the enterprises behind the cooperative, with approved details and a direct way to connect.</p></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Business directory</p><h2 id="business-directory-title" data-section-headline>Discover member-owned businesses.</h2></div><p>Meet the enterprises behind the cooperative, with approved details and a direct way to connect.</p></div>
       <div className={styles.emptyContent}><h3>Listings awaiting approval.</h3><p>No business listings are published here yet. Each listing will include the business and owner’s name, sector, description, approved photo or logo, and contact link.</p><p>This directory introduces businesses. Purchases and payments are not available on this website.</p><Link className={styles.contentLink} href="/contact">Ask about listing your business <ArrowUpRightIcon/></Link></div>
     </div></section> : <BusinessDirectory onProfile={openMemberByName}/>}
 
     <section id="purpose" className={`section ${styles.purposeSection}`} aria-labelledby="purpose-title"><div className="shell">
       <div className={styles.purposeHeading} data-home-reveal>
-        <div><p className="eyebrow">Purpose & identity</p><h2 id="purpose-title">Why we come <em>together.</em></h2></div>
+        <div><p className="eyebrow">Purpose & identity</p><h2 id="purpose-title" data-section-headline>Why we come <em>together.</em></h2></div>
         <p>Africa & the Diaspora</p>
       </div>
-      <p className={styles.purposeIntroduction}>Black women’s knowledge, ideas and relationships are our starting point.</p>
+      <p data-section-description className={styles.purposeIntroduction}>Black women’s knowledge, ideas and relationships are our starting point.</p>
       <div className={styles.purposeGrid}>
         <article className={styles.purposeMission} aria-labelledby="purpose-mission-title">
           <figure className={styles.purposePhoto}>
@@ -569,13 +623,29 @@ export default function Home(){
 
     <CooperativeOverview/>
 
-    <section id="about" data-divider="background" className={styles.beliefSection} aria-labelledby="belief-title"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`}>
-      <div className={styles.beliefCard} data-pillar="people">
+    <section id="about" data-divider="background" className={styles.beliefSection} aria-label="People, capital and communities"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`} data-mobile-pillar={mobileBelief} data-auto-playing={mobileBeliefPlaying} style={{'--pillar-duration':`${mobilePillarDuration}ms`} as CSSProperties} onFocusCapture={event=>{if(isMobileBelief&&!(event.target as HTMLElement).closest('[data-pillar-playback]'))setMobileBeliefPaused(true);}}>
+      <div className={styles.beliefMobileNav}>
+        <div className={styles.beliefNavHeading}>
+          <p>What we bring together</p>
+          {reducedMotion===false&&<button type="button" className={styles.beliefPlayback} data-pillar-playback aria-label={mobileBeliefPaused?'Play automatic pillar rotation':'Pause automatic pillar rotation'} onClick={()=>setMobileBeliefPaused(paused=>!paused)}><Icon kind={mobileBeliefPaused?'play':'pause'} size={14}/><span>{mobileBeliefPaused?'Play':'Pause'}</span></button>}
+        </div>
+        <div className={styles.beliefTabs} role="group" aria-label="Choose a cooperative pillar">
+          {beliefPillars.map((pillar,index)=>{
+            const id=pillar.label.toLowerCase();
+            return <button key={id} type="button" aria-pressed={mobileBelief===id} aria-controls={`belief-${id}`} onClick={()=>selectMobileBelief(id)}>
+              <span className={styles.beliefTabLabel}>{pillar.label}</span>
+              <span className={styles.beliefTabIcon}><Icon kind={index===0?'people':index===1?'wallet':'home'} size={24}/><span key={`${id}-${mobileBelief}`} className={styles.beliefTabProgress} aria-hidden="true"/></span>
+              <svg className={styles.beliefBridge} viewBox="0 0 60 24" aria-hidden="true"><path d="M16 0H44C36 7 36 12 44 17C49 20 54 22 60 24H0C6 22 11 20 16 17C24 12 24 7 16 0Z"/></svg>
+            </button>;
+          })}
+        </div>
+      </div>
+      <div id="belief-people" className={styles.beliefCard} data-pillar="people" data-mobile-active={mobileBelief==='people'}>
         <div className={styles.beliefCopy}>
           <div>
-            <p className={styles.beliefEyebrow}><span>People · What we bring together</span></p>
-            <h2 id="belief-title">When women own,<span>communities grow.</span></h2>
-            <p className={styles.beliefDescription}>Shared expertise, resources and local knowledge guide our work.</p>
+            <p className={styles.beliefEyebrow}><span><span className={styles.beliefMobileIcon}><Icon kind="people" size={18}/></span>People<span className={styles.beliefDesktopLabel}> · What we bring together</span></span></p>
+            <h2 id="belief-title" data-section-headline>When women own,<span>communities grow.</span></h2>
+            <p data-section-description className={styles.beliefDescription}>Shared expertise, resources and local knowledge guide our work.</p>
           </div>
           <div className={styles.beliefBottom}>
             <div className={styles.beliefChoices} role="group" aria-label="Explore our cooperative belief">
@@ -589,12 +659,12 @@ export default function Home(){
           <img src={assetPath('belief-orange-1080.webp')} srcSet={`${assetPath('belief-orange-640.webp')} 640w, ${assetPath('belief-orange-1080.webp')} 1080w`} sizes="(max-width: 760px) 90vw, 45vw" width="1086" height="1448" loading="lazy" decoding="async" alt="Confident woman wearing an orange blazer with her arms crossed"/>
         </figure>
       </div>
-      {cooperativeCards.map(card=><article key={card.id} id={`belief-${card.id}`} className={styles.beliefCard} data-pillar={card.id} aria-labelledby={`belief-${card.id}-title`}>
+      {cooperativeCards.map(card=><article key={card.id} id={`belief-${card.id}`} className={styles.beliefCard} data-pillar={card.id} data-mobile-active={mobileBelief===card.id} aria-labelledby={`belief-${card.id}-title`}>
         <div className={styles.beliefCopy}>
           <div>
-            <p className={styles.beliefEyebrow}><span>{card.step} · {card.label}</span></p>
-            <h3 id={`belief-${card.id}-title`}>{card.heading}<span>{card.accent}</span></h3>
-            <p className={styles.beliefDescription}>{card.description}</p>
+            <p className={styles.beliefEyebrow}><span><span className={styles.beliefMobileIcon}><Icon kind={card.id==='capital'?'wallet':'home'} size={18}/></span><span className={styles.beliefDesktopLabel}>{card.step} · </span>{card.label}</span></p>
+            <h3 id={`belief-${card.id}-title`} data-section-headline>{card.heading}<span>{card.accent}</span></h3>
+            <p data-section-description className={styles.beliefDescription}>{card.description}</p>
           </div>
           <div className={styles.beliefBottom}>
             <div className={styles.beliefDetail}><p><strong>{card.detail}</strong></p></div>
@@ -605,7 +675,7 @@ export default function Home(){
       </article>)}
     </div></section>
 
-    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Chicago</p><h2 id="enterprises-title">Different businesses. Common ground.</h2></div><p>Eight sectors in the Chicago vision, from coffee and shared kitchens to child care and design.</p></div>
+    <section id="businesses" className={`section ${styles.enterprises}`} aria-labelledby="enterprises-title"><div className="shell"><div className="section-heading split-heading"><div><p className="eyebrow">Business sectors · Chicago</p><h2 id="enterprises-title" data-section-headline>Different businesses. Common ground.</h2></div><p>Eight sectors in the Chicago vision, from coffee and shared kitchens to child care and design.</p></div>
       <div className={styles.enterpriseControls}>
         <p>Explore {sectors.length} Chicago sectors</p>
         <button type="button" aria-label="Previous enterprise" aria-controls="enterprise-cards" disabled={enterpriseEdges.start} onClick={()=>slideEnterprise(-1)}><ArrowDownIcon/></button>
@@ -666,7 +736,7 @@ export default function Home(){
     </div></section>
 
     {showUnfinishedSections && <section id="programs" className={`section ${styles.contentSection}`} aria-labelledby="programs-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Programs & activities</p><h2 id="programs-title">Ways to learn. Reasons to connect.</h2></div><p>Ideas raised for regular engagement with Black women business owners. These activities are proposed; no schedule or registration is confirmed.</p></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Programs & activities</p><h2 id="programs-title" data-section-headline>Ways to learn. Reasons to connect.</h2></div><p>Ideas raised for regular engagement with Black women business owners. These activities are proposed; no schedule or registration is confirmed.</p></div>
       <div className={styles.contentGrid}>
         <article><span className={styles.contentLabel}>Proposed</span><h3>Webinars</h3><p>Conversations around members’ questions and experience. Topics, presenters and frequency await the team’s decision.</p></article>
         <article><span className={styles.contentLabel}>Proposed</span><h3>Tutorials</h3><p>Practical learning led by shared expertise. Content, format and contributors are still to be agreed.</p></article>
@@ -675,7 +745,7 @@ export default function Home(){
     </div></section>}
 
     {showUnfinishedSections && <section id="resources" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="resources-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">Resources & videos</p><h2 id="resources-title">Knowledge to share.</h2></div>
+      <div className="section-heading"><p className="eyebrow">Resources & videos</p><h2 id="resources-title" data-section-headline>Knowledge to share.</h2></div>
       <div className={styles.contentGrid}>
         <article><span className={styles.contentLabel}>Awaiting content</span><h3>Guides & learning materials</h3><p>Approved resources, authors and accessible download links will be listed here when supplied.</p></article>
         <article><span className={styles.contentLabel}>Awaiting content</span><h3>Watch & listen</h3><p>Member conversations and approved videos will appear here with captions or transcripts. No videos are published yet.</p></article>
@@ -683,16 +753,16 @@ export default function Home(){
     </div></section>}
 
     {showUnfinishedSections ? <section id="community-work" className={`section ${styles.contentSection}`} aria-labelledby="community-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Community work</p><h2 id="community-title">What each of us can contribute.</h2></div><p>Skills, mentorship, local knowledge and relationships can all be part of a member’s contribution.</p></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Community work</p><h2 id="community-title" data-section-headline>What each of us can contribute.</h2></div><p>Skills, mentorship, local knowledge and relationships can all be part of a member’s contribution.</p></div>
       <div className={styles.emptyContent}><h3>Community initiatives awaiting approval.</h3><p>We are making space for members to describe their work, why it matters, the people involved and the contributions behind it. Project details and outcomes will be shared after verification and publication consent.</p><Link className={styles.contentLink} href="/join">Tell us what you would like to contribute <ArrowUpRightIcon/></Link></div>
     </div></section> : <CommunityProjects/>}
 
     <section id="impact" data-divider="background" className={styles.impact} aria-labelledby="connections-title">
-      <div className={styles.impactFrame}>
+      <div className={styles.impactFrame} data-content-rail>
         {showUnfinishedSections && <>
         <div className={styles.impactHeading}>
           <p className="eyebrow">Impact & proof</p>
-          <h2 id="impact-title">The power of<br/><em>shared ownership.</em></h2>
+          <h2 id="impact-title" data-section-headline>The power of<br/><em>shared ownership.</em></h2>
         </div>
         <dl id="impact-metrics" className={styles.impactMetrics} aria-describedby="impact-note" style={{'--metric-index':impactIndicator,'--metric-column':impactIndicator%2,'--metric-row':Math.floor(impactIndicator/2)} as CSSProperties} onPointerLeave={()=>setImpactHover(null)}>
           {['Members','Member businesses','Projects & programs','Community outcomes'].map((label,index)=><div key={label} data-active={impactMetric===index} onPointerEnter={event=>{if(event.pointerType==='mouse')setImpactHover(index);}}>
@@ -702,8 +772,8 @@ export default function Home(){
         <p id="impact-note" className={styles.impactNote}>Awaiting verification. Member totals, business totals, project activity and community outcomes will be published with sources and reporting dates once approved.</p>
         </>}
         <div id="global-reach" ref={impactVisual} className={styles.impactVisual}>
-          <p className="eyebrow">Across the diaspora</p><h2 id="connections-title" className={styles.connectionTitle} data-home-reveal>Local roots. Diaspora connections.</h2>
-          <p className={styles.connectionCopy}>Rooted in Chicago and Liberia, with developing connections in Brazil and Vietnam.</p>
+          <p className="eyebrow">Across the diaspora</p><h2 id="connections-title" data-section-headline className={styles.connectionTitle} data-home-reveal>Local roots. Diaspora connections.</h2>
+          <p data-section-description className={styles.connectionCopy}>Rooted in Chicago and Liberia, with developing connections in Brazil and Vietnam.</p>
           <div className={styles.impactMapIntro}><span className="eyebrow">Local roots. Shared possibilities.</span><span>Explore current roots and developing connections.</span></div>
           <svg id="impact-map" className={styles.impactMap} viewBox="0 0 1000 440" fill="none" aria-hidden="true" focusable="false">
             <image href={assetPath('impact-world.svg')} width="1000" height="440"/>
@@ -730,7 +800,7 @@ export default function Home(){
 
     {showUnfinishedSections && <section id="stories" data-divider="background" className="section stories-section" aria-labelledby="stories-title"><div className="shell">
       <div className={styles.storiesHeader}>
-        <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title">Good things grow together.</h2><p>People, ideas and everyday work behind a shared future. Member stories will explore what motivates the work, the talents and assets people bring, and the impact of their contributions.</p></div>
+        <div><p className="eyebrow">Stories from the network</p><h2 id="stories-title" data-section-headline>Good things grow together.</h2><p>People, ideas and everyday work behind a shared future. Member stories will explore what motivates the work, the talents and assets people bring, and the impact of their contributions.</p></div>
         <div className={styles.enterpriseControls} role="group" aria-label="Story navigation">
           <span className={styles.storyCount}>0{activeStory+1} <span>/ 04</span></span>
           <button type="button" aria-label="Previous story" aria-controls="story-gallery" disabled={activeStory===0} onClick={()=>selectStory(activeStory-1)}><ArrowDownIcon/></button>
@@ -754,7 +824,7 @@ export default function Home(){
     </div></section>}
     <dialog ref={storyDialog} className={styles.profileDialog} aria-labelledby="story-dialog-title" onClose={()=>setSelectedStory(null)}>
       {selectedStory!==null&&<>
-        <div className={styles.dialogToolbar}><span>Stories from the network</span><button type="button" className={styles.dialogClose} onClick={()=>storyDialog.current?.close()} autoFocus>Close <span aria-hidden="true">×</span></button></div>
+        <div className={styles.dialogToolbar}><span>Stories from the network</span><button type="button" className={styles.dialogClose} onClick={()=>storyDialog.current?.close()} autoFocus>Close <span aria-hidden="true"><Icon kind="close"/></span></button></div>
         <img className={styles.storyDialogImage} src={assetPath(`story-${networkStories[selectedStory].image}-1400.webp`)} alt={networkStories[selectedStory].alt}/>
         <article className={`${styles.dialogContent} ${styles.storyArticle}`}><p className="eyebrow">{networkStories[selectedStory].category}</p><h2 id="story-dialog-title">{networkStories[selectedStory].title}</h2>
           {networkStories[selectedStory].paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
@@ -764,36 +834,36 @@ export default function Home(){
     </dialog>
 
     {showUnfinishedSections && <section id="news" className={`section ${styles.contentSection}`} aria-labelledby="news-title"><div className="shell">
-      <div className="section-heading"><p className="eyebrow">News & announcements</p><h2 id="news-title">From the cooperative.</h2></div>
+      <div className="section-heading"><p className="eyebrow">News & announcements</p><h2 id="news-title" data-section-headline>From the cooperative.</h2></div>
       <div className={styles.emptyContent}><h3>No approved updates yet.</h3><p>News, announcements and community updates will appear here with publication dates. WisConnect is confirming who supplies and approves regular updates.</p></div>
     </div></section>}
 
     {showUnfinishedSections && <section id="events" className={`section ${styles.contentSection}`} aria-labelledby="events-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Events calendar</p><h2 id="events-title">Come into the conversation.</h2></div><p>Find dates, details, locations or online links, and registration information for confirmed gatherings.</p></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Events calendar</p><h2 id="events-title" data-section-headline>Come into the conversation.</h2></div><p>Find dates, details, locations or online links, and registration information for confirmed gatherings.</p></div>
       <div className={styles.emptyContent}><h3>No confirmed events to display.</h3><p>Dates and RSVP links will be added when approved. Proposed webinars, tutorials and coffee meetings are not scheduled events.</p><Link className={styles.contentLink} href="/contact">Ask about upcoming gatherings <ArrowUpRightIcon/></Link></div>
     </div></section>}
 
     {showUnfinishedSections && <section id="gallery" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="gallery-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Photo gallery</p><h2 id="gallery-title">Life in the network.</h2></div><p>A home for approved member, event, program and community photographs. Images, captions, credits and publication permissions are still to come.</p></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Photo gallery</p><h2 id="gallery-title" data-section-headline>Life in the network.</h2></div><p>A home for approved member, event, program and community photographs. Images, captions, credits and publication permissions are still to come.</p></div>
       <div className={styles.contentGrid}>{['Members & their work','Events & programs','Community moments'].map(label=><figure className={styles.galleryPlaceholder} key={label}><div aria-hidden="true">Photo to come</div><figcaption><strong>{label}</strong><span>Awaiting approved photography</span></figcaption></figure>)}</div>
     </div></section>}
 
-    <section id="get-involved" data-divider="background" className={styles.getInvolved} aria-labelledby="get-involved-title"><div className={styles.involvementFrame}>
+    <section id="get-involved" data-divider="background" className={styles.getInvolved} aria-labelledby="get-involved-title"><div className={styles.involvementFrame} data-content-rail>
       <div className={styles.involvementComposition}>
         <div className={styles.involvementVisual}>
-          <img src={assetPath('purpose-connection-1400.webp')} srcSet={`${assetPath('purpose-connection-640.webp')} 640w, ${assetPath('purpose-connection-1400.webp')} 1400w`} sizes="(max-width: 900px) 100vw, (max-width: 1328px) 60vw, 768px" width="1400" height="912" loading="lazy" decoding="async" alt="Three women sharing ideas and working together at a laptop"/>
+          <img src={assetPath('involvement-conversation-1400.webp')} srcSet={`${assetPath('involvement-conversation-640.webp')} 640w, ${assetPath('involvement-conversation-1400.webp')} 1400w`} sizes="(max-width: 900px) 100vw, (max-width: 1328px) 60vw, 768px" width="1400" height="1000" loading="lazy" decoding="async" alt="Three women sharing a conversation during an office meeting"/>
           <p className={styles.involvementEyebrow}>How to get involved</p>
           <div className={styles.involvementHeadline}>
-            <h2 id="get-involved-title">Start with<br/>what you<br/><em>bring.</em></h2>
-            <p>Your business. Your knowledge.<br/>Your place in what comes next.</p>
+            <h2 id="get-involved-title" data-section-headline>Start with<br/>what you<br/><em>bring.</em></h2>
+            <p data-section-description>Your business. Your knowledge.<br/>Your place in what comes next.</p>
           </div>
-          <a className={styles.involvementCredit} href="https://www.pexels.com/photo/three-women-looking-at-the-computer-3894378/" target="_blank" rel="noreferrer">Illustrative photography · PICHA Stock / Pexels</a>
+          <a className={styles.involvementCredit} href="https://www.pexels.com/photo/smiling-woman-leaning-on-table-1181422/" target="_blank" rel="noreferrer">Illustrative photography · Christina Morillo / Pexels</a>
         </div>
         <div className={styles.involvementPanel}>
           <p className={styles.involvementKicker}>Three steps to a conversation</p>
           <ol className={styles.introductionSteps} role="list">
             <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Introduce yourself.</h3><p>Five questions about you, your work and your interests.</p></div></li>
-            <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>Review &amp; email.</h3><p>Review your answers, then send the draft from your email app.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>{directIntroductions ? 'Review & submit.' : 'Review & email.'}</h3><p>{directIntroductions ? 'Review your answers, then submit them. Nothing sends automatically.' : 'Review your answers, then send the draft from your email app.'}</p></div></li>
             <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Start a conversation.</h3><p>Discuss eligibility, fees and next steps with the team.</p></div></li>
           </ol>
           <div className={styles.involvementAction}>
@@ -810,7 +880,7 @@ export default function Home(){
     <NextStep/>
 
     {showUnfinishedSections && <section id="contact-info" data-divider="background" className={`section ${styles.contentSection}`} aria-labelledby="contact-info-title"><div className="shell">
-      <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title">Start with a conversation.</h2></div><p>Get in touch about membership, partnerships, business listings or a general question.</p></div>
+      <div className="section-heading split-heading"><div><p className="eyebrow">Contact & connect</p><h2 id="contact-info-title" data-section-headline>Start with a conversation.</h2></div><p>Get in touch about membership, partnerships, business listings or a general question.</p></div>
       <div className={styles.contentGrid}><article><h3>Write to WisConnect</h3><Link className={styles.contentLink} href="/contact">Open the contact form <ArrowUpRightIcon/></Link><a className={styles.contentLink} href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><p>Questions about WisConnect? We’d love to hear from you.</p></article><article><h3>Locations & social channels</h3><p>Approved office or service-area details and official social links are awaiting confirmation. The map above illustrates a connection vision.</p></article></div>
     </div></section>}
 

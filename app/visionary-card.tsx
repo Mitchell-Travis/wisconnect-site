@@ -1,5 +1,7 @@
 "use client";
 
+import Icon from "./site-icon";
+
 import { useEffect, useId, useRef, useState } from 'react';
 import { assetPath } from './assets';
 import styles from './visionary-card.module.css';
@@ -7,7 +9,7 @@ import styles from './visionary-card.module.css';
 type Visionary = { name: string; cardRole: string; image: string; summary: string; location?: string; portraitPosition?: string; portraitScale?: number };
 
 function TurnIcon() {
-  return <svg viewBox="0 0 24 16" fill="none" aria-hidden="true"><path d="M15 11c4-.5 7-2 7-4 0-2.8-4.5-5-10-5S2 4.2 2 7s4.5 5 10 5m-3-3 3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="rotate"/>;
 }
 
 export function VisionaryCard({ member, onReadProfile }: { member: Visionary; onReadProfile: () => void }) {
@@ -26,18 +28,17 @@ export function VisionaryCard({ member, onReadProfile }: { member: Visionary; on
   return <article className={styles.card} data-flipped={flipped} onKeyDown={event => {
     if (event.key === 'Escape' && flipped) { event.preventDefault(); setFlipped(false); }
   }}>
-    <button ref={front} className={styles.front} type="button" inert={flipped} aria-hidden={flipped} aria-expanded={flipped} aria-controls={id} aria-label={`View bio for ${member.name}`} onClick={() => setFlipped(true)}>
+    <button ref={front} className={styles.front} type="button" inert={flipped} aria-hidden={flipped} aria-expanded={flipped} aria-controls={id} aria-label={`View profile for ${member.name}`} onClick={() => setFlipped(true)}>
       <span className={styles.portrait}>
         <img style={{objectPosition: member.portraitPosition, transform: member.portraitScale ? `scale(${member.portraitScale})` : undefined, transformOrigin: member.portraitScale ? "center 25%" : undefined}} src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 760px) 45vw, (max-width: 1100px) 30vw, 285px" alt="" width="800" height="800" loading="lazy" decoding="async"/>
-        <span className={styles.view}>View bio <TurnIcon/></span>
       </span>
-      <span className={styles.info}><strong>{member.name}</strong><span className={styles.role}>{member.cardRole}</span>{member.location && <span className={styles.location}>{member.location}</span>}</span>
+      <span className={styles.info}><strong>{member.name}</strong><span className={styles.role}>{member.cardRole}</span>{member.location && <span className={styles.location}>{member.location}</span>}<span className={styles.view}>View profile <Icon kind="external" size={13}/></span></span>
     </button>
     <div id={id} className={styles.back} inert={!flipped} aria-hidden={!flipped}>
       <button ref={close} type="button" className={styles.close} aria-label={`Close bio for ${member.name}`} onClick={() => setFlipped(false)}>Close <TurnIcon/></button>
       <h3>{member.name}</h3>
       <p className={styles.bio}>{member.summary}</p>
-      <button type="button" className={styles.fullProfile} data-dialog-control onClick={event => { event.currentTarget.focus({ preventScroll: true }); onReadProfile(); }} aria-haspopup="dialog">Read full profile <span aria-hidden="true">↗</span></button>
+      <button type="button" className={styles.fullProfile} data-dialog-control onClick={event => { event.currentTarget.focus({ preventScroll: true }); onReadProfile(); }} aria-haspopup="dialog">Read full profile <span aria-hidden="true"><Icon kind="external"/></span></button>
     </div>
   </article>;
 }

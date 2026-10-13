@@ -1,43 +1,51 @@
 'use client';
 
+import Icon from "./site-icon";
+
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { assetPath } from './assets';
-import { businesses } from './businesses';
+import { businesses as fallbackBusinesses, type PublicBusiness } from './businesses';
+import { localApiAvailable, localApiUrl, requestSignal } from './local-api';
 import styles from './business-directory.module.css';
 
-// Original directory name marks, not reproductions of the businesses' official logos.
-const identities: Record<string, {name:string; sub:string; tone:string; poster:string; group:string; image:string; alt:string}> = {
-  bdavis:{name:'BDavis',sub:'DESIGNS',tone:'purple',poster:'print',group:'Design',image:'sector-screen-printing-1000.webp',alt:'Ink and a squeegee on a screen-printing frame'},
-  bunnyland:{name:'Bunnyland',sub:'CHILD CARE',tone:'gold',poster:'arch',group:'Child care',image:'sector-day-care-1000.webp',alt:'Children learning through play with colorful building blocks'},
-  czl:{name:'CZL',sub:'LAW · GOVERNANCE · ADVISORY',tone:'cobalt',poster:'editorial',group:'Professional',image:'business-professional.webp',alt:'An advisory workspace with documents, a notebook and balance scales'},
-  'exquisite-catering':{name:'Exquisite',sub:'CATERING & EVENTS',tone:'plum',poster:'photo',group:'Food & hospitality',image:'business-catering.webp',alt:'An artfully prepared spread of catered food and fresh ingredients'},
-  'exquisite-kitchen':{name:'Exquisite',sub:'KITCHEN',tone:'lilac',poster:'split',group:'Food & hospitality',image:'sector-shared-kitchen-1000.webp',alt:'Stainless steel counters and equipment in a commercial kitchen'},
-  jennima:{name:'Jennima’s',sub:'JUICE',tone:'orange',poster:'citrus',group:'Food & hospitality',image:'sector-juice-bar-1000.webp',alt:'Glasses of freshly prepared orange juice'},
-  momentum:{name:'Momentum',sub:'COFFEE',tone:'plum',poster:'photo',group:'Food & hospitality',image:'business-coffee.webp',alt:'Freshly made latte with coffee beans on a cafe counter'},
-  'river-cess-agriculture':{name:'River Cess',sub:'AGRICULTURE',tone:'gold',poster:'landscape',group:'Industry',image:'business-agriculture.webp',alt:'Rows of crops growing in a lush tropical field'},
-  'river-cess-mining':{name:'River Cess',sub:'MINING',tone:'plum',poster:'mineral',group:'Industry',image:'business-mining.webp',alt:'Natural mineral specimens and textured rock on a work surface'},
-  wisinsup:{name:'WisInSup',sub:'INCORPORATED',tone:'mauve',poster:'editorial',group:'Industry',image:'business-professional.webp',alt:'A workspace arranged for business planning'},
-  zead:{name:'ZE’AD',sub:'ADVISORS & CONSULTANTS',tone:'purple',poster:'split',group:'Professional',image:'business-professional.webp',alt:'Documents and a notebook in a professional advisory workspace'},
-};
 const previewIds=['bunnyland','jennima','momentum','zead'];
 const categories=['All sectors','Food & hospitality','Design','Child care','Professional','Industry'];
 const normalize=(value:string)=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘]/g,"'").toLowerCase();
 
-function Icon({kind}:{kind:'arrow'|'search'|'pin'|'close'}){
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==='arrow'?<path d="M6 18 18 6M7 6h11v11"/>:kind==='search'?<><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></>:kind==='pin'?<><path d="M19 10c0 5-7 10-7 10S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></>:<path d="m6 6 12 12M18 6 6 18"/>}</svg>;
-}
 
-function BrandMark({id}:{id:string}){
-  const identity=identities[id];
+function BrandMark({business}:{business:PublicBusiness}){
+  const {id,visual:identity}=business;
   return <span className={styles.brandMark} data-business={id} aria-hidden="true"><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></span>;
 }
 
-function BusinessVisual({id}:{id:string}){
-  const identity=identities[id];
+function BusinessVisual({business}:{business:PublicBusiness}){
+  const identity=business.visual;
+  if(!identity.image)return <span className={styles.visualPlaceholder}>{business.name}</span>;
   return <img src={assetPath(identity.image)} alt={identity.alt} width="1200" height="675" loading="lazy"/>;
 }
 export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
+  const [records,setRecords]=useState<PublicBusiness[] | null>(process.env.NEXT_PUBLIC_BASE_PATH ? fallbackBusinesses : null);
+  const [catalogError,setCatalogError]=useState('');
+  const [loadAttempt,setLoadAttempt]=useState(0);
+  const businesses=records ?? [];
+  const currentPreviewIds=[...businesses.filter(b=>previewIds.includes(b.id)),...businesses.filter(b=>!previewIds.includes(b.id))].slice(0,4).map(b=>b.id);
+  useEffect(()=>{
+    if(!localApiAvailable()){setRecords(fallbackBusinesses);return;}
+    const controller=new AbortController();const pending=requestSignal(controller.signal);
+    setCatalogError('');setRecords(null);
+    (async()=>{
+      const items:PublicBusiness[]=[];let cursor:number|null=0;
+      while(cursor!==null){
+        const response=await fetch(localApiUrl(`/businesses?after=${cursor}`),{signal:pending.signal,cache:'no-store',credentials:'omit'});
+        if(!response.ok)throw new Error('The business directory is temporarily unavailable.');
+        const page:{items:PublicBusiness[];next_cursor:number|null}=await response.json();
+        items.push(...page.items);cursor=page.next_cursor;
+      }
+      if(!controller.signal.aborted)setRecords(items.sort((a,b)=>a.name.localeCompare(b.name)));
+    })().catch(()=>{if(!controller.signal.aborted)setCatalogError('The business directory is temporarily unavailable. Please try again.');}).finally(()=>pending.dispose());
+    return()=>controller.abort();
+  },[loadAttempt]);
   const [location,setLocation]=useState('All locations');
   const [category,setCategory]=useState('All sectors');
   const [query,setQuery]=useState('');
@@ -72,7 +80,7 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
     };
     onHash();window.addEventListener('hashchange',onHash);document.addEventListener('click',onLink);
     return()=>{window.removeEventListener('hashchange',onHash);document.removeEventListener('click',onLink);};
-  },[]);
+  },[records]);
 
   useLayoutEffect(()=>{
     if(!selected||!dialog.current)return;
@@ -117,7 +125,7 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
     exit.finished.then(finish).catch(()=>{});
   }
 
-  const visible=businesses.filter(b=>(location==='All locations'||b.country===location)&&(category==='All sectors'||identities[b.id].group===category)&&normalize([b.name,b.person,b.location,b.country,b.sector,b.description].join(' ')).includes(normalize(query.trim())));
+  const visible=businesses.filter(b=>(location==='All locations'||b.country===location)&&(category==='All sectors'||b.visual.group===category)&&normalize([b.name,b.person,b.location,b.country,b.sector,b.description].join(' ')).includes(normalize(query.trim())));
   const isFiltered=location!=='All locations'||category!=='All sectors'||query!=='';
 
   return <section id="business-directory" data-divider="background" className={`section ${styles.directory}`} aria-labelledby="directory-title">
@@ -125,27 +133,28 @@ export function BusinessDirectory({onProfile}:{onProfile:(name:string)=>void}){
       {Array.from({length:24},(_,i)=><path key={i} d={`M-100 ${i*28+350} C360 ${i*17+700} 790 ${i*12+140} 1120 ${i*20+240} S1510 ${i*35+500} 1700 ${i*29+320}`} stroke={i%5===0?'#b99561':'#7b5aa6'} strokeWidth="1"/>)}
     </svg>
     <div className="shell">
-    <div className={styles.heading} data-home-reveal><p className="eyebrow">The business directory</p><h2 id="directory-title">Local businesses.<br/><em>Shared possibilities.</em></h2><p className={styles.introduction}>Independent businesses. One growing network.</p></div>
-    <button type="button" className={styles.filterToggle} aria-expanded={filtersOpen} aria-controls="directory-filters" onClick={()=>setFiltersOpen(open=>!open)}><Icon kind="search"/>Search &amp; filter{isFiltered&&<span className={styles.filterIndicator} aria-label="Filters active"/>}<span aria-hidden="true">{filtersOpen?'−':'+'}</span></button>
+    <div className={styles.heading} data-home-reveal><p className="eyebrow">The business directory</p><h2 id="directory-title" data-section-headline>Local businesses.<br/><em>Shared possibilities.</em></h2><p data-section-description className={styles.introduction}>Independent businesses. One growing network.</p></div>
+    <button type="button" className={styles.filterToggle} aria-expanded={filtersOpen} aria-controls="directory-filters" onClick={()=>setFiltersOpen(open=>!open)}><Icon kind="search"/>Search &amp; filter{isFiltered&&<span className={styles.filterIndicator} aria-label="Filters active"/>}<span aria-hidden="true"><Icon kind={filtersOpen ? "minus" : "plus"}/></span></button>
     <div id="directory-filters" className={styles.filters} data-open={filtersOpen}>
     <div className={styles.toolbar}>
-      <div className={styles.locations} role="group" aria-label="Filter businesses by location">{['All locations','United States','Liberia'].map(place=><button key={place} type="button" aria-pressed={location===place} onClick={()=>setLocation(place)}>{place==='United States'?'Chicago, US':place}<span>{place==='All locations'?businesses.length:businesses.filter(b=>b.country===place).length}</span></button>)}</div>
+      <div className={styles.locations} role="group" aria-label="Filter businesses by location">{['All locations',...Array.from(new Set(businesses.map(b=>b.country)))].map(place=><button key={place} type="button" aria-pressed={location===place} onClick={()=>setLocation(place)}>{place}<span>{place==='All locations'?businesses.length:businesses.filter(b=>b.country===place).length}</span></button>)}</div>
       <div className={styles.search}><Icon kind="search"/><input type="search" aria-label="Search businesses" placeholder="Search businesses or people" value={query} onChange={event=>setQuery(event.target.value)}/>{query&&<button type="button" aria-label="Clear search" onClick={()=>setQuery('')}><Icon kind="close"/></button>}</div>
     </div>
     <div className={styles.categories} role="group" aria-label="Filter businesses by sector">{categories.map(item=><button key={item} type="button" aria-pressed={category===item} onClick={()=>setCategory(item)}>{item}</button>)}</div>
     </div>
-    <div className={styles.results}><p role="status" aria-live="polite">{!expanded&&!isFiltered?`Showing ${previewIds.length} of ${visible.length}`:visible.length} {visible.length===1?'business':'businesses'} · Select a business to explore</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
-    <div id="directory-businesses" className={styles.grid} data-preview={!expanded&&!isFiltered}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} hidden={!expanded&&!isFiltered&&!previewIds.includes(b.id)} type="button" className={`${styles.tile} ${styles.tone}`} data-tone={identities[b.id].tone} data-poster={identities[b.id].poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark id={b.id}/><span className={styles.preview} data-business-image><BusinessVisual id={b.id}/></span><span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="arrow"/></span></button>)}</div>
-    {!isFiltered&&<div className={styles.browse}><button type="button" aria-expanded={expanded} aria-controls="directory-businesses" onClick={event=>{
+    <div className={styles.results}><p role="status" aria-live="polite">{records===null?(catalogError?'': 'Loading businesses…'):`${!expanded&&!isFiltered?`Showing ${currentPreviewIds.length} of ${visible.length}`:visible.length} ${visible.length===1?'business':'businesses'} · Select a business to explore`}</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
+    {catalogError&&<div className={styles.empty} role="alert"><p>{catalogError}</p><button type="button" onClick={()=>setLoadAttempt(value=>value+1)}>Try again</button></div>}
+    <div id="directory-businesses" className={styles.grid} data-preview={!expanded&&!isFiltered}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} hidden={!expanded&&!isFiltered&&!currentPreviewIds.includes(b.id)} type="button" className={`${styles.tile} ${styles.tone}`} data-tone={b.visual.tone} data-poster={b.visual.poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark business={b}/><span className={styles.preview} data-business-image><BusinessVisual business={b}/></span><span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="external"/></span></button>)}</div>
+    {!isFiltered&&businesses.length>4&&<div className={styles.browse}><button type="button" aria-expanded={expanded} aria-controls="directory-businesses" onClick={event=>{
       const control=event.currentTarget;
       setExpanded(open=>!open);
       if(expanded)requestAnimationFrame(()=>control.scrollIntoView({block:'center',behavior:'instant'}));
-      else requestAnimationFrame(()=>document.getElementById(`business-${businesses.find(b=>!previewIds.includes(b.id))?.id}`)?.focus());
-    }}>{expanded?'Show fewer businesses':`Explore all ${businesses.length} businesses`} <span aria-hidden="true">{expanded?'−':'+'}</span></button></div>}
-    {visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="arrow"/></button></div>}
-    <div className={styles.directoryFooter}><p>A local business. A wider circle of possibility.</p><Link href="/contact">Ask us for an introduction <Icon kind="arrow"/></Link></div>
+      else requestAnimationFrame(()=>document.getElementById(`business-${businesses.find(b=>!currentPreviewIds.includes(b.id))?.id}`)?.focus());
+    }}>{expanded?'Show fewer businesses':`Explore all ${businesses.length} businesses`} <span aria-hidden="true"><Icon kind={expanded ? "minus" : "plus"}/></span></button></div>}
+    {records!==null&&visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="external"/></button></div>}
+    <div className={styles.directoryFooter}><p>A local business. A wider circle of possibility.</p><Link href="/contact">Ask us for an introduction <Icon kind="external"/></Link></div>
   </div>
-  <dialog ref={dialog} className={`${styles.dialog} ${styles.tone}`} data-tone={business?identities[business.id].tone:undefined} aria-labelledby="business-detail-title" onCancel={event=>{event.preventDefault();closeBusiness();}}>
-    {business&&<><span className={styles.dialogBrand}>WisConnect</span><button type="button" className={styles.close} data-dialog-control aria-label="Close business details" onClick={()=>closeBusiness()} autoFocus><Icon kind="close"/></button><div className={styles.dialogLayout}><div className={styles.dialogIdentity}><BrandMark id={business.id}/><div ref={visual} className={styles.detailVisual}><BusinessVisual id={business.id}/></div><p className={styles.imageCaption}>Illustrative imagery for this business sector.</p></div><div ref={detail} className={styles.detailCopy}><p className={styles.detailMeta}>{business.sector} <span>·</span> {business.location}</p><h2 id="business-detail-title">{business.name}</h2><p className={styles.detailDescription}>{business.description}</p>{business.person&&<p className={styles.owner}>{business.person}</p>}<div className={styles.detailActions}><Link href="/contact" aria-label={`Ask WisConnect about ${business.name}`}>Connect with this business <Icon kind="arrow"/></Link>{business.profile&&<button type="button" onClick={()=>closeBusiness(()=>onProfile(business.profile!))}>Meet {business.profile.split(' ')[0]} <Icon kind="arrow"/></button>}</div></div></div></>}
+  <dialog ref={dialog} className={`${styles.dialog} ${styles.tone}`} data-tone={business?business.visual.tone:undefined} aria-labelledby="business-detail-title" onCancel={event=>{event.preventDefault();closeBusiness();}}>
+    {business&&<><span className={styles.dialogBrand}>WisConnect</span><button type="button" className={styles.close} data-dialog-control aria-label="Close business details" onClick={()=>closeBusiness()} autoFocus><Icon kind="close"/></button><div className={styles.dialogLayout}><div className={styles.dialogIdentity}><BrandMark business={business}/><div ref={visual} className={styles.detailVisual}><BusinessVisual business={business}/></div>{business.visual.image&&<p className={styles.imageCaption}>Illustrative imagery for this business sector.</p>}</div><div ref={detail} className={styles.detailCopy}><p className={styles.detailMeta}>{business.sector} <span>·</span> {business.location}</p><h2 id="business-detail-title">{business.name}</h2><p className={styles.detailDescription}>{business.description}</p>{business.person&&<p className={styles.owner}>{business.person}</p>}<div className={styles.detailActions}>{business.website&&<a href={business.website} target="_blank" rel="noopener noreferrer">Visit website <Icon kind="external"/></a>}{business.public_email&&<a href={`mailto:${business.public_email}`}>Email this business</a>}{business.public_phone&&<span>{business.public_phone}</span>}<Link href="/contact" aria-label={`Ask WisConnect about ${business.name}`}>Connect with this business <Icon kind="external"/></Link>{business.profile&&<button type="button" onClick={()=>closeBusiness(()=>onProfile(business.profile!))}>Meet {business.profile.split(' ')[0]} <Icon kind="external"/></button>}</div></div></div></>}
   </dialog></section>;
 }

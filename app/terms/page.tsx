@@ -23,7 +23,7 @@ export default function TermsPage(){
         <h2>Contact and membership forms</h2>
         <p>Where online submissions are enabled, pressing Submit on the Contact form saves your inquiry in the WisConnect database for administrators to review. The service also attempts an email notification to hello@wisconnect.co. A saved inquiry remains available in the dashboard if the email notification fails.</p>
         <p>The current local preview uses a test inbox unless real email delivery is configured. The hosted website does not yet accept online submissions and provides a direct email alternative.</p>
-        <p>The Join form still prepares an email draft. It keeps your answers in the current tab and does not save an application to the website database. Nothing is sent from Join until you send the draft through your email app.</p>
+        <p>Where online introductions are enabled, pressing Submit introduction saves your five answers and submission time in the database for administrators to review. Administrators can assign a reviewer, track progress and add private notes and activity records. No account or membership approval is created, and no confirmation email is sent. Where online introductions are unavailable, Join prepares an email draft instead; your answers stay in the current tab until you send that draft through your email app.</p>
       </div>
     </section>
 

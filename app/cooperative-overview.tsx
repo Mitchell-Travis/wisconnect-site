@@ -1,5 +1,7 @@
 'use client';
 
+import Icon from "./site-icon";
+
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { assetPath } from './assets';
 import styles from './cooperative-overview.module.css';
@@ -47,7 +49,8 @@ export function CooperativeOverview(){
       if(!enabled)return;
       const rect=scrollTrack.getBoundingClientRect();
       const height=frame.clientHeight;
-      const progress=clamp(-rect.top/Math.max(1,rect.height-height));
+      const stickyTop=parseFloat(getComputedStyle(frame).top)||0;
+      const progress=clamp((stickyTop-rect.top)/Math.max(1,rect.height-height));
       const opening=ramp(progress,0,.24);
       const maskWidth=frame.clientWidth*1.06*(1+Math.pow(opening,2)*23);
       root.style.setProperty('--wing-size',`${maskWidth}px`);
@@ -99,9 +102,9 @@ export function CooperativeOverview(){
   },[]);
 
   return <section ref={section} id="cooperative-model" data-divider="background" className={styles.journey} aria-labelledby="model-title" style={{'--wing-mask':wingMask} as CSSProperties}>
-    <div className={styles.sectionHeading}>
+    <div className={styles.sectionHeading} data-content-rail>
       <p className={styles.eyebrow}>A cooperative of businesses</p>
-      <h2 id="model-title">Own together.<br/><em>Build for each other.</em></h2>
+      <h2 id="model-title" data-section-headline>Own together.<br/><em>Build for each other.</em></h2>
     </div>
     <div ref={track} className={styles.track}>
     <div ref={stage} className={styles.stage}>
@@ -114,18 +117,18 @@ export function CooperativeOverview(){
       <div className={styles.veil} aria-hidden="true"/>
       <div className={styles.opening}>
         <svg className={styles.staticMark} viewBox="0 0 1000 700" aria-hidden="true"><path d={wingPath} fill="currentColor"/></svg>
-        <p className={styles.scrollHint}>Scroll to see what we build together <span aria-hidden="true">↓</span></p>
+        <p className={styles.scrollHint}>Scroll to see what we build together <span aria-hidden="true"><Icon kind="arrowDown"/></span></p>
       </div>
       <div className={styles.chapters}>
         {scenes.map(scene=><article key={scene.label} data-scene-copy className={styles.chapter}>
           <img className={styles.fallbackImage} src={assetPath(`${scene.image}-1400.webp`)} width="1400" height="1000" alt="" loading="lazy"/>
-          <div className={styles.chapterContent}><p className={styles.chapterLabel}>{scene.label}</p>{scene.title&&<h3>{scene.title}</h3>}{scene.paragraphs.map(text=><p key={text}>{text}</p>)}</div>
+          <div className={styles.chapterContent}><p className={styles.chapterLabel}>{scene.label}</p>{scene.title&&<h3 data-section-headline>{scene.title}</h3>}{scene.paragraphs.map(text=><p data-section-description key={text}>{text}</p>)}</div>
         </article>)}
       </div>
       <div className={styles.storyFooter}>
         <div className={styles.markers} aria-hidden="true">{scenes.map(scene=><span data-scene-marker key={scene.label}>{scene.label}</span>)}</div>
         <p>Illustrative photography</p>
-        <a href="#cooperative-story-end">Skip story <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M5 15h10V5" stroke="currentColor" strokeWidth="1.5"/></svg></a>
+        <a href="#cooperative-story-end">Skip story <Icon kind="arrowDownRight" size={14}/></a>
       </div>
       <div className={styles.progress} aria-hidden="true"/>
     </div>

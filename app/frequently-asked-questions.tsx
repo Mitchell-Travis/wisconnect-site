@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import Icon from "./site-icon";
+
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { accountAvailable } from './account-api';
 import styles from './frequently-asked-questions.module.css';
 
 const questions = [
@@ -14,7 +17,7 @@ const questions = [
 ];
 
 function Arrow(){
-  return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="arrow"/>;
 }
 
 export function FrequentlyAskedQuestions(){
@@ -42,13 +45,13 @@ export function FrequentlyAskedQuestions(){
       <div className={styles.answerLayout}>
         <header className={styles.heading}>
           <p className={styles.eyebrow}>Frequently asked questions</p>
-          <h2 id="faq-title">A little more<br/>{' '}<em>clarity.</em></h2>
-          <p className={styles.intro}>Membership, shared ownership and where your experience could fit.</p>
+          <h2 id="faq-title" data-section-headline>A little more<br/>{' '}<em>clarity.</em></h2>
+          <p data-section-description className={styles.intro}>Membership, shared ownership and where your experience could fit.</p>
           <Link href="/contact" className={styles.contact}>Ask our team <Arrow/></Link>
         </header>
         <div ref={answers} className={styles.answers}>
           {questions.map((question,index)=><details key={question.id} id={question.id} name="wisconnect-faq" className={styles.answer}>
-            <summary><span className={styles.questionNumber} aria-hidden="true">0{index+1}</span><span>{question.title}</span><span className={styles.plus} aria-hidden="true"/></summary>
+            <summary><span className={styles.questionNumber} aria-hidden="true">0{index+1}</span><span>{question.title}</span><span className={styles.plus} aria-hidden="true"><Icon kind="plus"/><Icon kind="minus"/></span></summary>
             <div className={styles.answerBody}>{question.answer}</div>
           </details>)}
         </div>
@@ -58,5 +61,6 @@ export function FrequentlyAskedQuestions(){
 }
 
 function IntroductionAnswer(){
-  return <p>Complete the <Link href="/join">five-question introduction</Link>, review your answers and send the prepared draft from your own email app. Completing the form does not send it automatically or make you a member.</p>;
+  const [direct,setDirect]=useState(false);useEffect(()=>setDirect(accountAvailable()),[]);
+  return <p>Complete the <Link href="/join">five-question introduction</Link>, review your answers and {direct ? 'submit them for the team to review' : 'send the prepared draft from your own email app'}. Completing the form does not send it automatically or make you a member.</p>;
 }

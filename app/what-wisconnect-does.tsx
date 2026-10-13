@@ -1,5 +1,7 @@
 'use client';
 
+import Icon from "./site-icon";
+
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './what-wisconnect-does.module.css';
@@ -44,23 +46,23 @@ export function WhatWisConnectDoes() {
   const [active, setActive] = useState(0);
 
   return <section id="what-we-do" data-divider="background" className={styles.section} aria-labelledby="what-we-do-title">
-    <div className={styles.inner}>
+    <div className={styles.inner} data-content-rail>
       <header className={styles.heading} data-home-reveal>
         <p className={styles.eyebrow}>What WisConnect does</p>
-        <h2 id="what-we-do-title">Expertise, space<br/>{' '}and <em>connections.</em></h2>
-        <p className={styles.intro}>Share expertise, find room to grow and build relationships across Africa and the diaspora.</p>
-        <Link className={styles.cta} href="/contact">Talk about your business <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 15 10-10M5 5h10v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
+        <h2 id="what-we-do-title" data-section-headline>Expertise, space<br/>{' '}and <em>connections.</em></h2>
+        <p data-section-description className={styles.intro}>Share expertise, find room to grow and build relationships across Africa and the diaspora.</p>
+        <Link className={styles.cta} href="/contact">Talk about your business <Icon kind="external" size={18}/></Link>
       </header>
       <div className={styles.deck}>
-        {areas.map((area, index) => <article data-home-reveal key={area.name} className={styles.card} data-active={active === index} onPointerEnter={event => { if (event.pointerType === 'mouse' && window.matchMedia('(min-width: 1151px) and (hover: hover)').matches) setActive(index); }}>
+        {areas.map((area, index) => <article key={area.name} className={styles.card} data-active={active === index} onPointerEnter={event => { if (event.pointerType === 'mouse' && window.matchMedia('(min-width: 1151px) and (hover: hover)').matches) setActive(index); }}>
           <h3 className={styles.cardHeading}><button type="button" aria-expanded={active === index} aria-controls={`support-detail-${index}`} onClick={() => setActive(index)} onFocus={() => setActive(index)}>
-            <span className={styles.number}>0{index + 1}</span><span>{area.name}</span><span className={styles.toggle} aria-hidden="true">{active === index ? '−' : '+'}</span>
+            <span className={styles.number}>0{index + 1}</span><span>{area.name}</span><span className={styles.toggle} aria-hidden="true"><Icon kind={active === index ? "minus" : "plus"}/></span>
           </button></h3>
           {active !== index && <p className={styles.summary}>{area.summary}</p>}
           <div id={`support-detail-${index}`} className={styles.detail} hidden={active !== index}>
             <p className={styles.fullTitle}>{area.title}</p>
             <p className={styles.description}>{area.description}</p>
-            <ul>{area.points.map(point => <li key={point}><span aria-hidden="true">✦</span>{point}</li>)}</ul>
+            <ul>{area.points.map(point => <li key={point}><span aria-hidden="true"><Icon kind="sparkle"/></span>{point}</li>)}</ul>
           </div>
           <div className={styles.artwork}><div className={styles.loop}/><SupportIllustration index={index}/></div>
         </article>)}

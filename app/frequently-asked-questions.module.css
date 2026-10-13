@@ -12,11 +12,11 @@
 .answer summary { display: flex; align-items: center; gap: 1rem; min-height: 76px; padding: 1.25rem 0; color: var(--plum); font-size: 1rem; font-weight: 550; line-height: 1.5; list-style: none; cursor: pointer; }
 .answer summary::-webkit-details-marker { display: none; }
 .questionNumber { flex: 0 0 1.25rem; color: var(--purple); font-size: .75rem; }
-.plus { position: relative; flex: 0 0 28px; height: 28px; margin-left: auto; border-radius: 50%; background: var(--mist); color: var(--purple); }
-.plus::before,.plus::after { content: ''; position: absolute; inset: 50% auto auto 50%; width: 12px; height: 1.5px; background: currentColor; transform: translate(-50%,-50%); }
-.plus::after { transform: translate(-50%,-50%) rotate(90deg); transition: transform .18s ease; }
+.plus { display: grid; place-items: center; flex: 0 0 28px; height: 28px; margin-left: auto; border-radius: 50%; background: var(--mist); color: var(--purple); }
+.plus svg:last-child { display: none; }
 .answer[open] .plus { background: var(--purple); color: #fff; }
-.answer[open] .plus::after { transform: translate(-50%,-50%); }
+.answer[open] .plus svg:first-child { display: none; }
+.answer[open] .plus svg:last-child { display: inline-block; }
 .answer summary:active { color: var(--purple); }
 .answerBody { padding: 0 2.75rem 1.5rem 2.25rem; color: var(--muted); font-size: 1rem; line-height: 1.75; }
 .answerBody p { margin: 0; }
@@ -24,4 +24,3 @@
 .answerBody a { color: var(--purple); text-decoration: underline; text-underline-offset: 3px; }
 .section :is(a,summary):focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
 @media(max-width:760px) { .answerLayout { grid-template-columns: 1fr; gap: 2rem; } .heading h2 br { display: none; } .intro { max-width: 30rem; margin-top: 1rem; } .questionNumber { display: none; } .answerBody { padding-left: 0; padding-right: 0; } }
-@media(prefers-reduced-motion:reduce) { .plus::after { transition: none; } }

@@ -1,3 +1,5 @@
+
+import Icon from "../../site-icon";
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -27,7 +29,7 @@ export default async function StoryPage({params}:Props){
     <main className={styles.main}>
       <article>
         <header className={styles.intro}>
-          <Link className={styles.back} href="/#community-projects"><span aria-hidden="true">←</span> All cooperative stories</Link>
+          <Link className={styles.back} href="/#community-projects"><span aria-hidden="true"><Icon kind="arrowLeft"/></span> All cooperative stories</Link>
           <p className={styles.eyebrow}>The work taking shape · {story.place}</p>
           <h1>{story.title}</h1>
           <p className={styles.summary}>{story.summary}</p>
@@ -44,12 +46,12 @@ export default async function StoryPage({params}:Props){
           </dl></aside>
           <div className={styles.body}>
             {story.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
-            {story.source&&<p className={styles.source}><a href={story.source.url}>{story.source.label} <span aria-hidden="true">↗</span></a></p>}
-            <div className={styles.actions}><Link className={styles.contact} href="/contact">Talk with WisConnect <span aria-hidden="true">↗</span></Link><Link className={styles.back} href="/#community-projects">Back to the stories <span aria-hidden="true">→</span></Link></div>
+            {story.source&&<p className={styles.source}><a href={story.source.url}>{story.source.label} <span aria-hidden="true"><Icon kind="external"/></span></a></p>}
+            <div className={styles.actions}><Link className={styles.contact} href="/contact">Talk with WisConnect <span aria-hidden="true"><Icon kind="external"/></span></Link><Link className={styles.back} href="/#community-projects">Back to the stories <span aria-hidden="true"><Icon kind="arrow"/></span></Link></div>
           </div>
         </div>
       </article>
-      <footer className={styles.footer}><span>WisConnect · People · Capital · Communities</span><Link href="/">Back to WisConnect <span aria-hidden="true">↗</span></Link></footer>
+      <footer className={styles.footer}><span>WisConnect · People · Capital · Communities</span><Link href="/">Back to WisConnect <span aria-hidden="true"><Icon kind="external"/></span></Link></footer>
     </main>
   </div>;
 }

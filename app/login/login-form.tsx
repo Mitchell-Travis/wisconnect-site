@@ -1,5 +1,7 @@
 "use client";
 
+import Icon from "../site-icon";
+
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "../member-access.module.css";
@@ -61,7 +63,7 @@ export default function LoginForm({ busy, error, onEdit, onSignIn }: {
         {errors.password && <p className={styles.loginFieldError} id="login-password-error">{errors.password}</p>}
       </div>
       <Link className={styles.loginHelp} href="/contact">Need help signing in?</Link>
-      <button type="submit" className={styles.signInButton}>{busy ? 'Signing in…' : 'Sign in'}<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
+      <button type="submit" className={styles.signInButton}>{busy ? 'Signing in…' : 'Sign in'}<Icon kind="arrow" size={16}/></button>
     </fieldset>
   </form>;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "./site-icon";
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import EntryHeader from "./entry-header";
@@ -205,9 +206,9 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
                 <label htmlFor="member-name">Your name<input id="member-name" name="name" placeholder="Full name" autoComplete="name" required maxLength={100} onChange={event=>event.currentTarget.setCustomValidity("")} /></label>
                 <label htmlFor="new-password">Choose a password<input id="new-password" name="password" type={showPasswords ? "text" : "password"} placeholder="Create a password" autoComplete="new-password" required value={password} onChange={event => { setPassword(event.target.value); setError(""); }} onBlur={() => setPasswordBlurred(true)} aria-invalid={passwordBlurred && !passwordLengthValid} aria-describedby="password-help password-length" /></label>
                 <p id="password-help" className={styles.hint}>Use at least 15 characters. Try four unrelated words or a password manager. Spaces are welcome; numbers and symbols are optional.</p>
-                <p id="password-length" className={styles.passwordFeedback} data-invalid={passwordBlurred && !passwordLengthValid} role="status">{passwordLength === 0 ? "15–128 characters" : passwordLength > 128 ? "Too long — use no more than 128 characters." : passwordLength < 15 ? `${15 - passwordLength} more ${15 - passwordLength === 1 ? "character" : "characters"} needed` : "✓ Length requirement met"}</p>
+                <p id="password-length" className={styles.passwordFeedback} data-invalid={passwordBlurred && !passwordLengthValid} role="status">{passwordLength === 0 ? "15–128 characters" : passwordLength > 128 ? "Too long — use no more than 128 characters." : passwordLength < 15 ? `${15 - passwordLength} more ${15 - passwordLength === 1 ? "character" : "characters"} needed` : <><Icon kind="check" size={16}/> Length requirement met</>}</p>
                 <label htmlFor="confirm-password">Confirm password<input id="confirm-password" name="confirm" type={showPasswords ? "text" : "password"} placeholder="Repeat your password" autoComplete="new-password" required value={confirmation} onChange={event => { setConfirmation(event.target.value); setError(""); }} onBlur={() => setConfirmationBlurred(true)} aria-invalid={confirmationBlurred && confirmation !== password} aria-describedby="password-match" /></label>
-                <p id="password-match" className={styles.passwordFeedback} data-invalid={confirmationBlurred && confirmation !== password} role="status">{confirmation ? confirmation === password ? "✓ Passwords match" : "Passwords do not match yet." : "Enter the same password again."}</p>
+                <p id="password-match" className={styles.passwordFeedback} data-invalid={confirmationBlurred && confirmation !== password} role="status">{confirmation ? confirmation === password ? <><Icon kind="check" size={16}/> Passwords match</> : "Passwords do not match yet." : "Enter the same password again."}</p>
                 <button className={styles.passwordToggle} type="button" aria-pressed={showPasswords} aria-controls="new-password confirm-password" onClick={()=>setShowPasswords(value=>!value)}>{showPasswords ? "Hide passwords" : "Show passwords"}</button>
                 <button type="submit" disabled={busy}>{busy ? "Creating your account…" : "Create my account"}</button>
               </form>

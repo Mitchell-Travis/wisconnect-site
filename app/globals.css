@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root{
+  --form-field-focus:#8b759b;
   --purple:#4B2E83;--mauve:#7B5AA6;--lilac:#C8B4D9;--gold:#D4AF7C;
   --plum:#2A1B3D;--sand:#F5EFE9;--mist:#E9E3F1;--ink:#24182f;
   --muted:#675d70;--line:rgba(42,27,61,.16);--white:#fffdfa;
@@ -59,7 +60,8 @@ footer{background:var(--plum);color:white;padding:65px 0}.footer-grid{display:gr
 
 /* Premium restraint pass — 2026-09-19 */
 :root{
-  --purple:#563578;
+  --brand-purple:#563578;
+  --purple:var(--brand-purple);
   --mauve:#765C87;
   --lilac:#DCCFE4;
   --gold:#B9955A;

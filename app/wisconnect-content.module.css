@@ -52,10 +52,8 @@
 }
 
 @media(prefers-reduced-motion:no-preference) {
-  .storyGrid article { transition: transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s; }
   .storyGrid button svg { transition: transform .22s; }
   @media(hover:hover) and (pointer:fine) {
-    .storyGrid article:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -18px rgb(41 24 51 / 30%); }
     .storyGrid button:hover svg { transform: translate(2px,-2px); }
   }
   .storyGrid button:active { opacity: .7; }

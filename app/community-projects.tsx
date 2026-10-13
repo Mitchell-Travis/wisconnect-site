@@ -1,5 +1,7 @@
 'use client';
 
+import Icon from "./site-icon";
+
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'motion/react';
@@ -8,7 +10,7 @@ import { ProjectStoryImage } from './project-story-image';
 import styles from './community-projects.module.css';
 
 function Arrow(){
-  return <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <Icon kind="arrow" size={18}/>;
 }
 export function CommunityProjects(){
   const [desktop,setDesktop]=useState(false);
@@ -42,8 +44,8 @@ export function CommunityProjects(){
 
   return <section id="community-projects" data-divider="background" className={`section ${styles.section}`} aria-labelledby="projects-title"><div className="shell">
     <div className={`section-heading split-heading ${styles.heading}`}>
-      <div><p className="eyebrow">The work taking shape</p><h2 id="projects-title">Business growth.<br/><em>Community ownership.</em></h2></div>
-      <div className={styles.intro}><p>Explore the projects and development visions taking shape across our cooperative.</p><Link href="/contact" className={styles.contact}>Talk with WisConnect <Arrow/></Link></div>
+      <div><p className="eyebrow">The work taking shape</p><h2 id="projects-title" data-section-headline>Business growth.<br/><em>Community ownership.</em></h2></div>
+      <div className={styles.intro}><p data-section-description>Explore the projects and development visions taking shape across our cooperative.</p><Link href="/contact" className={styles.contact}>Talk with WisConnect <Arrow/></Link></div>
     </div>
     <div ref={storyStack} className={styles.storyStack} data-stack={stackEnabled}>
       {stories.map((item,index)=>{
@@ -52,7 +54,7 @@ export function CommunityProjects(){
           <div className={styles.storyHeader}>
             <h3 id={`project-heading-${item.id}`}>
               <button type="button" className={styles.toggle} aria-expanded={expanded} aria-controls={`project-panel-${item.id}`} onClick={()=>setActive(active===index?null:index)}>
-                <span className={styles.number} aria-hidden="true">0{index+1}</span><span>{item.title}</span><span className={styles.toggleIcon} aria-hidden="true">{expanded?'−':'+'}</span>
+                <span className={styles.number} aria-hidden="true">0{index+1}</span><span>{item.title}</span><span className={styles.toggleIcon} aria-hidden="true"><Icon kind={expanded ? "minus" : "plus"}/></span>
               </button>
               <span className={styles.mobileTitle}><span className={styles.number} aria-hidden="true">0{index+1}</span>{item.title}</span>
             </h3>

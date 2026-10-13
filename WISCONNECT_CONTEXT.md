@@ -1,5 +1,13 @@
 # WisConnect master context
 
+## Website publication prepared (13 October 2026)
+
+- Mitchell requested pushing the current website changes. Release scope is the public homepage/Contact/Join/story styling, shared icons, refreshed imagery, consistent rails/type, mobile pillar autoplay/bridge, floating desktop/mobile nav, animated launch announcement without playback button, mobile profile links and single textile story indicator.
+- Earlier dashboard/backend/CI implementation remains local and is not part of this website release. Existing Pages account/API restrictions remain in place. No Railway deployment or database migration is performed.
+- The Lovable “Simplify Your Invoicing Workflow” reference was inspected only: pinned portrait stack spreads outward with scroll and reveals the central CTA; no WisConnect section has been selected or implemented yet.
+- Isolated GitHub Pages production export and TypeScript passed; 89 exported local asset/link destinations exist. Patched Next.js 16.3.8 and lockfile included. The existing main-branch Pages workflow publishes this release.
+
+
 Last updated: 2026-10-12. Read the homepage pacing update and source-based structure first, then the forms/team releases and local startup updates; dated entries further down retain historical decisions and verification.
 
 ## Homepage release approved (12 October 2026)
