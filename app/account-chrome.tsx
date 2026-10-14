@@ -32,7 +32,7 @@ const menus = [
   ] },
 ];
 
-export function AccountHeader() {
+export function AccountHeader({ skipTarget = "access-title", skipLabel = "Skip to account access" }: { skipTarget?: string; skipLabel?: string } = {}) {
   const [announcementOpen, setAnnouncementOpen] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
@@ -61,7 +61,7 @@ export function AccountHeader() {
   }, []);
 
   return <>
-    <a className={styles.skipLink} href="#access-title" onClick={event => { event.preventDefault(); document.getElementById("access-title")?.focus(); }}>Skip to account access</a>
+    <a className={styles.skipLink} href={`#${skipTarget}`} onClick={event => { event.preventDefault(); document.getElementById(skipTarget)?.focus(); }}>{skipLabel}</a>
     <header ref={header} className={styles.header} data-scrolled={scrolled}>
     {announcementOpen && <aside className={`${styles.announcement} ${announcementFont.className}`} aria-label="WisConnect announcement">
       <div className={styles.announcementMessage}>
@@ -107,7 +107,7 @@ export function AccountHeader() {
   </>;
 }
 
-export function AccountFooter() {
+export function AccountFooter({ showInvitationNote = true }: { showInvitationNote?: boolean } = {}) {
   return <footer className={styles.footer}>
     <div className={styles.footerRow}>
       <details className={styles.language} onBlur={event => {
@@ -125,6 +125,6 @@ export function AccountFooter() {
       </nav>
       <p className={styles.copyright}>© 2026 WisConnect</p>
     </div>
-    <p className={styles.invitationNote}>Member access by invitation</p>
+    {showInvitationNote && <p className={styles.invitationNote}>Member access by invitation</p>}
   </footer>;
 }

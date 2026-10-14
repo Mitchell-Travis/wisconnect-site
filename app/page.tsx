@@ -342,6 +342,7 @@ export default function Home(){
   const impactInView=useInView(impactVisual,{amount:.2});
   const animateImpact=impactInView&&reducedMotion===false;
   const [scrolled,setScrolled]=useState(false);
+  const [navHidden,setNavHidden]=useState(false);
   const [announcementOpen,setAnnouncementOpen]=useState(true);
   const [selectedMember,setSelectedMember]=useState<number|null>(null);
   function openMemberByName(name:string){
@@ -428,10 +429,41 @@ export default function Home(){
     return()=>observer.disconnect();
   },[reducedMotion]);
   useEffect(()=>{
-    const onScroll=()=>setScrolled(window.scrollY>96);
-    onScroll();
+    const desktop=window.matchMedia('(min-width: 960px)');
+    let previousY=Math.max(0,window.scrollY);
+    let direction=0;
+    let travel=0;
+    let frame=0;
+    const update=()=>{
+      frame=0;
+      const y=Math.max(0,Math.min(window.scrollY,document.documentElement.scrollHeight-window.innerHeight));
+      const delta=y-previousY;
+      previousY=y;
+      setScrolled(y>96);
+      const nav=header.current;
+      const interacting=nav?.dataset.submenuOpen==='true'||nav?.querySelector('details[open], :focus-visible');
+      if(!desktop.matches||y<=160||interacting){
+        travel=0;
+        setNavHidden(false);
+        return;
+      }
+      if(!delta)return;
+      const nextDirection=Math.sign(delta);
+      travel=nextDirection===direction?travel+Math.abs(delta):Math.abs(delta);
+      direction=nextDirection;
+      // Ignore small scroll jitter; reveal more readily than we hide.
+      if(travel>=(direction>0?32:8))setNavHidden(direction>0);
+    };
+    const onScroll=()=>{if(!frame)frame=requestAnimationFrame(update);};
+    const onResize=()=>{previousY=Math.max(0,window.scrollY);travel=0;setNavHidden(false);onScroll();};
+    update();
     window.addEventListener('scroll',onScroll,{passive:true});
-    return()=>window.removeEventListener('scroll',onScroll);
+    desktop.addEventListener('change',onResize);
+    return()=>{
+      window.removeEventListener('scroll',onScroll);
+      desktop.removeEventListener('change',onResize);
+      cancelAnimationFrame(frame);
+    };
   },[]);
   useEffect(()=>{
     const desktop=window.matchMedia('(min-width: 960px)');
@@ -488,7 +520,8 @@ export default function Home(){
       <button type="button" aria-label="Dismiss announcement" onClick={()=>{setAnnouncementOpen(false);header.current?.querySelector<HTMLAnchorElement>('a')?.focus({preventScroll:true});}}><Icon kind="close" size={16}/></button>
     </aside>}
     {(activeNav!==null||menuOpen)&&<div className={styles.navBackdrop} aria-hidden="true" onPointerDown={close}/>}
-    <header ref={header} className={styles.header} data-scrolled={scrolled} data-menu-open={menuOpen} data-submenu-open={activeNav!==null}
+    <header ref={header} className={styles.header} data-scrolled={scrolled} data-hidden={navHidden&&activeNav===null&&!menuOpen} data-menu-open={menuOpen} data-submenu-open={activeNav!==null}
+      onFocusCapture={()=>setNavHidden(false)}
       onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))close()}}
       onKeyDown={event=>{
         if(event.key==='Escape'){if(activeNav!==null){event.preventDefault();cancelNavClose();backToNavigation();}else if(menuOpen){close();menuButton.current?.focus();}}
@@ -541,8 +574,8 @@ export default function Home(){
       <div className="hero-textile-ribbon" aria-hidden="true"/>
       <div className={styles.heroGrid}>
         <div className={styles.heroCopy}>
-          <p className={styles.identity}>Business development &amp; resources<br/>for Black women entrepreneurs</p>
-          <h1 id="hero-title">Build your business.<br/><em>Share in <br/>what grows.</em></h1>
+          <p className={styles.identity}>Build your business.<br/>Share in what grows.</p>
+          <h1 id="hero-title">Black Women<br/>Business Development<br/><em>&amp; Resource Center</em></h1>
           <p className={styles.heroLede}>A worker-owned holding cooperative connecting Black women entrepreneurs across Africa and the diaspora to build community wealth.</p>
           <div className={styles.heroActions}>
             <Link className={styles.primaryAction} href="/join" aria-describedby="membership-introduction-note">Introduce yourself <ArrowUpRightIcon/></Link>

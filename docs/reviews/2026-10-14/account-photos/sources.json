@@ -1,0 +1,32 @@
+[
+  {
+    "placement": "Contact, first desktop step",
+    "asset": "account-contact-cafe",
+    "photographer": "RDNE Stock project",
+    "source": "https://www.pexels.com/photo/businesswoman-working-on-laptop-in-cafe-10376295/",
+    "download": "https://images.pexels.com/photos/10376295/pexels-photo-10376295.jpeg?auto=compress&w=1200",
+    "license": "https://www.pexels.com/license/",
+    "downloaded": "2026-10-14",
+    "sizes": [
+      640,
+      1200
+    ],
+    "encoding": "WebP quality 85",
+    "usage": "Illustrative photography; no named WisConnect members or endorsement implied."
+  },
+  {
+    "placement": "Membership welcome, desktop only",
+    "asset": "account-join-conversation",
+    "photographer": "PICHA Stock",
+    "source": "https://www.pexels.com/photo/women-talking-to-each-other-3894383/",
+    "download": "https://images.pexels.com/photos/3894383/pexels-photo-3894383.jpeg?auto=compress&w=1600",
+    "license": "https://www.pexels.com/license/",
+    "downloaded": "2026-10-14",
+    "sizes": [
+      640,
+      1200
+    ],
+    "encoding": "WebP quality 85",
+    "usage": "Illustrative photography; no named WisConnect members or endorsement implied."
+  }
+]

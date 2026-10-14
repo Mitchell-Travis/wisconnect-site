@@ -30,7 +30,7 @@
 .skipLink { position: fixed; top: 12px; left: 20px; z-index: 200; padding: 12px 20px; background: white; color: var(--plum); transform: translateY(-160%); }
 .skipLink:focus { transform: none; }
 
-/* Navigation remains reachable in both scroll directions. */
+/* Desktop navigation clears the view on downward scroll and returns on intent. */
 .header {
   position: sticky;
   top: 0;
@@ -41,6 +41,14 @@
   transition: background .2s;
 }
 .header[data-scrolled="true"] { background: transparent; }
+@media (min-width: 960px) {
+  .header { transition: transform .24s var(--ease), background .2s; }
+  .header[data-hidden="true"] { transform: translateY(calc(-100% - var(--nav-float, 16px) - 24px)); pointer-events: none; }
+  .header:has(:focus-visible) { transform: none; pointer-events: auto; transition: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .header { transition: none; }
+}
 .navShell { position: relative; width: min(1280px, calc(100% - 48px)); min-height: 64px; margin: auto; padding: 8px 24px; display: flex; align-items: center; gap: 28px; background: white; border-radius: 6px; }
 .brand { flex-shrink: 0; width: 144px; }
 .brand img { width: 100%; height: auto; }
@@ -71,7 +79,7 @@
 .hero :global(.hero-textile-ribbon) { height: 16px; }
 /* Keep the composition inset from the fixed outer rails, including the artwork. */
 .heroGrid, .heroFoot { width: min(calc(1280px - 2 * var(--hero-inset)), calc(100% - 2 * (var(--hero-frame-edge) + var(--hero-inset)))); margin-inline: auto; }
-.heroGrid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); }
+.heroGrid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); column-gap: clamp(24px, 2.25vw, 36px); }
 .heroCopy { position: relative; z-index: 2; align-self: center; padding-block: 40px 48px; }
 .identity { max-width: 390px; margin: 0 0 28px; font-size: 11px; line-height: 1.7; letter-spacing: .13em; text-transform: uppercase; color: #65516e; font-weight: 650; }
 .heroCopy h1 { max-width: 720px; margin: 0; color: var(--plum); font-size: clamp(50px, 5.2vw, 70px); line-height: 1.02; letter-spacing: -.035em; }
@@ -265,7 +273,7 @@
 }
 @media (min-width: 960px) {
   .heroGrid { padding-top: 28px; }
-  .heroCopy h1 { font-size: clamp(50px, 5vw, 66px); }
+  .heroCopy h1 { font-size: clamp(50px, 4.8vw, 64px); }
   .heroPortrait { width: 100%; max-height: 660px; }
 }
 @media (min-width: 960px) and (prefers-reduced-motion: no-preference) {
@@ -339,7 +347,7 @@
   .heroActions { margin-top: 24px; gap: 10px 20px; }
   .primaryAction { min-height: 52px; padding-inline: 20px; font-size: 13px; }
   .secondaryAction { font-size: 12px; }
-  .heroArt { height: auto; margin-top: 16px; }
+  .heroArt { height: auto; margin-top: 32px; }
   .heroPortrait { width: 100%; max-width: 100%; max-height: 560px; height: auto; object-fit: contain; object-position: center; }
   .heroVideo { height: 100%; }
   .heroFoot { padding-block: 14px; }

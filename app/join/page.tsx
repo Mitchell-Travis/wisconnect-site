@@ -5,7 +5,8 @@ import { newRequestId } from '../local-api';
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import Link from 'next/link';
-import EntryHeader from '../entry-header';
+import { AccountHeader, AccountFooter } from '../account-chrome';
+import BackgroundGlow from '../background-glow';
 import JoinVisual from './join-visual';
 import { accountAvailable, ApiError } from '../account-api';
 import { submitIntroduction } from './introduction-api';
@@ -123,9 +124,11 @@ export default function JoinPage(){
   });
 
   return <div className={styles.page} data-step={step}>
-    <EntryHeader/>
+    <AccountHeader skipTarget="step-title" skipLabel="Skip to membership introduction"/>
 
-    <main className={styles.layout}>
+    <main className={styles.layout} aria-labelledby="step-title">
+      <BackgroundGlow/>
+      <div className={styles.card}>
       <JoinVisual/>
       <section id="application" className={styles.application} aria-labelledby="step-title">
         {receipt===null&&step>0&&<nav className={styles.progress} aria-label="Introduction progress">
@@ -177,8 +180,9 @@ export default function JoinPage(){
         <p className={styles.privacyNote}>{step===0?'Already a member? ':direct ? (receipt !== null ? 'Your introduction is visible only to WisConnect administrators. ' : 'Your answers stay in this tab until you submit them. Submitted introductions are stored for administrator review. ') : 'Your answers stay in this tab. Reloading clears them. Nothing is sent until you send the email. '}{step===0&&<><Link href="/login">Sign in</Link><span aria-hidden="true"> · </span></>} <Link href="/terms">Terms & Conditions</Link></p>
         <noscript><p>Please enable JavaScript to use the guided application, or email <a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a> to introduce yourself.</p></noscript>
       </section>
+      </div>
     </main>
 
-    <footer className={styles.footer}><span>WisConnect Holding Cooperative</span><a href="mailto:hello@wisconnect.co">Questions? Get in touch <ArrowIcon/></a></footer>
+    <AccountFooter showInvitationNote={false}/>
   </div>;
 }

@@ -75,6 +75,7 @@
 
 /* Returning-member flow: a white card within a purple-and-gold color field. */
 .focusedLogin .main {
+  position: relative; isolation: isolate;
   width: calc(100% - 48px); min-height: 640px; margin-top: 0; padding: 56px 24px;
   /* Broad, overlapping pools of color: amethyst, lilac light and warm gold. */
   background:
@@ -84,7 +85,7 @@
     radial-gradient(ellipse 64% 74% at 16% -12%, #d4bee9 0%, transparent 74%),
     linear-gradient(125deg, #80569e 0%, #c4a9db 36%, #eee4f1 57%, #fbefcf 76%, #b98e4c 100%);
 }
-.focusedLogin .content { width: min(464px, 100%); padding: 32px 48px; border-radius: 24px; box-shadow: 0 18px 32px -16px rgb(41 24 51 / 30%); }
+.focusedLogin .content { position: relative; z-index: 1; width: min(464px, 100%); padding: 32px 48px; border-radius: 24px; box-shadow: 0 18px 32px -16px rgb(41 24 51 / 30%); }
 .focusedLogin .content h1 { margin: 0; font-size: 34px; line-height: 1.15; scroll-margin-top: 144px; }
 .focusedLogin .content > p { line-height: 1.75; }
 .focusedLogin .content h1 ~ p:not(.membershipPrompt) { margin-top: 16px; }
