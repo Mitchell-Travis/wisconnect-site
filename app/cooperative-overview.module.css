@@ -31,12 +31,14 @@
 .journey[data-motion=on] .visual { display: block; position: absolute; inset: 0; background: var(--plum); mask-image: var(--wing-mask); mask-repeat: no-repeat; mask-position: center; mask-size: var(--wing-size) auto; -webkit-mask-image: var(--wing-mask); -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-size: var(--wing-size) auto; }
 .journey[data-motion=on][data-expanded=true] .visual { mask-image: none; -webkit-mask-image: none; }
 .sceneImage { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; will-change: opacity,transform; }
-.sceneImage { object-position: 65% center; }
+.sceneImage:first-child { object-position: 70% center; }
+.sceneImage:nth-child(2) { object-position: 65% center; }
+.sceneImage:nth-child(3) { object-position: 70% center; }
 .wingCollage { position: absolute; left: 50%; top: calc((100% - var(--wing-size) * .7) * .5); transform: translateX(-50%); width: var(--wing-size); aspect-ratio: 10 / 7; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); opacity: var(--collage-opacity); }
 .wingCollage img { width: 100%; height: 100%; min-width: 0; object-fit: cover; }
-.wingCollage img:first-child,.staticMark img:first-child { object-position: 47% center; }
-.wingCollage img:nth-child(2),.staticMark img:nth-child(2) { object-position: 66% center; }
-.wingCollage img:nth-child(3),.staticMark img:nth-child(3) { object-position: 98% center; }
+.wingCollage img:first-child,.staticMark img:first-child { object-position: 70% center; }
+.wingCollage img:nth-child(2),.staticMark img:nth-child(2) { object-position: 55% center; }
+.wingCollage img:nth-child(3),.staticMark img:nth-child(3) { object-position: 72% center; }
 .journey[data-expanded=true] .wingCollage { display: none; }
 .journey[data-motion=on] .veil { display: block; position: absolute; inset: 0; background: linear-gradient(90deg,rgba(25,12,37,.88),rgba(25,12,37,.35) 78%),linear-gradient(0deg,rgba(25,12,37,.72),transparent 28%); opacity: var(--veil-opacity); }
 .journey[data-motion=on] .opening { position: absolute; inset: 0; padding-top: max(86px,10svh); pointer-events: none; opacity: var(--opening-opacity); }

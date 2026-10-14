@@ -10,15 +10,15 @@ import styles from './cooperative-overview.module.css';
 const wingPath='M50 100 C180 45 280 110 310 200 L370 400 L500 180 L630 400 L690 200 C720 110 820 45 950 100 L800 570 C780 630 700 650 650 590 L500 390 L350 590 C300 650 220 630 200 570 Z';
 const wingMask=`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700"><path fill="white" d="${wingPath}"/></svg>`)}")`;
 const scenes=[
-  {label:'01 · The businesses',image:'cooperative-story-strengths',title:'Distinct strengths.',paragraphs:[
+  {label:'01 · The businesses',image:'cooperative-model',height:933,thumbnailHeight:427,title:'Distinct strengths.',paragraphs:[
     'WisConnect Holding Cooperative is a worker-owned cooperative connecting Black women entrepreneurs, their businesses and the communities they serve.',
     'Food, child care, design, agriculture and professional expertise. Each business brings knowledge of its work and its community.',
   ]},
-  {label:'02 · The cooperative',image:'cooperative-story-ownership',title:'A shared structure.',paragraphs:[
+  {label:'02 · The cooperative',image:'cooperative-businesses',height:2100,thumbnailHeight:960,title:'A shared structure.',paragraphs:[
     'Its holding company model brings different enterprises into a shared structure, with professional support and a long-term vision for community-owned assets.',
     'Members pool experience, build relationships and take part in decisions. WisConnect’s current members make collective decisions by consensus.',
   ]},
-  {label:'03 · The community',image:'cooperative-story-community',title:'Value that stays close.',paragraphs:[
+  {label:'03 · The community',image:'cooperative-community',height:933,thumbnailHeight:427,title:'Value that stays close.',paragraphs:[
     'The ambition reaches beyond individual enterprise: commercial space, local livelihoods and community ownership that support lasting growth.',
   ]},
 ];
@@ -111,25 +111,25 @@ export function CooperativeOverview(){
     <div ref={track} className={styles.track}>
     <div ref={stage} className={styles.stage}>
       <div className={styles.visual} aria-hidden="true">
-        {scenes.map((scene,index)=><img key={scene.image} data-scene-image className={styles.sceneImage} src={assetPath(`${scene.image}-1400.webp`)} srcSet={`${assetPath(`${scene.image}-640.webp`)} 640w, ${assetPath(`${scene.image}-1400.webp`)} 1400w`} sizes="100vw" width="1400" height="933" alt="" loading="lazy" style={{opacity:index===0?1:0}}/>)}
+        {scenes.map((scene,index)=><img key={scene.image} data-scene-image className={styles.sceneImage} src={assetPath(`${scene.image}-1400.webp`)} srcSet={`${assetPath(`${scene.image}-640.webp`)} 640w, ${assetPath(`${scene.image}-1400.webp`)} 1400w`} sizes="100vw" width="1400" height={scene.height} alt="" loading="lazy" style={{opacity:index===0?1:0}}/>)}
         <div className={styles.wingCollage}>
-          {scenes.map(scene=><img key={scene.image} src={assetPath(`${scene.image}-640.webp`)} srcSet={`${assetPath(`${scene.image}-640.webp`)} 640w, ${assetPath(`${scene.image}-1400.webp`)} 1400w`} sizes="34vw" width="640" height="427" alt="" loading="lazy"/>)}
+          {scenes.map(scene=><img key={scene.image} src={assetPath(`${scene.image}-640.webp`)} srcSet={`${assetPath(`${scene.image}-640.webp`)} 640w, ${assetPath(`${scene.image}-1400.webp`)} 1400w`} sizes="34vw" width="640" height={scene.thumbnailHeight} alt="" loading="lazy"/>)}
         </div>
       </div>
       <div className={styles.veil} aria-hidden="true"/>
       <div className={styles.opening}>
-        <div className={styles.staticMark} aria-hidden="true">{scenes.map(scene=><img key={scene.image} src={assetPath(`${scene.image}-640.webp`)} width="640" height="427" alt="" loading="lazy"/>)}</div>
+        <div className={styles.staticMark} aria-hidden="true">{scenes.map(scene=><img key={scene.image} src={assetPath(`${scene.image}-640.webp`)} width="640" height={scene.thumbnailHeight} alt="" loading="lazy"/>)}</div>
         <p className={styles.scrollHint}>Scroll to see what we build together <span aria-hidden="true"><Icon kind="arrowDown"/></span></p>
       </div>
       <div className={styles.chapters}>
         {scenes.map(scene=><article key={scene.label} data-scene-copy className={styles.chapter}>
-          <img className={styles.fallbackImage} src={assetPath(`${scene.image}-1400.webp`)} width="1400" height="933" alt="" loading="lazy"/>
+          <img className={styles.fallbackImage} src={assetPath(`${scene.image}-1400.webp`)} width="1400" height={scene.height} alt="" loading="lazy"/>
           <div className={styles.chapterContent}><p className={styles.chapterLabel}>{scene.label}</p>{scene.title&&<h3 data-section-headline>{scene.title}</h3>}{scene.paragraphs.map(text=><p data-section-description key={text}>{text}</p>)}</div>
         </article>)}
       </div>
       <div className={styles.storyFooter}>
         <div className={styles.markers} aria-hidden="true">{scenes.map(scene=><span data-scene-marker key={scene.label}>{scene.label}</span>)}</div>
-        <p>Illustrative scenes · WisConnect’s vision</p>
+        <p>Illustrative photography</p>
         <a href="#cooperative-story-end">Skip story <Icon kind="arrowDownRight" size={14}/></a>
       </div>
       <div className={styles.progress} aria-hidden="true"/>

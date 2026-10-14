@@ -1,6 +1,7 @@
 "use client";
 
 import Icon from "./site-icon";
+import { HeroAnimation } from './hero-animation';
 
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
@@ -548,9 +549,7 @@ export default function Home(){
           </div>
           <p id="membership-introduction-note" className={styles.heroNote}>{directIntroductions ? 'Five questions. Review and submit your introduction.' : 'Five questions. Review your introduction, then send it by email.'}</p>
         </div>
-        <div className={styles.heroArt}>
-          <img className={styles.heroPortrait} src={assetPath('hero-shared-enterprise-960.webp')} srcSet={`${assetPath('hero-shared-enterprise-640.webp')} 640w, ${assetPath('hero-shared-enterprise-960.webp')} 960w`} sizes="(max-width: 699px) 90vw, 50vw" width="1122" height="1402" fetchPriority="high" alt="Illustration of three Black women entrepreneurs sharing ideas, a laptop and textile samples around a table"/>
-        </div>
+        <HeroAnimation/>
       </div>
       <div className={styles.heroFoot}>
         <p>People. Capital. Communities.</p>

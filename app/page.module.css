@@ -84,6 +84,11 @@
 .heroArt { position: relative; display: flex; align-items: flex-end; justify-content: center; min-width: 0; isolation: isolate; overflow: visible; }
 .heroArt::before { content: ""; position: absolute; z-index: -1; inset: 8% 0 4%; background: radial-gradient(ellipse at 30% 42%, rgb(188 158 213 / 32%), transparent 66%), radial-gradient(ellipse at 75% 72%, rgb(224 191 115 / 28%), transparent 62%); filter: blur(24px); pointer-events: none; }
 .heroPortrait { position: relative; z-index: 1; box-sizing: border-box; width: 100%; max-width: 100%; max-height: 620px; height: auto; align-self: flex-end; object-fit: contain; object-position: center; }
+.heroVideo { position: absolute; inset: auto 0 0; height: 100%; opacity: 0; pointer-events: none; mix-blend-mode: multiply; }
+.heroArt[data-video-ready="true"] .heroVideo { opacity: 1; }
+.heroArt[data-video-ready="true"] > img { opacity: 0; }
+.heroPlayback { position: absolute; z-index: 2; right: 8px; bottom: 8px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #ded1e5; border-radius: 50%; background: #fff; color: var(--plum); cursor: pointer; }
+.heroPlayback:hover { background: #f5eff8; }
 .heroFoot { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 14px; }
 .heroFoot p { margin: 0; font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .14em; color: #6b5876; }
 .heroFoot a { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 13px; color: var(--plum); }
@@ -336,6 +341,7 @@
   .secondaryAction { font-size: 12px; }
   .heroArt { height: auto; margin-top: 16px; }
   .heroPortrait { width: 100%; max-width: 100%; max-height: 560px; height: auto; object-fit: contain; object-position: center; }
+  .heroVideo { height: 100%; }
   .heroFoot { padding-block: 14px; }
   .heroFoot p { display: none; }
   .heroFoot a { width: 100%; justify-content: space-between; font-size: 12px; gap: 12px; }
@@ -835,6 +841,7 @@
 .page[data-home-system] :global(#faq),
 .page[data-home-system] :global(#join),
 .page[data-home-system] .hero { background: var(--sand); }
+.page[data-home-system] .heroArt { background: var(--sand); }
 .page[data-home-system] :global(#community-projects),
 .page[data-home-system] :global(#member-stories) { background: #fff; }
 .page[data-home-system] :global(#member-stories) { padding-block: 0; }
