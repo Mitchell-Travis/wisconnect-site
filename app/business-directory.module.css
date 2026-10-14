@@ -70,6 +70,14 @@
 .tile[data-poster=mineral] .preview { inset: 38% 0 0; }
 .tile[data-poster=mineral] .preview::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 55%,var(--plum)); }
 .brandMark[data-business=river-cess-mining] .wordmark { color: var(--gold); }
+@media(min-width:1100px) {
+  .tile { height: 340px; padding: 28px; }
+  .tile .wordmark { font-size: clamp(36px,3.4vw,48px); }
+  .tile .brandMark[data-business=czl] .wordmark { font-size: 76px; }
+  .tile .subline { font-size: 9px; letter-spacing: .12em; margin-top: 10px; }
+  .tileMeta { inset: auto 24px 20px; font-size: 11px; }
+  .preview { inset: 38% 24px 50px; }
+}
 @media(hover:hover) and (pointer:fine) { .tile:hover .tileMeta svg { transform: translate(3px,-3px); } }
 .tile:target { outline: 3px solid var(--directory-accent); outline-offset: 3px; }
 .directory :is(button,a):focus-visible { outline: 3px solid var(--directory-accent); outline-offset: 4px; }

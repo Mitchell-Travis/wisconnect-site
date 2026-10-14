@@ -1,0 +1,25 @@
+Mode: built-in image_gen. Three fictional illustrative scenes; scenes 2 and 3 reference scene 1 for continuity.
+
+SCENE 1
+Use case: photorealistic-natural
+Asset type: WisConnect cooperative website, first of three connected story backgrounds, landscape 3:2.
+Primary request: A striking editorial photograph showing Black women actively building independent businesses inside a beautiful shared enterprise space. This is "Distinct strengths."
+Scene: A warm brick-and-plaster community workspace with tall windows, an open kitchen counter and a textile design worktable. Three fictional Black women entrepreneurs: a woman with short natural curls in a plum apron carefully arranging fresh food; a woman with shoulder-length locs in an ivory blouse working with rich purple and ochre textile samples; an older woman with a silver natural afro in an ochre jacket reviewing a notebook. Capture purposeful candid work, connection and dignity.
+Composition: Wide environmental scene, people and meaningful work concentrated in the middle-right 60% of frame, faces in upper-middle area, all comfortably inside frame. Left quarter quiet shadowed warm plaster for webpage copy. Main visual action clearly readable even in a narrow vertical crop centered at 65% across. Natural depth, not a collage.
+Style: Premium documentary editorial photography, authentic skin texture, 35mm lens, soft afternoon window light, warm ivory, muted plum, ochre and natural wood. Optimistic, grounded, sophisticated. No posed corporate handshake, no charts floating in air, no text, no logos, no watermark. Not actual members or an actual project. Opaque full-bleed scene.
+
+SCENE 2
+Use case: photorealistic-natural
+Asset type: WisConnect website story background, landscape 3:2, second scene "A shared structure."
+Input image: reference for recurring fictional people, environment, photographic style and colors. Create a NEW moment, not a duplicate.
+Primary request: The SAME three Black women from the reference are now seated closely around a round wooden planning table in the same sunlit brick and plaster enterprise workspace. Plum-apron woman with short curls, ivory-blouse woman with locs, older ochre-jacket woman with silver afro. They are making a cooperative decision together: one presents a simple architectural floor plan, another thoughtfully points to a workspace area on it, third listening with an open notebook. Mutual agency, shared ownership, warm engaged faces, believable candid gestures and hands. Small textile samples and notebook on table; no food prep in this scene.
+Composition: Strong group focused middle-right, full heads and hands in frame, faces above table, main action readable in a vertical crop centered at 65% horizontal. Left quarter quiet shadowed warm plaster for website text. Medium-wide environmental portrait, people large enough for a W-shaped reveal.
+Style: Match reference natural documentary editorial photography, 35mm lens, ivory/plum/ochre, warm window light, realistic skin texture. Aspirational but grounded. No readable text, logos, watermark, staged handshake, infographic, split panels. Opaque full scene.
+
+SCENE 3
+Use case: photorealistic-natural
+Asset type: WisConnect website story background, landscape 3:2, third scene "Value that stays close."
+Input image: reference for recurring fictional people, architecture, light and colors. Create a NEW wider community moment.
+Primary request: Outside the same brick community enterprise space, a welcoming courtyard market is alive with local people. The SAME plum-apron Black woman with short natural curls offers fresh food to a customer; the SAME ivory-blouse woman with shoulder-length locs warmly shows her purple/ochre textiles to a young adult; the SAME older Black woman with silver afro and ochre jacket converses with a parent while a school-age child draws at a nearby table. A few neighbors, greenery, a shared outdoor table. A dignified everyday community benefiting from thriving local enterprise. Clear human interactions, no crowds.
+Composition: Wide yet intimate environmental photograph. Main entrepreneurs and customers grouped in middle-right two-thirds, faces and hands clear, modest soft architectural space on left quarter for webpage text. Strong center-right interaction recognizable in a vertical mobile crop at 65% horizontal. No clipped heads. Community outcome, visibly different from indoor work and planning.
+Style: Same premium editorial photography as reference, natural skin texture, warm late afternoon sun, plum/ivory/ochre accents and brick, humane, joyful but candid. No signs, no lettering, no logos, no watermark, no graphic panels, no artificial glowing effects. Opaque full scene.

@@ -142,7 +142,7 @@ export function MemberStories({ onBusiness }: { onBusiness: (id: string, trigger
         </div>
       </div>
       <p className={styles.hint}>Scroll to meet the people <Icon kind="arrowDown" size={16}/></p>
-      <button className={styles.rotationToggle} type="button" aria-pressed={paused} onClick={() => setPaused(value => !value)}><Icon kind={paused ? 'play' : 'pause'} size={12}/>{paused ? 'Resume portraits' : 'Pause portraits'}</button>
+      <button className={styles.rotationToggle} type="button" aria-label={paused ? 'Resume portraits' : 'Pause portraits'} title={paused ? 'Resume portraits' : 'Pause portraits'} aria-pressed={paused} onClick={() => setPaused(value => !value)}><Icon kind={paused ? 'play' : 'pause'} size={16}/><span className={styles.rotationLabel}>{paused ? 'Resume portraits' : 'Pause portraits'}</span></button>
     </div>
   </section>;
 }

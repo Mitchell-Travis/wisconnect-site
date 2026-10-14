@@ -539,7 +539,7 @@ export default function Home(){
       <div className="hero-textile-ribbon" aria-hidden="true"/>
       <div className={styles.heroGrid}>
         <div className={styles.heroCopy}>
-          <p className={styles.identity}>Black Women Business Development<br/>&amp; Resource Center</p>
+          <p className={styles.identity}>Business development &amp; resources<br/>for Black women entrepreneurs</p>
           <h1 id="hero-title">Build your business.<br/><em>Share in <br/>what grows.</em></h1>
           <p className={styles.heroLede}>A worker-owned holding cooperative connecting Black women entrepreneurs across Africa and the diaspora to build community wealth.</p>
           <div className={styles.heroActions}>
@@ -549,7 +549,7 @@ export default function Home(){
           <p id="membership-introduction-note" className={styles.heroNote}>{directIntroductions ? 'Five questions. Review and submit your introduction.' : 'Five questions. Review your introduction, then send it by email.'}</p>
         </div>
         <div className={styles.heroArt}>
-          <img className={styles.heroPortrait} src={assetPath('hero-cooperative-women-960.webp')} srcSet={`${assetPath('hero-cooperative-women-640.webp')} 640w, ${assetPath('hero-cooperative-women-960.webp')} 960w`} sizes="(max-width: 699px) 90vw, 50vw" width="1122" height="1402" fetchPriority="high" alt="Three women in purple and gold textiles, looking ahead"/>
+          <img className={styles.heroPortrait} src={assetPath('hero-shared-enterprise-960.webp')} srcSet={`${assetPath('hero-shared-enterprise-640.webp')} 640w, ${assetPath('hero-shared-enterprise-960.webp')} 960w`} sizes="(max-width: 699px) 90vw, 50vw" width="1122" height="1402" fetchPriority="high" alt="Illustration of three Black women entrepreneurs sharing ideas, a laptop and textile samples around a table"/>
         </div>
       </div>
       <div className={styles.heroFoot}>
