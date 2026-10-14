@@ -2,6 +2,7 @@
 
 import Icon from "./site-icon";
 import { HeroAnimation } from './hero-animation';
+import { ParticipationSteps, WordReveal } from './section-entrance';
 
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import Link from 'next/link';
@@ -598,7 +599,7 @@ export default function Home(){
         <div><p className="eyebrow">Purpose & identity</p><h2 id="purpose-title" data-section-headline>Why we come <em>together.</em></h2></div>
         <p>Africa & the Diaspora</p>
       </div>
-      <p data-section-description className={styles.purposeIntroduction}>Black women’s knowledge, ideas and relationships are our starting point.</p>
+      <p data-section-description className={styles.purposeIntroduction}><WordReveal>Black women’s knowledge, ideas and relationships are our starting point.</WordReveal></p>
       <div className={styles.purposeGrid}>
         <article className={styles.purposeMission} aria-labelledby="purpose-mission-title">
           <figure className={styles.purposePhoto}>
@@ -607,14 +608,14 @@ export default function Home(){
           <div className={styles.purposeCopy}>
             <p className={styles.purposeLabel}>Connection into possibility</p>
             <h3 id="purpose-mission-title">Our mission</h3>
-            <p>To provide connectivity among Black women visionaries through open-source technology and accessible inclusive spaces that mobilize personalized resources for collective abundance.</p>
+            <p><WordReveal>To provide connectivity among Black women visionaries through open-source technology and accessible inclusive spaces that mobilize personalized resources for collective abundance.</WordReveal></p>
           </div>
         </article>
         <article className={styles.purposeVision} aria-labelledby="purpose-vision-title">
           <div className={styles.purposeCopy}>
             <p className={styles.purposeLabel}>A future we create together</p>
             <h3 id="purpose-vision-title">Our vision</h3>
-            <p>A transformative and co-created ecosystem made by and for every woman in Africa and the Diaspora</p>
+            <p><WordReveal>A transformative and co-created ecosystem made by and for every woman in Africa and the Diaspora</WordReveal></p>
           </div>
           <figure className={styles.purposePhoto}>
             <img src={assetPath('purpose-community-1400.webp')} srcSet={`${assetPath('purpose-community-640.webp')} 640w, ${assetPath('purpose-community-1400.webp')} 1400w`} sizes="(max-width: 760px) 100vw, 45vw" width="1400" height="933" loading="lazy" decoding="async" alt="Four women gathered around a coffee table, sharing a lively conversation"/>
@@ -864,11 +865,11 @@ export default function Home(){
         </div>
         <div className={styles.involvementPanel}>
           <p className={styles.involvementKicker}>Three steps to a conversation</p>
-          <ol className={styles.introductionSteps} role="list">
+          <ParticipationSteps className={styles.introductionSteps}>
             <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Introduce yourself.</h3><p>Five questions about you, your work and your interests.</p></div></li>
             <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>{directIntroductions ? 'Review & submit.' : 'Review & email.'}</h3><p>{directIntroductions ? 'Review your answers, then submit them. Nothing sends automatically.' : 'Review your answers, then send the draft from your email app.'}</p></div></li>
             <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Start a conversation.</h3><p>Discuss eligibility, fees and next steps with the team.</p></div></li>
-          </ol>
+          </ParticipationSteps>
           <div className={styles.involvementAction}>
             <Link className={styles.involvementButton} href="/join">Introduce yourself <ArrowUpRightIcon/></Link>
             <p>An introduction does not confirm membership. Terms and opportunities are still being finalized.</p>
