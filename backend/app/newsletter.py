@@ -14,6 +14,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from .auth import Admin, DB, EmailInput, TokenInput, digest, now, throttle
 from .models import NewsletterSubscriber as Subscriber
+from .preview_config import ORIGIN
 
 router = APIRouter()
 CONSENT_VERSION = "newsletter-updates-2026-10-12"
@@ -43,11 +44,11 @@ def send_confirmation(email, confirmation, unsubscribe):
         "LOCAL TEST — captured locally, not delivered to your mailbox.\n\n"
         "One more step to stay connected.\n\n"
         "Confirm that you would like WisConnect stories, news and opportunities by email:\n"
-        f"http://localhost:3000/newsletter/#confirm={confirmation}\n\n"
+        f"{ORIGIN}/newsletter/#confirm={confirmation}\n\n"
         "This confirmation link expires in 24 hours. Open it and choose Confirm subscription.\n"
         "If you didn’t request this, ignore this email; you won’t be subscribed.\n\n"
         "To cancel this request or unsubscribe at any time:\n"
-        f"http://localhost:3000/newsletter/#unsubscribe={unsubscribe}\n")
+        f"{ORIGIN}/newsletter/#unsubscribe={unsubscribe}\n")
     with smtplib.SMTP("127.0.0.1", 1025, timeout=5) as smtp:
         if smtp.send_message(message):
             raise smtplib.SMTPException("Recipient refused")

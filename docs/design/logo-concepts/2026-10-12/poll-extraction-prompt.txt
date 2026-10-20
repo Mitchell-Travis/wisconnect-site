@@ -1,0 +1,5 @@
+Built-in image_gen tool, background-extraction edit, transparent background.
+Source: 01-full-moon-study.png
+Output: option-1-poll-transparent.png
+
+Use case: background-extraction. Edit target: attached WisConnect Option 1 concept presentation. Extract ONLY the upper primary logo: the lilac full moon with organic darker patches together with the exact dark-purple serif wordmark 'WisConnect'. Remove the tagline, small presentation title and all lower panels. Preserve the moon artwork, typeface, letter forms, proportions and colors exactly; do not redesign. Align moon and wordmark vertically centered as one horizontal logo. Transparent background, tightly framed with modest equal padding. This is the existing logo extracted for a fair voting poll, not a new concept. No additional words, labels, borders or effects.

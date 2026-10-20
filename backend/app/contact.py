@@ -9,11 +9,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import Field, field_validator
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from .auth import Admin, DB, EmailInput, now, throttle
-from .models import ContactInquiry
+from .auth import InquiryManager, DB, EmailInput, now, throttle
+from .models import ContactInquiry, InquiryEvent, User
 
 router = APIRouter()
 RECIPIENT = "hello@wisconnect.co"
@@ -92,10 +92,12 @@ def notify(db, inquiry_id):
     return row
 
 
-def serialize(row):
+def serialize(row, assignee_name=None):
     return {"id": row.id, "name": row.name, "email": row.email, "topic": row.topic,
             "message": row.message, "created_at": row.created_at, "email_status": row.email_status,
-            "email_mode": row.email_mode, "email_sent_at": row.email_sent_at}
+            "email_mode": row.email_mode, "email_sent_at": row.email_sent_at,
+            "status": row.status, "assignee_id": row.assignee_id, "assignee_name": assignee_name,
+            "follow_up_on": row.follow_up_on, "version": row.version, "updated_at": row.updated_at}
 
 
 @router.post("/contact", status_code=201)
@@ -109,6 +111,8 @@ def submit_contact(data: ContactInput, request: Request, db: DB):
             row = ContactInquiry(submission_id=key, **values, created_at=now(), email_status="pending", email_mode=mail_mode())
             db.add(row)
             try:
+                db.flush()
+                db.add(InquiryEvent(inquiry_id=row.id, actor_name="Website", summary="Inquiry received", note="", created_at=now()))
                 db.commit()
             except IntegrityError:
                 db.rollback()
@@ -130,16 +134,33 @@ def submit_contact(data: ContactInput, request: Request, db: DB):
 
 
 @router.get("/auth/contact-inquiries")
-def list_inquiries(user: Admin, db: DB, before: int | None = Query(default=None, gt=0)):
-    query = select(ContactInquiry).order_by(ContactInquiry.id.desc()).limit(26)
-    if before is not None:
-        query = query.where(ContactInquiry.id < before)
-    rows = list(db.scalars(query))
-    return {"items": [serialize(row) for row in rows[:25]], "next_cursor": rows[24].id if len(rows) > 25 else None}
+def list_inquiries(user: InquiryManager, db: DB, before: int | None = Query(default=None, gt=0),
+                   q: str = Query(default='', max_length=100),
+                   status: Literal['all', 'active', 'open', 'in_progress', 'closed'] = 'all',
+                   assignment: Literal['all', 'mine', 'unassigned'] = 'all',
+                   due: Literal['all', 'due', 'overdue', 'unscheduled'] = 'all',
+                   delivery: Literal['all', 'pending', 'failed', 'sent'] = 'all'):
+    query = select(ContactInquiry)
+    if q.strip():
+        term = '%' + q.strip().replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_') + '%'
+        query = query.where(or_(ContactInquiry.name.ilike(term, escape='\\'), ContactInquiry.email.ilike(term, escape='\\'), ContactInquiry.topic.ilike(term, escape='\\')))
+    if status == 'active': query = query.where(ContactInquiry.status != 'closed')
+    elif status != 'all': query = query.where(ContactInquiry.status == status)
+    if assignment == 'mine': query = query.where(ContactInquiry.assignee_id == user.id)
+    elif assignment == 'unassigned': query = query.where(ContactInquiry.assignee_id.is_(None))
+    if due == 'unscheduled': query = query.where(ContactInquiry.follow_up_on.is_(None), ContactInquiry.status != 'closed')
+    elif due != 'all':
+        query = query.where(ContactInquiry.status != 'closed', ContactInquiry.follow_up_on < now().date() if due == 'overdue' else ContactInquiry.follow_up_on <= now().date())
+    if delivery != 'all': query = query.where(ContactInquiry.email_status == delivery)
+    total = db.scalar(select(func.count()).select_from(query.subquery()))
+    if before is not None: query = query.where(ContactInquiry.id < before)
+    rows = list(db.execute(query.add_columns(User.name).outerjoin(User, User.id == ContactInquiry.assignee_id).order_by(ContactInquiry.id.desc()).limit(26)))
+    return {"items": [serialize(row, name) for row, name in rows[:25]], "total": total,
+            "next_cursor": rows[24][0].id if len(rows) > 25 else None, "today": now().date()}
 
 
 @router.post("/auth/contact-inquiries/{inquiry_id}/retry-email")
-def retry_email(inquiry_id: int, user: Admin, db: DB):
+def retry_email(inquiry_id: int, user: InquiryManager, db: DB):
     throttle("contact-mail:" + str(user.id), 20)
     if db.get(ContactInquiry, inquiry_id) is None:
         raise HTTPException(404, "Inquiry not found.")

@@ -132,12 +132,12 @@ def main():
         for invalid_profile in [{"name": "   "}, {"name": "x" * 101}, {"name": "Changed", "role": "admin"}, {"name": "Changed", "email": admin_email}]:
             assert request("/auth/me", invalid_profile, member_cookie, method="PATCH")[0] == 422
         status, updated, _ = request("/auth/me", {"name": "  Updated member  "}, member_cookie, method="PATCH")
-        assert status == 200 and updated == {"name": "Updated member", "email": member_email, "role": "member"}
+        assert status == 200 and updated == {"name": "Updated member", "email": member_email, "role": "member", "capabilities": []}
         assert request("/auth/me", cookie=member_cookie)[1] == updated
         assert request("/auth/members", cookie=member_cookie)[0] == 403
         status, directory, _ = request("/auth/members", cookie=admin_cookie)
         assert status == 200 and len(directory) == 2
-        assert all(set(row) == {"id", "name", "email", "role", "active"} for row in directory)
+        assert all(set(row) == {"id", "name", "email", "role", "active", "capabilities"} for row in directory)
         assert next(row for row in directory if row["email"] == member_email)["name"] == "Updated member"
         assert request("/auth/me", cookie=admin_cookie)[1]["name"] == "Test administrator"
         with Session(db_engine) as db:
@@ -205,7 +205,7 @@ def main():
             admin_user = db.scalar(select(User).where(User.email == admin_email))
             assert admin_user.password_hash != password
             failed_email = f"failed-{suffix}@example.test"
-            with patch("backend.app.auth.smtplib.SMTP", side_effect=OSError):
+            with patch("backend.app.auth.smtplib.SMTP", side_effect=OSError), patch("backend.app.rate_limits.rate_limit_engine", db_engine):
                 try:
                     invite(EmailInput(email=failed_email), admin_user, db)
                     raise AssertionError("SMTP failure should be reported")

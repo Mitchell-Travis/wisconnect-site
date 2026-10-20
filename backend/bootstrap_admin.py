@@ -3,7 +3,7 @@
 from getpass import getpass
 
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from .app.auth import AccountInput, EmailInput, PASSWORD_COMMON_MESSAGE, password_hash
@@ -30,6 +30,8 @@ def main():
         explanation = " ".join((PASSWORD_COMMON_MESSAGE if item["type"] == "password_common" else messages[item["loc"][0]]) for item in error.errors(include_input=False, include_context=False))
         raise SystemExit(f"{explanation} No changes made. Run npm run auth:admin to try again.") from None
     with Session(engine) as db:
+        # Serialize first-administrator setup across simultaneous local commands.
+        db.execute(text("SELECT pg_advisory_xact_lock(872061001)"))
         if db.scalar(select(User.id).where(User.role == "admin")):
             raise SystemExit("An administrator already exists. No changes made.")
         if db.scalar(select(User.id).where(User.email == email)):

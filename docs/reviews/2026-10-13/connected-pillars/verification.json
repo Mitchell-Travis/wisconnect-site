@@ -1,0 +1,130 @@
+{
+  "responsive": [
+    {
+      "auto": "false",
+      "cards": [
+        {
+          "id": "belief-people",
+          "position": "relative",
+          "visibility": "visible",
+          "width": 304,
+          "x": 8
+        },
+        {
+          "id": "belief-capital",
+          "position": "relative",
+          "visibility": "hidden",
+          "width": 304,
+          "x": 8
+        },
+        {
+          "id": "belief-communities",
+          "position": "relative",
+          "visibility": "hidden",
+          "width": 304,
+          "x": 8
+        }
+      ],
+      "linePresent": false,
+      "navDisplay": "grid",
+      "overflow": false,
+      "viewport": 320
+    },
+    {
+      "auto": "false",
+      "cards": [
+        {
+          "id": "belief-people",
+          "position": "relative",
+          "visibility": "visible",
+          "width": 377,
+          "x": 8
+        },
+        {
+          "id": "belief-capital",
+          "position": "relative",
+          "visibility": "hidden",
+          "width": 377,
+          "x": 8
+        },
+        {
+          "id": "belief-communities",
+          "position": "relative",
+          "visibility": "hidden",
+          "width": 377,
+          "x": 8
+        }
+      ],
+      "linePresent": false,
+      "navDisplay": "grid",
+      "overflow": false,
+      "viewport": 393
+    },
+    {
+      "auto": "false",
+      "cards": [
+        {
+          "id": "belief-people",
+          "position": "sticky",
+          "visibility": "visible",
+          "width": 1392,
+          "x": 24
+        },
+        {
+          "id": "belief-capital",
+          "position": "sticky",
+          "visibility": "visible",
+          "width": 1392,
+          "x": 24
+        },
+        {
+          "id": "belief-communities",
+          "position": "sticky",
+          "visibility": "visible",
+          "width": 1392,
+          "x": 24
+        }
+      ],
+      "linePresent": false,
+      "navDisplay": "none",
+      "overflow": false,
+      "viewport": 1440
+    }
+  ],
+  "autoplay": {
+    "before": {
+      "height": 784.4375,
+      "pillar": "people",
+      "playing": "true",
+      "y": 10626.5
+    },
+    "after": {
+      "height": 784.4375,
+      "loaded": [
+        [
+          true,
+          353
+        ],
+        [
+          true,
+          1600
+        ],
+        [
+          true,
+          1600
+        ]
+      ],
+      "pillar": "communities",
+      "playing": "true",
+      "y": 10626.5
+    }
+  },
+  "pause": {
+    "before": {
+      "pillar": "people",
+      "playing": "false",
+      "y": 10626.5
+    },
+    "held": true
+  }
+}

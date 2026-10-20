@@ -1,0 +1,24 @@
+{
+  "job_id": "6ad3542f-c798-4e7a-a4e4-24a23ff2255c",
+  "quoted_credits": 8.75,
+  "status": "completed",
+  "params": {
+    "model": "kling3_0",
+    "duration": 5,
+    "mode": "pro",
+    "sound": "off",
+    "count": 1,
+    "medias": [
+      {
+        "role": "start_image",
+        "value": "cc07fc77-68fe-45a1-9a06-98c9c1f51b0e"
+      },
+      {
+        "role": "end_image",
+        "value": "cc07fc77-68fe-45a1-9a06-98c9c1f51b0e"
+      }
+    ],
+    "prompt": "Animate this exact photorealistic WisConnect hero composition as a short, silent, natural editorial scene. Preserve all three fictional Black women, their exact faces, hair, purple/ivory/ochre clothes, textile patterns, laptop, notebook, round table, chair, plant and full-body framing. Fixed locked camera, no zoom, no pan, no cuts. Keep all heads, shoes and furniture fully inside the frame throughout, with the original breathing room. The woman on the left makes a small, relaxed pointing gesture over the open notebook. The seated woman glances from the notebook toward her colleague, gives a gentle nod and smiles. The woman on the right responds with a small natural nod and warm smile while keeping her hand resting on the table. Subtle breathing and occasional natural blinks. Restrained motion, plausible anatomy and stable hands; no large gestures, exaggerated speech, dancing or object movement. Return smoothly to the initial pose for a calm seamless loop. Preserve the original realistic photographic appearance, lighting, colors, identities and composition. No added text, logos, people or props. No audio. Composite the transparent source onto a clean even pure white background, with no hard horizon or room behind the women. Keep the background pure white throughout."
+  },
+  "review": "accepted: white background, full framing and matching loop poses"
+}

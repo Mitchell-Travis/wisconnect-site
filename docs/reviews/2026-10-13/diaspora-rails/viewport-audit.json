@@ -1,0 +1,59 @@
+[
+  {
+    "backgroundRadius": "40px",
+    "map": [
+      120,
+      1200
+    ],
+    "overflow": false,
+    "padding": "120px",
+    "radius": "40px",
+    "rail": [
+      120,
+      1200
+    ],
+    "surface": [
+      24,
+      1392
+    ],
+    "viewport": 1440
+  },
+  {
+    "backgroundRadius": "28px",
+    "map": [
+      24,
+      345
+    ],
+    "overflow": false,
+    "padding": "48px",
+    "radius": "28px",
+    "rail": [
+      24,
+      345
+    ],
+    "surface": [
+      8,
+      377
+    ],
+    "viewport": 393
+  },
+  {
+    "backgroundRadius": "28px",
+    "map": [
+      20,
+      280
+    ],
+    "overflow": false,
+    "padding": "48px",
+    "radius": "28px",
+    "rail": [
+      20,
+      280
+    ],
+    "surface": [
+      8,
+      304
+    ],
+    "viewport": 320
+  }
+]

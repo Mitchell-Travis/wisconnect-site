@@ -26,7 +26,7 @@ const mobilePillarDuration = 7000;
 const allNavigationMenus = [
   {label:'About',groups:[
     {title:'Our purpose',links:[{label:'Mission & vision',description:'Connecting Black women across Africa and the diaspora.',href:'#purpose'}]},
-    {title:'Our approach',links:[{label:'The cooperative model',description:'People, capital and communities, working together.',href:'#about'},{label:'Impact & connections',description:'Our connection vision and evidence to be shared.',href:'#impact'}]}
+    {title:'Our approach',links:[{label:'The cooperative model',description:'Land, capital and communities, working together.',href:'#about'},{label:'Impact & connections',description:'Our connection vision and evidence to be shared.',href:'#impact'}]}
   ],feature:{image:'story-community-640.webp',title:'A future we shape together.',description:'Business begins with people. So does our cooperative.'}},
   {label:'Our people',groups:[
     {title:'Meet the network',links:[{label:'Meet the visionaries',description:'The women and experience behind WisConnect.',href:'#members'}]},
@@ -48,7 +48,7 @@ const allNavigationMenus = [
 const navigationMenus = [
   {...allNavigationMenus[0],groups:[
     {title:'Our purpose',links:[{label:'Mission & vision',description:'Connecting Black women across Africa and the diaspora.',href:'#purpose'}]},
-    {title:'Our approach',links:[{label:'The cooperative model',description:'How businesses, members and communities connect.',href:'#cooperative-model'},{label:'People, capital & communities',description:'The belief behind the work.',href:'#about'}]}
+    {title:'Our approach',links:[{label:'The cooperative model',description:'How businesses, members and communities connect.',href:'#cooperative-model'},{label:'Land · Capital · Communities',description:'The belief behind the work.',href:'#about'}]}
   ]},
   {...allNavigationMenus[1],groups:[
     {title:'Meet the network',links:[{label:'Meet the visionaries',description:'The women and experience behind WisConnect.',href:'#members'},{label:'Business directory',description:'Meet the enterprises, their people and their locations.',href:'#business-directory'}]},
@@ -79,7 +79,7 @@ const networkStories = [
   ]}
 ] as const;
 const beliefPillars = [
-  {label:'People',title:'Bring what you know. Learn from each other.',description:'Your experience or introduction could be someone else’s next step.'},
+  {label:'Land',title:'A place to take root.',description:'We aim to connect people and enterprises with land and commercial spaces that create room to grow.'},
   {label:'Capital',title:'Make room for the next step.',description:'We aim to connect ideas with resources. Funding opportunities and terms are still being developed.'},
   {label:'Communities',title:'Let business growth reach further.',description:'We aim for growth that supports families, serves neighborhoods and creates local work.'}
 ] as const;
@@ -253,7 +253,7 @@ export default function Home(){
     return()=>media.removeEventListener('change',update);
   },[]);
   const [beliefPillar,setBeliefPillar]=useState(0);
-  const [mobileBelief,setMobileBelief]=useState('people');
+  const [mobileBelief,setMobileBelief]=useState('land');
   const beliefStack=useRef<HTMLDivElement>(null);
   const [mobileBeliefPaused,setMobileBeliefPaused]=useState(false);
   const [isMobileBelief,setIsMobileBelief]=useState(false);
@@ -277,7 +277,7 @@ export default function Home(){
   useEffect(()=>{
     if(!mobileBeliefPlaying)return;
     const timer=window.setTimeout(()=>{
-      const pillars=['people','capital','communities'];
+      const pillars=['land','capital','communities'];
       setMobileBelief(pillars[(pillars.indexOf(mobileBelief)+1)%pillars.length]);
     },mobilePillarDuration);
     return()=>window.clearTimeout(timer);
@@ -290,7 +290,7 @@ export default function Home(){
   useEffect(()=>{
     const revealLinkedBelief=()=>{
       const pillar=window.location.hash.replace('#belief-','');
-      if(!['people','capital','communities'].includes(pillar))return;
+      if(!['land','capital','communities'].includes(pillar))return;
       setMobileBelief(pillar);
       setMobileBeliefPaused(true);
       if(window.matchMedia('(max-width: 760px)').matches){
@@ -591,7 +591,7 @@ export default function Home(){
         <HeroAnimation/>
       </div>
       <div className={styles.heroFoot}>
-        <p>People. Capital. Communities.</p>
+        <p>Land · Capital · Communities</p>
         <a href="#members">Meet the women behind WisConnect <ArrowDownIcon/></a>
       </div>
     </section>
@@ -665,10 +665,10 @@ export default function Home(){
 
     <CooperativeOverview/>
 
-    <section id="about" data-divider="background" className={styles.beliefSection} aria-label="People, capital and communities"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`} data-mobile-pillar={mobileBelief} data-auto-playing={mobileBeliefPlaying} style={{'--pillar-duration':`${mobilePillarDuration}ms`} as CSSProperties} onFocusCapture={event=>{if(isMobileBelief&&!(event.target as HTMLElement).closest('[data-pillar-playback]'))setMobileBeliefPaused(true);}}>
+    <section id="about" data-divider="background" className={styles.beliefSection} aria-label="Land, capital and communities"><div id="cooperative" ref={beliefStack} className={`shell ${styles.beliefStack}`} data-mobile-pillar={mobileBelief} data-auto-playing={mobileBeliefPlaying} style={{'--pillar-duration':`${mobilePillarDuration}ms`} as CSSProperties} onFocusCapture={event=>{if(isMobileBelief&&!(event.target as HTMLElement).closest('[data-pillar-playback]'))setMobileBeliefPaused(true);}}>
       <div className={styles.beliefMobileNav}>
         <div className={styles.beliefNavHeading}>
-          <p>What we bring together</p>
+          <p>Land · Capital · Communities</p>
           {reducedMotion===false&&<button type="button" className={styles.beliefPlayback} data-pillar-playback aria-label={mobileBeliefPaused?'Play automatic pillar rotation':'Pause automatic pillar rotation'} onClick={()=>setMobileBeliefPaused(paused=>!paused)}><Icon kind={mobileBeliefPaused?'play':'pause'} size={14}/><span>{mobileBeliefPaused?'Play':'Pause'}</span></button>}
         </div>
         <div className={styles.beliefTabs} role="group" aria-label="Choose a cooperative pillar">
@@ -676,18 +676,18 @@ export default function Home(){
             const id=pillar.label.toLowerCase();
             return <button key={id} type="button" aria-pressed={mobileBelief===id} aria-controls={`belief-${id}`} onClick={()=>selectMobileBelief(id)}>
               <span className={styles.beliefTabLabel}>{pillar.label}</span>
-              <span className={styles.beliefTabIcon}><Icon kind={index===0?'people':index===1?'wallet':'home'} size={24}/><span key={`${id}-${mobileBelief}`} className={styles.beliefTabProgress} aria-hidden="true"/></span>
+              <span className={styles.beliefTabIcon}><Icon kind={index===0?'home':index===1?'wallet':'people'} size={24}/><span key={`${id}-${mobileBelief}`} className={styles.beliefTabProgress} aria-hidden="true"/></span>
               <svg className={styles.beliefBridge} viewBox="0 0 60 24" aria-hidden="true"><path d="M16 0H44C36 7 36 12 44 17C49 20 54 22 60 24H0C6 22 11 20 16 17C24 12 24 7 16 0Z"/></svg>
             </button>;
           })}
         </div>
       </div>
-      <div id="belief-people" className={styles.beliefCard} data-pillar="people" data-mobile-active={mobileBelief==='people'}>
+      <div id="belief-land" className={styles.beliefCard} data-pillar="land" data-mobile-active={mobileBelief==='land'}>
         <div className={styles.beliefCopy}>
           <div>
-            <p className={styles.beliefEyebrow}><span><span className={styles.beliefMobileIcon}><Icon kind="people" size={18}/></span>People<span className={styles.beliefDesktopLabel}> · What we bring together</span></span></p>
-            <h2 id="belief-title" data-section-headline>When women own,<span>communities grow.</span></h2>
-            <p data-section-description className={styles.beliefDescription}>Shared expertise, resources and local knowledge guide our work.</p>
+            <p className={styles.beliefEyebrow}><span><span className={styles.beliefMobileIcon}><Icon kind="home" size={18}/></span>Land<span className={styles.beliefDesktopLabel}> · What we bring together</span></span></p>
+            <h2 id="belief-title" data-section-headline>A place to take root.<span>Room to grow.</span></h2>
+            <p data-section-description className={styles.beliefDescription}>{beliefPillars[0].description}</p>
           </div>
           <div className={styles.beliefBottom}>
             <div className={styles.beliefChoices} role="group" aria-label="Explore our cooperative belief">
@@ -698,13 +698,13 @@ export default function Home(){
           </div>
         </div>
         <figure className={styles.beliefVisual}>
-          <img src={assetPath('belief-orange-1080.webp')} srcSet={`${assetPath('belief-orange-640.webp')} 640w, ${assetPath('belief-orange-1080.webp')} 1080w`} sizes="(max-width: 760px) 90vw, 45vw" width="1086" height="1448" loading="lazy" decoding="async" alt="Confident woman wearing an orange blazer with her arms crossed"/>
+          <img src="https://images.pexels.com/photos/11576236/pexels-photo-11576236.jpeg?auto=compress&cs=tinysrgb&w=1400" srcSet="https://images.pexels.com/photos/11576236/pexels-photo-11576236.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/11576236/pexels-photo-11576236.jpeg?auto=compress&cs=tinysrgb&w=1400 1400w" sizes="(max-width: 760px) 90vw, 45vw" width="4352" height="3264" loading="lazy" decoding="async" alt="A rural woman farmer standing in a sunlit field with harvested crops"/>
         </figure>
       </div>
       {cooperativeCards.map(card=><article key={card.id} id={`belief-${card.id}`} className={styles.beliefCard} data-pillar={card.id} data-mobile-active={mobileBelief===card.id} aria-labelledby={`belief-${card.id}-title`}>
         <div className={styles.beliefCopy}>
           <div>
-            <p className={styles.beliefEyebrow}><span><span className={styles.beliefMobileIcon}><Icon kind={card.id==='capital'?'wallet':'home'} size={18}/></span><span className={styles.beliefDesktopLabel}>{card.step} · </span>{card.label}</span></p>
+            <p className={styles.beliefEyebrow}><span><span className={styles.beliefMobileIcon}><Icon kind={card.id==='capital'?'wallet':'people'} size={18}/></span><span className={styles.beliefDesktopLabel}>{card.step} · </span>{card.label}</span></p>
             <h3 id={`belief-${card.id}-title`} data-section-headline>{card.heading}<span>{card.accent}</span></h3>
             <p data-section-description className={styles.beliefDescription}>{card.description}</p>
           </div>
@@ -929,12 +929,12 @@ export default function Home(){
     
 
     {showUnfinishedSections ? <footer className="site-footer"><div className="shell footer-grid">
-      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved.png')} alt="WisConnect" width="1600" height="1088"/><p>People · Capital · Communities</p></div>
+      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved.png')} alt="WisConnect" width="1600" height="1088"/><p>Land · Capital · Communities</p></div>
       <div><strong>Explore WisConnect</strong><a href="#purpose">Mission &amp; vision</a><a href="#about">The cooperative model</a><a href="#members">Meet the visionaries</a><a href="#businesses">Chicago business sectors</a><a href="#business-directory">Business directory</a><a href="#impact">Impact &amp; connections</a></div>
       <div><strong>Get involved</strong><a href="#get-involved">How to get involved</a><Link href="/join">Membership interest</Link><a href="#join">Partnerships &amp; conversation</a><a href="#faq">Your questions, answered</a><a href="#programs">Programs &amp; activities</a><a href="#resources">Resources</a><a href="#community-work">Community work</a></div>
       <div><strong>Keep in touch</strong><Link href="/contact">Contact WisConnect</Link><a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><Link href="/login">Member sign in</Link><a href="#languages">Language availability</a><a href="#stories">Stories</a><a href="#news">News</a><a href="#events">Events</a><a href="#gallery">Gallery</a><a href="#contact-info">Contact &amp; social channels</a></div>
     </div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/terms">Terms &amp; Conditions</Link></div></footer> : <footer className="site-footer"><div className="shell footer-grid">
-      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved.png')} alt="WisConnect" width="1600" height="1088"/><p>People · Capital · Communities</p><p>WisConnect Holding Cooperative</p></div>
+      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved.png')} alt="WisConnect" width="1600" height="1088"/><p>Land · Capital · Communities</p><p>WisConnect Holding Cooperative</p></div>
       <div><strong>Explore WisConnect</strong><a href="#purpose">Mission &amp; vision</a><a href="#cooperative-model">The cooperative model</a><a href="#members">Meet the visionaries</a><a href="#business-directory">Business directory</a><a href="#businesses">Chicago business sectors</a></div>
       <div><strong>Our work</strong><a href="#impact">Our wider connections</a><a href="#what-we-do">Services &amp; support</a><a href="#community-projects">Community projects</a><a href="#member-stories">Member stories</a></div>
       <div><strong>Get involved</strong><a href="#get-involved">How to get involved</a><Link href="/join">Membership interest</Link><Link href="/contact">Contact WisConnect</Link><a href="#faq">Your questions, answered</a><a href="#languages">Language availability</a></div>

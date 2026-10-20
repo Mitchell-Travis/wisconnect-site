@@ -1,0 +1,77 @@
+{
+  "review_date": "2026-10-13",
+  "artifact": "WisConnect-Dashboard-Blueprint.html",
+  "scope": "Local design review only; no live application changes, messages or deployment.",
+  "research": {
+    "products": [
+      "Attio",
+      "Linear",
+      "Square",
+      "Dropbox"
+    ],
+    "selected_screens": 9,
+    "source_flows": "See research.json; original attribution retained."
+  },
+  "checks": {
+    "javascript_syntax": "passed",
+    "screen_previews": 53,
+    "desktop_preview_overflow": "none",
+    "phone_320px_preview_overflow": "none across 53 screens",
+    "phone_chapter_overflow": "none in all 5 chapters",
+    "feedback_states": 15,
+    "reference_images": "9 loaded",
+    "image_dialog_escape_focus_restore": "passed",
+    "note_reload_persistence": "passed",
+    "review_export": "downloaded JSON read and verified",
+    "console_errors": "none observed",
+    "assets": "font and all reference images embedded; no build or server needed to view"
+  },
+  "limits": [
+    "Layout studies and simulated interactions, not a functional production dashboard.",
+    "Product performance numbers are proposed targets, not measurements of the real app.",
+    "Detailed roles, membership decisions, finance definitions and wider document audiences remain team dependencies."
+  ],
+  "styled_ui_review_02": {
+    "screens": [
+      "Dashboard home (H01)",
+      "Application record detail (P02)"
+    ],
+    "references": "Linear Projects navigation/work lists; Attio company record identity, tabs and properties rail; saved Mobbin source screens available in preview.",
+    "visual_checks": [
+      "Desktop light home and detail",
+      "Desktop dark detail",
+      "390px phone preview",
+      "Actual 320px viewport: home/detail and all eight screen-state combinations without horizontal overflow"
+    ],
+    "interactions_verified": [
+      "Work queues and record navigation",
+      "Search matches and no-results recovery",
+      "Private-note validation and save",
+      "Review status save and activity update",
+      "Failed-save draft preservation",
+      "Conflict comparison and keep-draft recovery",
+      "Unsaved note navigation guard and keep-editing",
+      "Local invitation confirmation and pending feedback",
+      "Mobile workspace menu",
+      "Escape focus restoration",
+      "UI review-note persistence after reload"
+    ],
+    "checks": {
+      "javascript_syntax": "passed for app.js and ui.js",
+      "console_errors_warnings": "none captured",
+      "viewport_override": "reset"
+    },
+    "screenshots": [
+      "ui-home-desktop.jpg",
+      "ui-detail-desktop.jpg",
+      "ui-detail-dark.jpg",
+      "ui-home-phone.jpg"
+    ],
+    "assets": "Standalone HTML embeds approved logo, font, CSS, JS and nine reference screenshots.",
+    "limitations": [
+      "All record edits and invitations are in-memory simulations; reload resets sample records.",
+      "Only reviewer feedback is saved in browser storage and included in review export.",
+      "Remaining 53-screen map retains flow-study styling pending review; no production application changes."
+    ]
+  }
+}

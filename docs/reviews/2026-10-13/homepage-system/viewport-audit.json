@@ -1,0 +1,334 @@
+[
+  {
+    "descriptions": [
+      "16px"
+    ],
+    "headingsClipped": [],
+    "headlines": [
+      "32px"
+    ],
+    "overflow": false,
+    "rails": [
+      {
+        "section": "what-we-do",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "members",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "business-directory",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "purpose",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "about",
+        "width": 296,
+        "x": 12
+      },
+      {
+        "section": "businesses",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "community-projects",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "impact",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "member-stories",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "get-involved",
+        "width": 304,
+        "x": 8
+      },
+      {
+        "section": "faq",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "join",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "footer",
+        "width": 280,
+        "x": 20
+      },
+      {
+        "section": "footer",
+        "width": 280,
+        "x": 20
+      }
+    ],
+    "width": 320
+  },
+  {
+    "descriptions": [
+      "16px"
+    ],
+    "headingsClipped": [],
+    "headlines": [
+      "32px"
+    ],
+    "overflow": false,
+    "rails": [
+      {
+        "section": "what-we-do",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "members",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "business-directory",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "purpose",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "about",
+        "width": 361,
+        "x": 16
+      },
+      {
+        "section": "businesses",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "community-projects",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "impact",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "member-stories",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "get-involved",
+        "width": 377,
+        "x": 8
+      },
+      {
+        "section": "faq",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "join",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "footer",
+        "width": 345,
+        "x": 24
+      },
+      {
+        "section": "footer",
+        "width": 345,
+        "x": 24
+      }
+    ],
+    "width": 393
+  },
+  {
+    "descriptions": [
+      "18px"
+    ],
+    "headingsClipped": [],
+    "headlines": [
+      "40px"
+    ],
+    "overflow": false,
+    "rails": [
+      {
+        "section": "what-we-do",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "members",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "business-directory",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "purpose",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "about",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "businesses",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "community-projects",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "impact",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "member-stories",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "get-involved",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "faq",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "join",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "footer",
+        "width": 696,
+        "x": 36
+      },
+      {
+        "section": "footer",
+        "width": 696,
+        "x": 36
+      }
+    ],
+    "width": 768
+  },
+  {
+    "descriptions": [
+      "18px"
+    ],
+    "headingsClipped": [],
+    "headlines": [
+      "48px"
+    ],
+    "overflow": false,
+    "rails": [
+      {
+        "section": "what-we-do",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "members",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "business-directory",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "purpose",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "about",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "businesses",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "community-projects",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "impact",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "member-stories",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "get-involved",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "faq",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "join",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "footer",
+        "width": 1200,
+        "x": 120
+      },
+      {
+        "section": "footer",
+        "width": 1200,
+        "x": 120
+      }
+    ],
+    "width": 1440
+  }
+]

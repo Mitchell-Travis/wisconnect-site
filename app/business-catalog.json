@@ -19,7 +19,7 @@
     },
     "public_email": "",
     "public_phone": "",
-    "website": ""
+    "website": "https://www.bdavis-designs.com/"
   },
   {
     "id": "bunnyland",
@@ -132,6 +132,28 @@
     "website": ""
   },
   {
+    "id": "ilava",
+    "name": "ILAVA",
+    "person": "Rahel Mwitula-Williams · Founder",
+    "country": "United States",
+    "location": "Chicago",
+    "sector": "Ethical fashion & lifestyle",
+    "description": "A purpose-driven fashion and lifestyle brand rooted in Tanzania, creating contemporary, globally inspired pieces handmade there while supporting economic opportunity for women.",
+    "profile": "Rahel Mwitula-Williams",
+    "visual": {
+      "name": "ILAVA",
+      "sub": "IT CAN BE DONE",
+      "tone": "plum",
+      "poster": "editorial",
+      "group": "Design",
+      "image": "https://myilava.com/cdn/shop/files/GAB_3273_2.jpg?v=1789587557&width=1500",
+      "alt": "ILAVA lifestyle campaign photograph"
+    },
+    "public_email": "",
+    "public_phone": "",
+    "website": "https://myilava.com"
+  },
+  {
     "id": "momentum",
     "name": "Momentum Coffee",
     "person": "Nikki Bravo & Tracy Powell · Co-founders",
@@ -151,7 +173,7 @@
     },
     "public_email": "",
     "public_phone": "",
-    "website": ""
+    "website": "https://momentumcoffee.org/"
   },
   {
     "id": "river-cess-agriculture",

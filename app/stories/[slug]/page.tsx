@@ -51,7 +51,7 @@ export default async function StoryPage({params}:Props){
           </div>
         </div>
       </article>
-      <footer className={styles.footer}><span>WisConnect · People · Capital · Communities</span><Link href="/">Back to WisConnect <span aria-hidden="true"><Icon kind="external"/></span></Link></footer>
+      <footer className={styles.footer}><span>WisConnect · Land · Capital · Communities</span><Link href="/">Back to WisConnect <span aria-hidden="true"><Icon kind="external"/></span></Link></footer>
     </main>
   </div>;
 }

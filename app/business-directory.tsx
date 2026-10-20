@@ -9,21 +9,51 @@ import { businesses as fallbackBusinesses, type PublicBusiness } from './busines
 import { localApiAvailable, localApiUrl, requestSignal } from './local-api';
 import styles from './business-directory.module.css';
 
-const previewIds=['bunnyland','jennima','momentum','zead'];
+const previewIds=['bunnyland','ilava','momentum','zead'];
 const categories=['All sectors','Food & hospitality','Design','Child care','Professional','Industry'];
 const normalize=(value:string)=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘]/g,"'").toLowerCase();
 
 
 function BrandMark({business}:{business:PublicBusiness}){
   const {id,visual:identity}=business;
-  return <span className={styles.brandMark} data-business={id} aria-hidden="true">{id==='momentum'?<img className={styles.officialLogo} src={assetPath('momentum-coffee-logo-trimmed.png')} alt="" width="1163" height="379"/>:<><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></>}</span>;
+  return <span className={styles.brandMark} data-business={id} aria-hidden="true">{id==='momentum'?<img className={styles.officialLogo} src={assetPath('momentum-coffee-logo-trimmed.png')} alt="" width="1163" height="379"/>:id==='ilava'?<img className={styles.officialLogo} src={assetPath('ilava-logo.svg')} alt="" width="580" height="280"/>:<><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></>}</span>;
 }
 
 function BusinessVisual({business}:{business:PublicBusiness}){
   const identity=business.visual;
   if(business.id==='momentum')return <span className={styles.momentumVisual}><img className={styles.momentumLogo} src={assetPath('momentum-coffee-logo-trimmed.png')} alt="" width="1163" height="379"/></span>;
+  if(business.id==='ilava')return <span className={styles.ilavaGallery} aria-hidden="true">
+    <img src={identity.image} alt="" width="1500" height="1000" loading="lazy"/>
+    <img src="https://myilava.com/cdn/shop/files/ILAVA-Sneak-028_websize.jpg?v=1710435074&width=1600" alt="" width="800" height="600" loading="lazy"/>
+    <img src="https://myilava.com/cdn/shop/files/Empower_ILAVA.jpg?v=1711385573&width=1600" alt="" width="800" height="600" loading="lazy"/>
+  </span>;
   if(!identity.image)return <span className={styles.visualPlaceholder}>{business.name}</span>;
-  return <img src={assetPath(identity.image)} alt={identity.alt} width="1200" height="675" loading="lazy"/>;
+  const imageSource=/^https?:\/\//i.test(identity.image)?identity.image:assetPath(identity.image);
+  return <img src={imageSource} alt={identity.alt} width="1200" height="675" loading="lazy"/>;
+}
+
+const momentumPhotos=[
+  {id:'4c31d7fb-e76c-4c39-aeff-72d122712dac',alt:'Breakfast sandwich and a cup of Momentum Coffee'},
+  {id:'e8824341-5022-4044-ade9-30e03bd15162',alt:'Latte art beside fresh pastries at Momentum Coffee'},
+  {id:'6b833487-1ec9-4576-b338-ea9d4655a3c1',alt:'Iced coffee outside a Momentum Coffee cafe'},
+];
+const bdavisPhotos=[
+  {file:'bdavis-community',alt:'A BDavis Designs client holding a tablet against colorful brand artwork'},
+  {file:'bdavis-creative-work',alt:'A client holding a tablet featuring BDavis Designs artwork'},
+  {file:'bdavis-collaboration',alt:'Three women collaborating over design work on a laptop'},
+];
+
+function OfficialGallery({business}:{business:PublicBusiness}){
+  if(business.id==='momentum')return <div className={styles.officialGallery}>
+    {momentumPhotos.map(photo=>{
+      const image=(width:number)=>`https://momentumcoffee.org/pluto-images/funnel/images/${photo.id}?fit=cover&format=auto&h=${width}&w=${width}`;
+      return <img key={photo.id} src={image(640)} srcSet={`${image(640)} 640w, ${image(960)} 960w`} sizes="(max-width: 760px) 88vw, 34vw" alt={photo.alt} width="960" height="960" loading="lazy" decoding="async"/>;
+    })}
+  </div>;
+  if(business.id==='bdavis')return <div className={styles.officialGallery}>
+    {bdavisPhotos.map(photo=><img key={photo.file} src={assetPath(`${photo.file}-640.webp`)} srcSet={`${assetPath(`${photo.file}-640.webp`)} 640w, ${assetPath(`${photo.file}-1200.webp`)} 1200w`} sizes="(max-width: 760px) 88vw, 34vw" alt={photo.alt} width="1200" height="800" loading="lazy" decoding="async"/>)}
+  </div>;
+  return <BusinessVisual business={business}/>;
 }
 export type BusinessDirectoryHandle = { open: (id: string, source: HTMLButtonElement) => void };
 
@@ -148,7 +178,7 @@ export function BusinessDirectory({onProfile,ref}:{onProfile:(name:string)=>void
     </div>
     <div className={styles.results}><p role="status" aria-live="polite">{records===null?(catalogError?'': 'Loading businesses…'):`${!expanded&&!isFiltered?`Showing ${currentPreviewIds.length} of ${visible.length}`:visible.length} ${visible.length===1?'business':'businesses'} · Select a business to explore`}</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
     {catalogError&&<div className={styles.empty} role="alert"><p>{catalogError}</p><button type="button" onClick={()=>setLoadAttempt(value=>value+1)}>Try again</button></div>}
-    <div id="directory-businesses" className={styles.grid} data-preview={!expanded&&!isFiltered}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} hidden={!expanded&&!isFiltered&&!currentPreviewIds.includes(b.id)} type="button" className={`${styles.tile} ${styles.tone}`} data-business={b.id} data-tone={b.visual.tone} data-poster={b.visual.poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark business={b}/><span className={styles.preview} data-business-image><BusinessVisual business={b}/></span><span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="external"/></span></button>)}</div>
+    <div id="directory-businesses" className={styles.grid} data-preview={!expanded&&!isFiltered}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} hidden={!expanded&&!isFiltered&&!currentPreviewIds.includes(b.id)} type="button" className={`${styles.tile} ${styles.tone}`} data-business={b.id} data-tone={b.visual.tone} data-poster={b.visual.poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark business={b}/>{b.id!=='ilava'&&<span className={styles.preview} data-business-image><BusinessVisual business={b}/></span>}<span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="external"/></span></button>)}</div>
     {!isFiltered&&businesses.length>4&&<div className={styles.browse}><button type="button" aria-expanded={expanded} aria-controls="directory-businesses" onClick={event=>{
       const control=event.currentTarget;
       setExpanded(open=>!open);
@@ -158,7 +188,7 @@ export function BusinessDirectory({onProfile,ref}:{onProfile:(name:string)=>void
     {records!==null&&visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="external"/></button></div>}
     <div className={styles.directoryFooter}><p>A local business. A wider circle of possibility.</p><Link href="/contact">Ask us for an introduction <Icon kind="external"/></Link></div>
   </div>
-  <dialog ref={dialog} className={`${styles.dialog} ${styles.tone}`} data-tone={business?business.visual.tone:undefined} aria-labelledby="business-detail-title" onCancel={event=>{event.preventDefault();closeBusiness();}}>
-    <span className={styles.dialogBrand}>WisConnect</span><button type="button" className={styles.close} data-dialog-control aria-label="Close business details" onClick={()=>closeBusiness()} autoFocus><Icon kind="close"/></button>{business?<div className={styles.dialogLayout}><div className={`${styles.dialogIdentity} ${business.id==='momentum'?styles.momentumIdentity:''}`}><BrandMark business={business}/><div ref={visual} className={styles.detailVisual}><BusinessVisual business={business}/></div>{business.visual.image&&business.id!=='momentum'&&<p className={styles.imageCaption}>Illustrative imagery for this business sector.</p>}</div><div ref={detail} className={styles.detailCopy}><p className={styles.detailMeta}>{business.sector} <span>·</span> {business.location}</p><h2 id="business-detail-title">{business.name}</h2><p className={styles.detailDescription}>{business.description}</p>{business.person&&<p className={styles.owner}>{business.person}</p>}<div className={styles.detailActions}>{business.website&&<a href={business.website} target="_blank" rel="noopener noreferrer">Visit website <Icon kind="external"/></a>}{business.public_email&&<a href={`mailto:${business.public_email}`}>Email this business</a>}{business.public_phone&&<span>{business.public_phone}</span>}<Link href="/contact" aria-label={`Ask WisConnect about ${business.name}`}>Connect with this business <Icon kind="external"/></Link>{business.profile&&<button type="button" onClick={()=>closeBusiness(()=>onProfile(business.profile!))}>Meet {business.profile.split(' ')[0]} <Icon kind="external"/></button>}</div></div></div>:<div className={styles.empty}><h2 id="business-detail-title">{records===null&&!catalogError?'Loading business details…':'Business details unavailable'}</h2><p role="status">{catalogError || (records===null?'Please wait a moment.':'This business is not currently listed.')}</p>{catalogError&&<button type="button" onClick={()=>setLoadAttempt(value=>value+1)}>Try again</button>}</div>}
+    <dialog ref={dialog} className={`${styles.dialog} ${styles.tone}`} data-tone={business?business.visual.tone:undefined} aria-labelledby="business-detail-title" onCancel={event=>{event.preventDefault();closeBusiness();}}>
+    <span className={styles.dialogBrand}>WisConnect</span><button type="button" className={styles.close} data-dialog-control aria-label="Close business details" onClick={()=>closeBusiness()} autoFocus><Icon kind="close"/></button>{business?<div className={`${styles.dialogLayout} ${business.id==='ilava'?styles.ilavaLayout:''} ${business.id==='momentum'||business.id==='bdavis'?styles.officialGalleryLayout:''}`}><div className={`${styles.dialogIdentity} ${business.id==='momentum'?styles.momentumIdentity:''}`}><BrandMark business={business}/><div ref={visual} className={styles.detailVisual}>{business.id==='momentum'||business.id==='bdavis'?<OfficialGallery business={business}/>:<BusinessVisual business={business}/>}</div>{business.visual.image&&<p className={styles.imageCaption}>{business.id==='ilava'?"Photos from ILAVA's website.":business.id==='momentum'?"Photos from Momentum Coffee's website.":business.id==='bdavis'?"Photos from BDavis Designs' website.":'Illustrative imagery for this business sector.'}</p>}</div><div ref={detail} className={styles.detailCopy}><p className={styles.detailMeta}>{business.sector} <span>·</span> {business.location}</p><h2 id="business-detail-title">{business.name}</h2><p className={styles.detailDescription}>{business.description}</p>{business.person&&<p className={styles.owner}>{business.person}</p>}<div className={styles.detailActions}>{business.website&&<a href={business.website} target="_blank" rel="noopener noreferrer">Visit website <Icon kind="external"/></a>}{business.public_email&&<a href={`mailto:${business.public_email}`}>Email this business</a>}{business.public_phone&&<span>{business.public_phone}</span>}<Link href="/contact" aria-label={`Ask WisConnect about ${business.name}`}>Connect with this business <Icon kind="external"/></Link>{business.profile&&<button type="button" onClick={()=>closeBusiness(()=>onProfile(business.profile!))}>Meet {business.profile.split(' ')[0]} <Icon kind="external"/></button>}</div></div></div>:<div className={styles.empty}><h2 id="business-detail-title">{records===null&&!catalogError?'Loading business details…':'Business details unavailable'}</h2><p role="status">{catalogError || (records===null?'Please wait a moment.':'This business is not currently listed.')}</p>{catalogError&&<button type="button" onClick={()=>setLoadAttempt(value=>value+1)}>Try again</button>}</div>}
   </dialog></section>;
 }

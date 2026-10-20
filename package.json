@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "backend:check": "node scripts/python.mjs -m backend.check_all",
+    "reports:check": "node scripts/python.mjs -m backend.check_reports",
+    "team:check": "node scripts/python.mjs -m backend.check_team",
     "dev": "next dev",
+    "mobile:check": "node scripts/python.mjs -m backend.check_mobile",
+    "dev:mobile": "node scripts/python.mjs -m backend.mobile_preview",
     "dev:api": "node scripts/python.mjs --local-auth -m uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8001 --no-proxy-headers",
     "auth:up": "docker compose up -d db mailpit",
     "auth:admin": "node scripts/python.mjs -m backend.bootstrap_admin",
@@ -14,7 +19,18 @@
     "db:migrate": "node scripts/python.mjs -m alembic -c backend/alembic.ini upgrade head",
     "build": "next build --webpack",
     "typecheck": "tsc --noEmit",
-    "newsletter:check": "node scripts/python.mjs -m backend.check_newsletter"
+    "newsletter:check": "node scripts/python.mjs -m backend.check_newsletter",
+    "foundation:check": "node scripts/python.mjs -m backend.check_foundation",
+    "security:check": "node scripts/python.mjs -m backend.check_request_limits",
+    "ratelimit:check": "node scripts/python.mjs -m backend.check_rate_limits",
+    "sessions:check": "node scripts/python.mjs -m backend.check_sessions",
+    "inquiries:check": "node scripts/python.mjs -m backend.check_inquiries",
+    "businesses:check": "node scripts/python.mjs -m backend.check_businesses",
+    "local:up": "node scripts/python.mjs -m backend.devtools up",
+    "local:check": "node scripts/python.mjs -m backend.devtools doctor",
+    "db:backup": "node scripts/python.mjs -m backend.devtools backup",
+    "application-invitations:check": "node scripts/python.mjs -m backend.check_application_invitations",
+    "applications:check": "node scripts/python.mjs -m backend.check_applications"
   },
   "dependencies": {
     "motion": "^13.4.0",

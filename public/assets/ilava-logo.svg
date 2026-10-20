@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 280" role="img" aria-labelledby="title desc">
+  <title id="title">ILAVA</title>
+  <desc id="desc">ILAVA, It can be done.</desc>
+  <g fill="#171717" font-family="Arial, Helvetica, sans-serif" font-size="158" font-weight="300" letter-spacing="-13">
+    <text x="40" y="173">ILA</text>
+    <text x="433" y="173">A</text>
+  </g>
+  <g stroke-linecap="round" stroke-width="8">
+    <path d="M342 42 400 162" stroke="#2a8a51"/>
+    <path d="M350 62 394 158" stroke="#eb9f19"/>
+    <path d="M358 82 388 153" stroke="#e55736"/>
+    <path d="M366 101 382 149" stroke="#2088a1"/>
+    <path d="M400 42 342 162" stroke="#e1ac20"/>
+    <path d="M392 62 348 158" stroke="#d94436"/>
+    <path d="M384 82 354 153" stroke="#318a55"/>
+    <path d="M376 101 360 149" stroke="#2698a6"/>
+  </g>
+  <g fill="#171717">
+    <path d="M369 115 380 126 369 137 358 126z"/>
+    <circle cx="369" cy="126" r="4" fill="#fff"/>
+  </g>
+  <g fill="#171717" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="300" letter-spacing="4.5">
+    <text x="43" y="232">IT CAN BE DONE</text>
+  </g>
+</svg>

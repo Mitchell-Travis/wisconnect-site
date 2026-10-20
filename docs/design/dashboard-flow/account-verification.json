@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-13",
+  "artifact": "WisConnect-Account-Flow.html",
+  "screens": 14,
+  "references": [
+    {
+      "title": "Square sign-in",
+      "url": "https://mobbin.com/screens/91fca814-76a0-4e1c-8f4c-80b79ab778b3",
+      "file": "dist/assets/account-square-login.jpg",
+      "inspected": "2026-10-13",
+      "status": "Freshly inspected and screenshot captured via Mobbin browser UI"
+    },
+    {
+      "title": "Attio / Inviting team member \u00b7 screen 2",
+      "url": "https://mobbin.com/flows/34edd056-2d04-4c68-98c9-2f847275ac6a",
+      "file": "dist/assets/attio-invite.webp",
+      "status": "Previously inspected in this conversation; reused captured source"
+    },
+    {
+      "title": "Square / Resetting password \u00b7 screen 2",
+      "url": "https://mobbin.com/flows/9bcdf153-557f-438d-be8b-4f4fd0d921e1",
+      "file": "dist/assets/square-recovery.webp",
+      "status": "Previously inspected in this conversation; reused captured source"
+    },
+    {
+      "title": "Square / Resetting password \u00b7 screen 3",
+      "url": "https://mobbin.com/flows/9bcdf153-557f-438d-be8b-4f4fd0d921e1",
+      "file": "dist/assets/square-email.webp",
+      "status": "Previously inspected in this conversation; reused captured source"
+    }
+  ],
+  "scope": "Local design review only; all form/session actions are in-memory simulations. No application code, backend, records, emails, passwords or real sessions changed.",
+  "checks": {
+    "javascript_syntax": "passed",
+    "build": "passed",
+    "embedded_assets": "four references, wordmark and Inter font embedded",
+    "browser_visual_and_interaction_qa": "Not completed: Chrome disconnected during Mobbin research; repeated documented reconnect attempts and in-app browser unavailable."
+  },
+  "next": "Review account HTML; complete browser visual/interaction QA when browser connection returns. Live dashboard build remains paused."
+}

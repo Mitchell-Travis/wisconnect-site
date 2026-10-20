@@ -1,0 +1,22 @@
+{
+  "job_id": "6c1992c2-5dbe-4703-bc91-aab329ea8cf6",
+  "quoted_credits": 14,
+  "status": "completed",
+  "review": "Sampled frames show clear gestures and interaction from all three women, full framing and shared laughter. End pose differs; not seamless. Awaiting user creative review; not integrated.",
+  "params": {
+    "model": "kling3_0",
+    "mode": "pro",
+    "duration": 8,
+    "sound": "off",
+    "count": 1,
+    "medias": [
+      {
+        "role": "start_image",
+        "value": "cc07fc77-68fe-45a1-9a06-98c9c1f51b0e"
+      }
+    ],
+    "prompt": "A candid live-action moment between these three women entrepreneurs working together. Animate the entire people naturally, with clearly visible purposeful interaction, realistic weight shifts, shoulders, arms and hands following their actions. Preserve their exact identities, outfits, hairstyles, table, chair and props from the reference. One continuous eight-second shot, fixed camera, full bodies and all furniture remain in frame against this same clean white background.\n0\u20132.5 seconds: The standing woman in purple lifts her pointing hand from the notebook into a small open-palm explanatory gesture toward the seated woman. Her eyes meet her colleague's and her shoulders move naturally as she shares an idea. The seated woman lowers her pen-holding hand from her chin toward the notebook and turns her head and upper body toward the woman in purple, listening with interest.\n2.5\u20135.5 seconds: The seated woman gives an engaged smile and a small answering gesture with the pen. The standing woman in gold leans slightly forward to join the exchange, gestures briefly toward the fabric swatches with her free hand, and looks between both colleagues. The woman in purple reacts warmly and relaxes her gesturing arm.\n5.5\u20138 seconds: They share a brief spontaneous smile and soft laugh, with natural cheek, eye and shoulder movement, then settle their attention back toward the work on the table. Each woman reacts at her own pace. Warm, lively collaboration with restrained everyday gestures, normal real-time movement, realistic anatomy, consistent faces and convincing hand contact. Keep props stable. No theatrical posing, synchronized nodding, exaggerated laughter, slow motion, camera movement, added people or text. Silent video. Let the interaction unfold freely; an exact return to the opening pose is not required."
+  },
+  "local_file": "output/video/hero-higgsfield-exchange.mp4",
+  "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3G6fM69y2G7heZJa9hCe0z178CA/hf_20261014_022620_6c1992c2-5dbe-4703-bc91-aab329ea8cf6.mp4"
+}

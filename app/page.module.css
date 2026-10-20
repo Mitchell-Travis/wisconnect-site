@@ -375,10 +375,10 @@
 .beliefCard { --belief-ink: var(--white); --belief-body: var(--lilac); --belief-accent: var(--gold); --belief-accent-ink: var(--plum); --belief-soft: var(--lilac); --belief-soft-ink: var(--plum); scroll-margin-top: calc(var(--nav-height) + 24px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; padding: 24px; border-radius: var(--radius-card); background: linear-gradient(125deg, var(--plum), var(--purple)); color: var(--belief-ink); }
 .beliefStack { scroll-margin-top: calc(var(--nav-height) + 24px); display: grid; gap: 24px; align-items: start; }
 .beliefMobileNav, .beliefMobileIcon { display: none; }
-.beliefCard:not([data-pillar="people"]) { --belief-ink: var(--plum); --belief-body: var(--muted); --belief-accent: var(--purple); --belief-accent-ink: var(--white); --belief-soft: var(--lilac); --belief-soft-ink: var(--plum); }
+.beliefCard:not([data-pillar="land"]) { --belief-ink: var(--plum); --belief-body: var(--muted); --belief-accent: var(--purple); --belief-accent-ink: var(--white); --belief-soft: var(--lilac); --belief-soft-ink: var(--plum); }
 .beliefCard[data-pillar="capital"] { background: var(--sand); }
 .beliefCard[data-pillar="communities"] { background: var(--mist); }
-.beliefCard:not([data-pillar="people"]) .beliefVisual img { object-position: center; }
+.beliefCard:not([data-pillar="land"]) .beliefVisual img { object-position: center; }
 @media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
   .beliefStack { grid-auto-rows: 1fr; align-items: stretch; }
   .beliefCard { position: sticky; top: min(calc(var(--nav-height) + 16px), calc(100svh - var(--belief-card-height, 668px) - 16px)); }
@@ -399,7 +399,7 @@
 .beliefChoices button[aria-pressed="true"] { background: var(--belief-soft); color: var(--belief-soft-ink); }
 .beliefChoices button[aria-pressed="true"] > span { background: var(--purple); color: var(--white); }
 .beliefDetail { min-height: 84px; max-width: 410px; }
-.beliefCard:not([data-pillar="people"]) .beliefDetail { min-height: 0; }
+.beliefCard:not([data-pillar="land"]) .beliefDetail { min-height: 0; }
 .beliefDetail p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--belief-body); }
 .beliefDetail strong { color: var(--belief-ink); font-weight: 600; }
 .beliefActions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
@@ -461,7 +461,7 @@
   .beliefTabs button[aria-pressed="true"] { color: var(--plum); font-weight: 700; }
   .beliefTabs button[aria-pressed="true"] > .beliefTabIcon { color: white; background: var(--purple); border-color: var(--purple); box-shadow: 0 0 0 4px var(--sand); }
   .beliefTabs button:active > .beliefTabIcon { background: var(--plum); color: white; }
-  .beliefCard, .beliefCard:not([data-pillar="people"]) {
+  .beliefCard, .beliefCard:not([data-pillar="land"]) {
     --belief-ink: var(--plum); --belief-body: #6c6272; --belief-accent: var(--purple); --belief-accent-ink: white;
     position: relative; top: auto; grid-area: 2 / 1; align-self: stretch; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; gap: 20px; padding: 24px; border-radius: 24px; background: var(--sand); box-shadow: 0 10px 28px rgb(62 34 78 / 7%);
   }
@@ -489,7 +489,7 @@
 @keyframes beliefAppear { from { opacity: .35; } to { opacity: 1; } }
 @media (max-width: 360px) {
   .beliefStack:global(.shell) { width: calc(100% - 24px); padding-inline: 10px; }
-  .beliefCard, .beliefCard:not([data-pillar="people"]) { padding: 20px; }
+  .beliefCard, .beliefCard:not([data-pillar="land"]) { padding: 20px; }
   .beliefTabs button { font-size: 10px; }
 }
 

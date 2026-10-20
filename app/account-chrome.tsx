@@ -12,7 +12,7 @@ const menus = [
   { label: "About", links: [
     { label: "Mission & vision", href: "/#purpose", description: "Connecting Africa and the diaspora." },
     { label: "The cooperative model", href: "/#cooperative-model", description: "Own together. Build for each other." },
-    { label: "People, capital & communities", href: "/#about", description: "The belief behind our work." },
+    { label: "Land · Capital · Communities", href: "/#about", description: "The belief behind our work." },
   ] },
   { label: "Our people", links: [
     { label: "People behind the businesses", href: "/#member-stories", description: "Meet the people in our cooperative." },

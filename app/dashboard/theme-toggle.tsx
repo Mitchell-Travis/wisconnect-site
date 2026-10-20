@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Icon from "./feather-icon";
+import Icon from "./workspace-icon";
 import styles from "./dashboard.module.css";
 
 const key = "wisconnect-dashboard-theme";
 
-export default function ThemeToggle({ onSelect }: { onSelect: () => void }) {
+export default function ThemeToggle({ onSelect, menu = true }: { onSelect: () => void; menu?: boolean }) {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -19,17 +19,24 @@ export default function ThemeToggle({ onSelect }: { onSelect: () => void }) {
       setDark(next);
     };
     const onStorage = (event: StorageEvent) => { if (event.key === key || event.key === null) sync(); };
+    const onThemeChange = (event: Event) => {
+      const theme = (event as CustomEvent<"light" | "dark">).detail;
+      document.documentElement.dataset.dashboardTheme = theme;
+      setDark(theme === "dark");
+    };
     sync();
     system.addEventListener("change", sync);
     window.addEventListener("storage", onStorage);
-    return () => { system.removeEventListener("change", sync); window.removeEventListener("storage", onStorage); };
+    window.addEventListener("wisconnect-theme-change", onThemeChange);
+    return () => { system.removeEventListener("change", sync); window.removeEventListener("storage", onStorage); window.removeEventListener("wisconnect-theme-change", onThemeChange); };
   }, []);
 
-  return <button className={styles.themeToggle} type="button" role="menuitem" tabIndex={-1} onClick={() => {
+  return <button className={styles.themeToggle} type="button" role={menu ? "menuitem" : undefined} tabIndex={menu ? -1 : 0} onClick={() => {
     const theme = dark ? "light" : "dark";
     document.documentElement.dataset.dashboardTheme = theme;
     setDark(!dark);
     try { localStorage.setItem(key, theme); } catch { /* Keep the current session usable without persistent storage. */ }
+    window.dispatchEvent(new CustomEvent("wisconnect-theme-change", {detail: theme}));
     onSelect();
   }}><Icon kind={dark ? "sun" : "moon"} />{dark ? "Light theme" : "Dark theme"}</button>;
 }

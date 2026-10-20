@@ -1,42 +1,19 @@
 "use client";
 
 import Icon from "./site-icon";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import AccountShell from "./account-shell";
 import AccountField from "./account-field";
+import { accountRequest as api, accountAvailable, ApiError } from "./account-api";
 import LoginForm from "./login/login-form";
 import styles from "./member-access.module.css";
 import DashboardView, { DashboardGate, View } from "./dashboard/dashboard-view";
 
-type User = { name: string; email: string; role: "admin" | "member" };
+type User = import("./workspace-access").WorkspaceUser;
 type Mode = "login" | "signup" | "admin" | "dashboard";
 
-class ApiError extends Error {
-  constructor(message: string, public status: number) { super(message); }
-}
-
-async function api(path: string, method = "GET", body?: object, signal?: AbortSignal) {
-  let response: Response;
-  const timeout = AbortSignal.timeout(15000);
-  try {
-    response = await fetch(`http://localhost:8001/auth${path}`, {
-      method, signal: signal ? AbortSignal.any([signal, timeout]) : timeout, credentials: "include", cache: "no-store", referrerPolicy: "no-referrer",
-      headers: { "Content-Type": "application/json", "X-WisConnect-Request": "1" },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-  } catch (err) {
-    if (signal?.aborted) throw err;
-    throw new Error("The account service is unavailable. Please try again in a moment.");
-  }
-  if (response.status >= 500) throw new ApiError("The account service is unavailable. Please try again in a moment.", response.status);
-  const data = response.status === 204 ? null : await response.json();
-  if (!response.ok) throw new ApiError(data.detail || "Something went wrong. Please try again.", response.status);
-  return data;
-}
-
-const loadMembers = (signal: AbortSignal) => api("/members", "GET", undefined, signal);
-const deleteMember = (id: number) => api(`/members/${id}`, "DELETE");
 const loadInvitations = (signal: AbortSignal) => api("/invitations", "GET", undefined, signal);
 const sendInvitation = (email: string) => api("/invitations", "POST", { email });
 const revokeInvitation = (id: number) => api(`/invitations/${id}`, "DELETE");
@@ -80,7 +57,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   useEffect(() => {
     let mounted = true;
     const controller = new AbortController();
-    const enabled = location.origin === "http://localhost:3000" && !process.env.NEXT_PUBLIC_BASE_PATH;
+    const enabled = accountAvailable();
     setLocal(enabled);
     if (!enabled) { setReady(true); return; }
     if (mode === "signup") {
@@ -175,9 +152,7 @@ export default function MemberAccess({ mode }: { mode: Mode }) {
   }
 
   if ((mode === "dashboard" || mode === "admin") && ready && local && user) {
-    return <DashboardView user={user} busy={busy} error={error || sessionError} onSignOut={signOut} view={view} onViewChange={setView} loadMembers={loadMembers} deleteMember={deleteMember} loadInvitations={loadInvitations} sendInvitation={sendInvitation} revokeInvitation={revokeInvitation} loadInquiries={loadInquiries} retryInquiryEmail={retryInquiryEmail} onUpdateName={async name => {
-      setUser(await api("/me", "PATCH", { name }));
-    }} />;
+    return <DashboardView user={user} busy={busy} error={error || sessionError} onSignOut={signOut} view={view} onViewChange={setView} loadInvitations={loadInvitations} sendInvitation={sendInvitation} revokeInvitation={revokeInvitation} loadInquiries={loadInquiries} retryInquiryEmail={retryInquiryEmail} onProfileSaved={name => setUser(previous => previous ? { ...previous, name } : previous)} />;
   }
 
   const isSignup = mode === "signup";
