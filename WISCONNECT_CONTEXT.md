@@ -2,31 +2,37 @@
 
 Last updated: 2026-10-20. Read the active admin goal and backend review below first, then the dashboard/mobile and Applications/account updates. Dated entries further down retain historical decisions and verification.
 
-## Official business directory galleries (20 October 2026, local)
+## Full worktree release (20 October 2026)
+
+- Published the accumulated dashboard/backend/CI work and the homepage and directory changes as `b5b71d0` on `origin/main`. GitHub Actions: [Pages deployment](https://github.com/Mitchell-Travis/wisconnect-site/actions/runs/39471161948).
+- Both frontend builds, TypeScript, `npm audit`, `git diff --check` and all 13 backend suites passed. GitHub Actions passed its backend and frontend checks, built the Pages export and deployed successfully.
+- Post-deployment request verified the live homepage exposes “Land · Capital · Communities,” Momentum Coffee and BDavis Designs. Gallery implementation and source details: `docs/reviews/2026-10-20/business-directory-galleries.md`; release record: `docs/reviews/2026-10-20/release.md`.
+
+## Official business directory galleries (20 October 2026, published)
 
 - Added three official photos to Momentum Coffee and BDavis Designs detail panels. Directory cards keep their brand treatments; photos remain lazy-loaded until a detail panel opens. Momentum uses its CDN's responsive 640px/960px sizes and automatic format selection. BDavis photos are local WebP in 640px/1200px variants (about 323 KiB total).
 - Linked both businesses to their official websites in the static catalog and added migration `0013_official_business_websites` for database-backed records. Alt text and fixed image dimensions are included. Source and image processing details: `docs/reviews/2026-10-20/business-directory-galleries.md`.
-- Local pending verification and release.
+- Gallery photos are lazy-loaded only in the expanded detail panels. Published in the 20 October release above.
 
-## ILAVA business directory entry (20 October 2026, local)
+## ILAVA business directory entry (20 October 2026, published)
 
 - Confirmed Sikola’s 15 October forwarded email, “Ilava’s logo,” containing Rahel Mwitula Williams’s signature as Founder of ILAVA: It Can Be Done, with `myilava.com`. Added ILAVA to the public catalog as a Chicago ethical fashion and lifestyle business and linked Rahel’s existing founder profile.
 - Used the official website from the signature. Left Rahel’s phone number and email out of the public listing. Added an SVG recreation of the supplied logo mark and tagline from the email preview.
-- Added a new `0012_ilava_business` migration so the database-backed directory receives the same published listing. The historical `0008_businesses` migration seed remains untouched. No database migration, build, email, commit, push or deployment performed.
-- On Mitchell’s feedback, set the ILAVA directory tile to show its logo on a warm neutral card. The expanded business details now show a three-photo gallery sourced from ILAVA’s official website. Updated the published-listing migration and API’s exact-image allowlist for the gallery’s primary photo. Local preview only; no build, database migration, push or deployment.
+- Added a new `0012_ilava_business` migration so the database-backed directory receives the same published listing. The historical `0008_businesses` migration seed remains untouched. The initial listing work preceded the release documented above.
+- On Mitchell’s feedback, set the ILAVA directory tile to show its logo on a warm neutral card. The expanded business details now show a three-photo gallery sourced from ILAVA’s official website. Updated the published-listing migration and API’s exact-image allowlist for the gallery’s primary photo. Published in the 20 October release above.
 
-## Land · Capital · Communities section (20 October 2026, local)
+## Land · Capital · Communities section (20 October 2026, published)
 
 - Mitchell asked to replace the former “People, Capital, Communities” framing with the new “Land · Capital · Communities” tagline. Updated the home hero, cooperative pillar section, mobile selector and related navigation/story labels. The first pillar now describes land and commercial space as an aspiration, not an existing guarantee.
 - Replaced the People portrait with a Pexels stock photo of a rural woman farmer standing in a sunlit field, by Mehmet Turgut Kirkgoz ([photo](https://www.pexels.com/photo/woman-standing-on-farm-11576236/), [license](https://www.pexels.com/license/)). This is a new photo, distinct from the agriculture image already used by the Enterprise rooted in place story. The Land pillar currently uses responsive sizes from Pexels' image CDN; the sandbox could not resolve the CDN host to download a local copy.
-- Local only; no build, tests, push or deployment.
+- Published in the 20 October release above. The Land image uses responsive sizes from Pexels' image CDN.
 
 ## Homepage and account updates published (14 October 2026 UTC)
 
 - Mitchell requested the push. Released the 19 approved frontend files as `8217fe3` on `origin/main`: hero wording/spacing, directional desktop navigation, lighter people-section background, shared account chrome/glow, three-step Contact, compact Join application and new licensed Contact/Join photos. This supersedes the local-only status in the entries immediately below.
 - Exact isolated release passed the GitHub Pages production build and TypeScript with `GITHUB_ACTIONS=true`; whitespace passed. Deployment succeeded: https://github.com/Mitchell-Travis/wisconnect-site/actions/runs/38510749949.
 - Live Chrome verification confirmed the new homepage heading and pale people-section gradients, enabled Contact drafting and three-step progress, loaded Contact/Join photos, and shared glow animations on Contact, Join and Login. No form or email submitted. Screenshots: `docs/reviews/2026-10-14/accounts-release/live-people.png` and `live-contact.png`. Live site: https://mitchell-travis.github.io/wisconnect-site/.
-- Backend/dashboard/CI migration, context notes, drafts and unrelated asset changes remain local and preserved. Index clean after release.
+- The larger dashboard/backend/CI migration, notes, drafts and associated assets were included in the 20 October release documented above.
 
 ## Lighter people-section background (14 October 2026 UTC, local)
 
