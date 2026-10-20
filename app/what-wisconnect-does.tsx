@@ -7,10 +7,10 @@ import Link from 'next/link';
 import styles from './what-wisconnect-does.module.css';
 
 const areas = [
-  { name: 'Guidance', title: 'Cooperative governance & professional advice', summary: 'Advice for your business. A voice in shared decisions.', description: 'Navigate business challenges and shared decisions with professional guidance.', points: ['Professional advice', 'Business guidance', 'Shared decision-making'] },
+  { name: 'Advising', title: 'Cooperative governance & operations advice', summary: 'Advice for your business. A voice in shared decisions.', description: 'Explore business operations and shared decisions with practical advice.', points: ['Operations advice', 'Business guidance', 'Shared decision-making'] },
   { name: 'Spaces', title: 'Commercial space & community ownership', summary: 'Space to work, grow and serve your community.', description: 'Our vision includes affordable commercial space and community-owned assets for local businesses.', points: ['Affordable commercial space', 'Inclusive development', 'Community-owned assets'] },
   { name: 'Growth', title: 'Business development & visibility', summary: 'Build your business. Help more people discover it.', description: 'Consulting, shared marketing and introductions. In Liberia, this includes construction, agriculture, and food and beverage businesses.', points: ['Business consulting', 'Shared marketing', 'Entrepreneur introductions'] },
-  { name: 'Connections', title: 'Trade & relationships across borders', summary: 'Reach beyond your local market.', description: 'Explore markets and relationships with potential partners, buyers and suppliers across borders.', points: ['International markets', 'Business partnerships', 'Procurement connections'] },
+  { name: 'Connections', title: 'Trade & relationships across borders', summary: 'Reach beyond your local market.', description: 'Explore ways to access markets and build relationships with partners, suppliers and customers across borders.', points: ['International markets', 'Business partnerships', 'Build a global value chain'] },
 ];
 
 function SupportIllustration({ index }: { index: number }) {

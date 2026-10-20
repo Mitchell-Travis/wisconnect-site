@@ -11,8 +11,8 @@ const wingPath='M50 100 C180 45 280 110 310 200 L370 400 L500 180 L630 400 L690 
 const wingMask=`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700"><path fill="white" d="${wingPath}"/></svg>`)}")`;
 const scenes=[
   {label:'01 · The businesses',image:'cooperative-model',height:933,thumbnailHeight:427,title:'Distinct strengths.',paragraphs:[
-    'WisConnect Holding Cooperative is a worker-owned cooperative connecting Black women entrepreneurs, their businesses and the communities they serve.',
-    'Food, child care, design, agriculture and professional expertise. Each business brings knowledge of its work and its community.',
+    'WisConnect builds multi-sector economic growth for the communities in which we work.',
+    'Our members span food, child care, design, agriculture and professional services, bringing knowledge of their work and communities.',
   ]},
   {label:'02 · The cooperative',image:'cooperative-businesses',height:2100,thumbnailHeight:960,title:'A shared structure.',paragraphs:[
     'Its holding company model brings different enterprises into a shared structure, with professional support and a long-term vision for community-owned assets.',

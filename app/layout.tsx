@@ -4,7 +4,7 @@ import { assetPath } from "./assets";
 
 export const metadata: Metadata = {
   title: "WisConnect | Land · Capital · Communities",
-  description: "WisConnect brings Black women entrepreneurs across Africa and the diaspora together to share knowledge, build business relationships and pursue shared ownership.",
+  description: "WisConnect connects Black women business owners across Africa, the African diaspora and emerging markets to share knowledge, build business relationships and pursue shared ownership.",
   icons: { icon: { url: assetPath("wisconnect-logo-approved.png"), type: "image/png" } }
 };
 
