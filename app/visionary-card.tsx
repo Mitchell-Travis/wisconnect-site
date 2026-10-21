@@ -30,7 +30,7 @@ export function VisionaryCard({ member, onReadProfile }: { member: Visionary; on
   }}>
     <button ref={front} className={styles.front} type="button" inert={flipped} aria-hidden={flipped} aria-expanded={flipped} aria-controls={id} aria-label={`View profile for ${member.name}`} onClick={() => setFlipped(true)}>
       <span className={styles.portrait}>
-        <img style={{objectPosition: member.portraitPosition, transform: member.portraitScale ? `scale(${member.portraitScale})` : undefined, transformOrigin: member.portraitScale ? "center 25%" : undefined}} src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 760px) 45vw, (max-width: 1100px) 30vw, 285px" alt="" width="800" height="800" loading="lazy" decoding="async"/>
+        <img style={{objectPosition: member.portraitPosition, transform: member.portraitScale ? `scale(${member.portraitScale})` : undefined, transformOrigin: member.portraitScale ? "center 25%" : undefined}} src={assetPath(`${member.image}-studio-480.webp`)} srcSet={`${assetPath(`${member.image}-studio-320.webp`)} 320w, ${assetPath(`${member.image}-studio-480.webp`)} 480w, ${assetPath(`${member.image}-studio-800.webp`)} 800w`} sizes="(max-width: 760px) 45vw, (max-width: 1100px) 30vw, 285px" alt="" width="800" height="800" loading="lazy" decoding="async"/>
       </span>
       <span className={styles.info}><strong>{member.name}</strong><span className={styles.role}>{member.cardRole}</span>{member.location && <span className={styles.location}>{member.location}</span>}<span className={styles.view}>View profile <Icon kind="external" size={13}/></span></span>
     </button>

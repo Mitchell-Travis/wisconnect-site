@@ -211,7 +211,7 @@ const announcementFont = localFont({ src: './fonts/geist-latin.woff2', weight: '
 
 const backgroundAssets = {
   '--belief-background': `url("${assetPath('bg-light.webp')}")`,
-  '--textile-background': `url("${assetPath('Royal Purple and Gold Ornamental Textile.png')}")`
+  '--textile-background': `url("${assetPath('royal-purple-gold-textile.webp')}")`
 } as CSSProperties;
 
 function useScrollEdges(ref:RefObject<HTMLElement|null>){
@@ -926,12 +926,12 @@ export default function Home(){
     
 
     {showUnfinishedSections ? <footer className="site-footer"><div className="shell footer-grid">
-      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved.png')} alt="WisConnect" width="1600" height="1088"/><p>Land · Capital · Communities</p></div>
+      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved-320.webp')} alt="WisConnect" width="320" height="218" loading="lazy" decoding="async"/><p>Land · Capital · Communities</p></div>
       <div><strong>Explore WisConnect</strong><a href="#purpose">Mission &amp; vision</a><a href="#about">The cooperative model</a><a href="#members">Meet the visionaries</a><a href="#businesses">Chicago business sectors</a><a href="#business-directory">Business directory</a><a href="#impact">Impact &amp; connections</a></div>
       <div><strong>Get involved</strong><a href="#get-involved">How to get involved</a><Link href="/join">Membership interest</Link><a href="#join">Partnerships &amp; conversation</a><a href="#faq">Your questions, answered</a><a href="#programs">Programs &amp; activities</a><a href="#resources">Resources</a><a href="#community-work">Community work</a></div>
       <div><strong>Keep in touch</strong><Link href="/contact">Contact WisConnect</Link><a href="mailto:hello@wisconnect.co">hello@wisconnect.co</a><Link href="/login">Member sign in</Link><a href="#languages">Language availability</a><a href="#stories">Stories</a><a href="#news">News</a><a href="#events">Events</a><a href="#gallery">Gallery</a><a href="#contact-info">Contact &amp; social channels</a></div>
     </div><div className="shell footer-bottom"><span>© 2026 WisConnect</span><Link href="/terms">Terms &amp; Conditions</Link></div></footer> : <footer className="site-footer"><div className="shell footer-grid">
-      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved.png')} alt="WisConnect" width="1600" height="1088"/><p>Land · Capital · Communities</p><p>WisConnect Holding Cooperative</p></div>
+      <div className="footer-brand"><img className={styles.footerLogo} src={assetPath('wisconnect-logo-approved-320.webp')} alt="WisConnect" width="320" height="218" loading="lazy" decoding="async"/><p>Land · Capital · Communities</p><p>WisConnect Holding Cooperative</p></div>
       <div><strong>Explore WisConnect</strong><a href="#purpose">Mission &amp; vision</a><a href="#cooperative-model">The cooperative model</a><a href="#members">Meet the visionaries</a><a href="#business-directory">Business directory</a><a href="#businesses">Chicago business sectors</a></div>
       <div><strong>Our work</strong><a href="#impact">Our wider connections</a><a href="#what-we-do">Services &amp; support</a><a href="#community-projects">Community projects</a><a href="#member-stories">Member stories</a></div>
       <div><strong>Get involved</strong><a href="#get-involved">How to get involved</a><Link href="/join">Membership interest</Link><Link href="/contact">Contact WisConnect</Link><a href="#faq">Your questions, answered</a><a href="#languages">Language availability</a></div>

@@ -59,19 +59,20 @@ export function HeroAnimation() {
     <img
       className={styles.heroPortrait}
       src={assetPath('hero-shared-enterprise-960.webp')}
-      width="1122" height="1402" fetchPriority="high"
+      srcSet={`${assetPath('hero-shared-enterprise-480.webp')} 480w, ${assetPath('hero-shared-enterprise-640.webp')} 640w, ${assetPath('hero-shared-enterprise-960.webp')} 960w`}
+      sizes="(max-width: 760px) 100vw, (max-width: 1200px) 50vw, 560px"
+      width="960" height="1200" fetchPriority="high" decoding="async"
       alt="Illustration of three Black women entrepreneurs sharing ideas, a laptop and textile samples around a table"
     />
     {enabled && <>
       <video
         ref={video}
         className={`${styles.heroPortrait} ${styles.heroVideo}`}
-        src={assetPath('hero-shared-enterprise-exchange.mp4')}
-        poster={assetPath('hero-shared-enterprise-960.webp')}
-        width="1122" height="1402" muted playsInline preload="none"
+        src={assetPath('hero-shared-enterprise-loop.mp4')}
+        poster={assetPath('hero-shared-enterprise-640.webp')}
+        width="960" height="1200" muted playsInline loop preload="none"
         aria-hidden="true" tabIndex={-1}
         onPlaying={() => setReady(true)}
-        onEnded={() => setPaused(true)}
         onError={() => { setFailed(true); setReady(false); }}
       />
       <button

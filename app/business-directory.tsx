@@ -16,12 +16,12 @@ const normalize=(value:string)=>value.normalize('NFKD').replace(/[\u0300-\u036f]
 
 function BrandMark({business}:{business:PublicBusiness}){
   const {id,visual:identity}=business;
-  return <span className={styles.brandMark} data-business={id} aria-hidden="true">{id==='momentum'?<img className={styles.officialLogo} src={assetPath('momentum-coffee-logo-trimmed.png')} alt="" width="1163" height="379"/>:id==='ilava'?<img className={styles.officialLogo} src={assetPath('ilava-logo.svg')} alt="" width="580" height="280"/>:<><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></>}</span>;
+  return <span className={styles.brandMark} data-business={id} aria-hidden="true">{id==='momentum'?<img className={styles.officialLogo} src={assetPath('momentum-coffee-logo-640.webp')} alt="" width="640" height="209" loading="lazy" decoding="async"/>:id==='ilava'?<img className={styles.officialLogo} src={assetPath('ilava-logo.svg')} alt="" width="580" height="280"/>:<><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></>}</span>;
 }
 
 function BusinessVisual({business}:{business:PublicBusiness}){
   const identity=business.visual;
-  if(business.id==='momentum')return <span className={styles.momentumVisual}><img className={styles.momentumLogo} src={assetPath('momentum-coffee-logo-trimmed.png')} alt="" width="1163" height="379"/></span>;
+  if(business.id==='momentum')return <span className={styles.momentumVisual}><img className={styles.momentumLogo} src={assetPath('momentum-coffee-logo-640.webp')} width="640" height="209" alt="" loading="lazy" decoding="async"/></span>;
   if(business.id==='ilava')return <span className={styles.ilavaGallery} aria-hidden="true">
     <img src={identity.image} alt="" width="1500" height="1000" loading="lazy"/>
     <img src="https://myilava.com/cdn/shop/files/ILAVA-Sneak-028_websize.jpg?v=1710435074&width=1600" alt="" width="800" height="600" loading="lazy"/>
