@@ -66,8 +66,7 @@ export function AccountHeader({ skipTarget = "access-title", skipLabel = "Skip t
     {announcementOpen && <aside className={`${styles.announcement} ${announcementFont.className}`} aria-label="WisConnect announcement">
       <div className={styles.announcementMessage}>
         <Icon kind="announcement" size={16}/>
-        <p className={styles.announcementStatic}>Meet the people and businesses behind WisConnect.</p>
-        <Link className={styles.announcementLink} href="/#business-directory">Explore the directory <Icon kind="arrow" size={14}/></Link>
+        <p className={styles.announcementStatic}><span className={styles.announcementDesktopCopy}>Meet the people and businesses behind WisConnect.</span><span className={styles.announcementMobileCopy}>Meet the people behind WisConnect.</span>{" "}<Link className={styles.announcementLink} href="/#business-directory">Explore the directory <Icon kind="arrow" size={14}/></Link></p>
       </div>
       <button type="button" aria-label="Dismiss announcement" onClick={() => {
         setAnnouncementOpen(false);

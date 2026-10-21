@@ -25,7 +25,9 @@
 .announcement { position: relative; display: flex; justify-content: center; align-items: center; min-height: 40px; padding: 8px 56px; background: var(--lilac); color: var(--plum); font-size: 14px; font-weight: 500; line-height: 20px; }
 .announcementMessage { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .announcementStatic { margin: 0; }
-.announcementLink { display: inline-flex; align-items: center; gap: 6px; color: inherit; font-weight: 650; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
+.announcementDesktopCopy { display: inline; }
+.announcementMobileCopy { display: none; }
+.announcementLink { display: inline-flex; align-items: center; gap: 6px; color: inherit; font-weight: 650; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; vertical-align: -2px; }
 .announcementLink:hover { text-decoration-thickness: 2px; }
 .announcement > button { position: absolute; right: 16px; top: 0; display: grid; place-items: center; width: 40px; min-height: 40px; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; }
 .footer { width: calc(100% - 48px); margin-inline: auto; padding: 28px 0 24px; background: transparent; color: var(--muted); font-size: 12px; }
@@ -72,11 +74,10 @@
   .invitationNote { margin-top: 12px; }
 }
 @media (max-width: 620px) {
-  .announcement { justify-content: flex-start; padding: 10px 48px 10px 20px; font-size: 12px; }
-  .announcementMessage { display: grid; flex: 1; grid-template-columns: 16px minmax(0, 1fr); gap: 4px 8px; }
-  .announcementMessage > svg { grid-row: 1; align-self: start; margin-top: 2px; }
-  .announcementStatic { grid-column: 2; }
-  .announcementLink { grid-column: 2; min-height: 28px; justify-self: start; }
+  .announcement { justify-content: flex-start; padding: 8px 48px 8px 20px; font-size: 12px; }
+  .announcementMessage { display: flex; align-items: flex-start; gap: 8px; }
+  .announcementDesktopCopy { display: none; }
+  .announcementMobileCopy { display: inline; }
   .announcement > button { right: 8px; width: 36px; }
 }
 @media (max-width: 359px) {
