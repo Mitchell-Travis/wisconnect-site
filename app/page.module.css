@@ -116,8 +116,9 @@
   .memberGrid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px 12px; }
   .memberConnection { margin-top: 24px; }
 }
-@media (min-width: 761px) and (max-width: 959px) {
-  .memberGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 761px) and (max-width: 1199px) {
+  .memberGrid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px 10px; }
+  .memberConnection { margin-top: 24px; }
 }
 @media (max-width: 760px) {
   .membersHeading { margin-bottom: 32px; }
