@@ -45,7 +45,7 @@ export function CommunityProjects(){
   return <section id="community-projects" data-divider="background" className={`section ${styles.section}`} aria-labelledby="projects-title"><div className="shell">
     <div className={`section-heading split-heading ${styles.heading}`}>
       <div><p className="eyebrow">The work taking shape</p><h2 id="projects-title" data-section-headline>Business growth.<br/><em>Community ownership.</em></h2></div>
-      <div className={styles.intro}><p data-section-description>Explore the projects and development visions taking shape across our cooperative.</p><Link href="/contact" className={styles.contact}>Talk with WisConnect <Arrow/></Link></div>
+      <div className={styles.intro}><p data-section-description>Explore the projects, events and experiences shaping our cooperative’s work.</p><Link href="/contact" className={styles.contact}>Talk with WisConnect <Arrow/></Link></div>
     </div>
     <div ref={storyStack} className={styles.storyStack} data-stack={stackEnabled}>
       {stories.map((item,index)=>{

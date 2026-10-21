@@ -16,6 +16,9 @@
 .context dd { margin: 6px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .body { max-width: 740px; }
 .body > p { margin: 0 0 24px; color: var(--plum); font-size: 18px; line-height: 1.85; }
+.galleryPhoto { max-width: 520px; margin: 32px 0; }
+.galleryPhoto img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.galleryPhoto figcaption { margin-top: 10px; color: var(--muted); font-size: 11px; line-height: 1.6; }
 .body .source { color: var(--muted); font-size: 12px; line-height: 1.6; }
 .source a { text-decoration: underline; text-underline-offset: 4px; }
 .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 28px; margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }

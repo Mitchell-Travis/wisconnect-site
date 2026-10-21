@@ -3,6 +3,7 @@ import Icon from "../../site-icon";
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { assetPath } from '../../assets';
 import EntryHeader from '../../entry-header';
 import { cooperativeStories } from '../../cooperative-stories';
 import { ProjectStoryImage } from '../../project-story-image';
@@ -11,18 +12,19 @@ import styles from './page.module.css';
 type Props={params:Promise<{slug:string}>};
 export const dynamicParams=false;
 export function generateStaticParams(){
-  return cooperativeStories.map(story=>({slug:story.id}));
+  return cooperativeStories.flatMap(story=>[story.id,...(story.legacySlugs??[])].map(slug=>({slug})));
 }
+const findStory=(slug:string)=>cooperativeStories.find(item=>item.id===slug||item.legacySlugs?.includes(slug));
 export async function generateMetadata({params}:Props):Promise<Metadata>{
   const {slug}=await params;
-  const story=cooperativeStories.find(item=>item.id===slug);
+  const story=findStory(slug);
   if(!story)notFound();
   return {title:`${story.title} | WisConnect`,description:story.summary};
 }
 
 export default async function StoryPage({params}:Props){
   const {slug}=await params;
-  const story=cooperativeStories.find(item=>item.id===slug);
+  const story=findStory(slug);
   if(!story)notFound();
   return <div className={styles.page}>
     <EntryHeader/>
@@ -46,6 +48,10 @@ export default async function StoryPage({params}:Props){
           </dl></aside>
           <div className={styles.body}>
             {story.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
+            {story.additionalImages?.map(image=><figure className={styles.galleryPhoto} key={image.image}>
+              <img src={image.image.startsWith('http')?image.image:assetPath(image.image)} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async"/>
+              <figcaption>{image.caption}</figcaption>
+            </figure>)}
             {story.source&&<p className={styles.source}><a href={story.source.url}>{story.source.label} <span aria-hidden="true"><Icon kind="external"/></span></a></p>}
             <div className={styles.actions}><Link className={styles.contact} href="/contact">Talk with WisConnect <span aria-hidden="true"><Icon kind="external"/></span></Link><Link className={styles.back} href="/#community-projects">Back to the stories <span aria-hidden="true"><Icon kind="arrow"/></span></Link></div>
           </div>
