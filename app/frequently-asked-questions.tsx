@@ -46,7 +46,7 @@ export function FrequentlyAskedQuestions(){
         <header className={styles.heading}>
           <p className={styles.eyebrow}>Frequently asked questions</p>
           <h2 id="faq-title" data-section-headline>A little more<br/>{' '}<em>clarity.</em></h2>
-          <p data-section-description className={styles.intro}>Membership, shared ownership and where your experience could fit.</p>
+          <p data-section-description className={styles.intro}>Membership, shared ownership and how to get started.</p>
           <Link href="/contact" className={styles.contact}>Ask our team <Arrow/></Link>
         </header>
         <div ref={answers} className={styles.answers}>

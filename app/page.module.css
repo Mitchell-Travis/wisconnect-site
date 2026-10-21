@@ -109,7 +109,14 @@
 .memberHint { margin: 16px 0 0; color: var(--purple); font-size: 12px; }
 .memberGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 12px; }
 .memberConnection { margin-top: 28px; text-align: center; }
-@media (min-width: 761px) and (max-width: 1100px) {
+@media (min-width: 1200px) {
+  .page section.members { padding-block: 72px; }
+  .membersHeading { margin-bottom: 28px; }
+  .membersHeading h2 { margin: 8px 0 14px; font-size: clamp(52px, 4.4vw, 66px); }
+  .memberGrid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px 12px; }
+  .memberConnection { margin-top: 24px; }
+}
+@media (min-width: 761px) and (max-width: 959px) {
   .memberGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
@@ -912,21 +919,11 @@
 .announcement { position: relative; display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 40px; padding: 8px 48px 8px 32px; background: var(--lilac); color: var(--plum); }
 .announcementMessage { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; min-height: 24px; font-size: 14px; font-weight: 500; line-height: 20px; text-align: left; }
 .announcementStatic { margin: 0; }
-.announcementWindow { display: none; height: 24px; overflow: hidden; }
-.announcementTrack > span { display: flex; align-items: center; height: 24px; white-space: nowrap; }
-.announcement[data-animated=true] .announcementStatic { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.announcement[data-animated=true] .announcementWindow { display: block; }
-.announcement[data-animated=true] .announcementTrack { animation: announcementScroll 10s cubic-bezier(.22,1,.36,1) infinite; }
-.announcement:hover .announcementTrack, .announcement:focus-within .announcementTrack { animation-play-state: paused; }
-@keyframes announcementScroll { 0%,40% { transform: translateY(0); } 50%,90% { transform: translateY(-24px); } 100% { transform: translateY(-48px); } }
+.announcementLink { display: inline-flex; align-items: center; gap: 6px; color: inherit; font-weight: 650; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
+.announcementLink:hover { text-decoration-thickness: 2px; }
 .announcement svg { flex-shrink: 0; }
 .announcement > button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 32px; min-height: 32px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--plum); cursor: pointer; }
 .announcement > button:hover { background: rgb(255 255 255 / 55%); }
-@media (prefers-reduced-motion: reduce) {
-  .announcement[data-animated=true] .announcementStatic { position: static; width: auto; height: auto; padding: 0; overflow: visible; clip-path: none; white-space: normal; }
-  .announcement[data-animated=true] .announcementWindow { display: none; }
-  .announcementTrack { animation: none !important; }
-}
 .page[data-home-system] .navShell { top: var(--nav-float); min-height: var(--nav-height); border-radius: 0; background: var(--sand); gap: 24px; transition: border-radius .2s, background .2s, box-shadow .2s; }
 .page[data-home-system] .header[data-scrolled=true] .navShell { border-radius: 22px; background: #fff; box-shadow: 0 8px 32px rgb(41 24 51 / 10%), 0 1px 2px rgb(41 24 51 / 5%); }
 .page[data-home-system] .header[data-submenu-open=true] .navShell { box-shadow: 0 8px 32px rgb(41 24 51 / 10%); }
@@ -959,8 +956,9 @@
   .page[data-home-system] .megaPanel { border: 0; border-radius: 0; max-height: none; box-shadow: none; }
   .page[data-home-system] .megaColumns a { padding: 8px 0; }
   .announcement { justify-content: flex-start; padding: 8px 48px 8px 24px; }
-  .announcementMessage { gap: 8px; font-size: 12px; justify-content: flex-start; }
-  .announcementMessage > svg { align-self: flex-start; margin-top: 4px; }
+  .announcementMessage { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 4px 8px; font-size: 12px; justify-content: flex-start; }
+  .announcementMessage > svg { grid-row: 1 / span 2; align-self: center; margin-top: 0; }
+  .announcementLink { grid-column: 2; }
   .announcement > button { right: 8px; }
 }
 

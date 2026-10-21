@@ -80,7 +80,7 @@ const networkStories = [
 ] as const;
 const beliefPillars = [
   {label:'Land',title:'A place to take root.',description:'We aim to connect people and enterprises with land and commercial spaces that create room to grow.'},
-  {label:'Capital',title:'Make room for the next step.',description:'We aim to connect ideas with resources. Funding opportunities and terms are still being developed.'},
+  {label:'Capital',title:'Make room for the next step.',description:'This is a developing vision. Funding opportunities and terms are still being defined.'},
   {label:'Communities',title:'Let business growth reach further.',description:'We aim for growth that supports families, serves neighborhoods and builds stronger local economies through local work.'}
 ] as const;
 const cooperativeCards = [
@@ -514,13 +514,11 @@ export default function Home(){
   const close=()=>{cancelNavClose();setMenuOpen(false);setActiveNav(null);if(languagePicker.current)languagePicker.current.open=false};
   return <MotionConfig reducedMotion="user"><div className={styles.page} data-home-system data-nav-scrolled={scrolled} style={backgroundAssets} onPointerDownCapture={event=>{event.currentTarget.dataset.inputMethod='pointer';}} onKeyDownCapture={event=>{if(!['Shift','Control','Alt','Meta'].includes(event.key))event.currentTarget.dataset.inputMethod='keyboard';}}>
     <a className={styles.skipLink} href="#main-content">Skip to content</a>
-    {announcementOpen&&<aside className={`${styles.announcement} ${announcementFont.className}`} aria-label="WisConnect announcement" data-animated={reducedMotion===false}>
+    {announcementOpen&&<aside className={`${styles.announcement} ${announcementFont.className}`} aria-label="WisConnect announcement">
       <div className={styles.announcementMessage}>
         <Icon kind="announcement" size={16}/>
-        <p className={styles.announcementStatic}>Something powerful is coming. WisConnect launches soon.</p>
-        <div className={styles.announcementWindow} aria-hidden="true"><div className={styles.announcementTrack}>
-          <span>Something powerful is coming.</span><span>WisConnect launches soon.</span><span>Something powerful is coming.</span>
-        </div></div>
+        <p className={styles.announcementStatic}>Meet the people and businesses behind WisConnect.</p>
+        <Link className={styles.announcementLink} href="#business-directory">Explore the directory <Icon kind="arrow" size={14}/></Link>
       </div>
       <button type="button" aria-label="Dismiss announcement" onClick={()=>{setAnnouncementOpen(false);header.current?.querySelector<HTMLAnchorElement>('a')?.focus({preventScroll:true});}}><Icon kind="close" size={16}/></button>
     </aside>}
@@ -698,7 +696,7 @@ export default function Home(){
           </div>
         </div>
         <figure className={styles.beliefVisual}>
-          <img src="https://images.pexels.com/photos/11576236/pexels-photo-11576236.jpeg?auto=compress&cs=tinysrgb&w=1400" srcSet="https://images.pexels.com/photos/11576236/pexels-photo-11576236.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/11576236/pexels-photo-11576236.jpeg?auto=compress&cs=tinysrgb&w=1400 1400w" sizes="(max-width: 760px) 90vw, 45vw" width="4352" height="3264" loading="lazy" decoding="async" alt="A rural woman farmer standing in a sunlit field with harvested crops"/>
+          <img src="https://images.pexels.com/photos/2464890/pexels-photo-2464890.jpeg?auto=compress&cs=tinysrgb&w=1400" srcSet="https://images.pexels.com/photos/2464890/pexels-photo-2464890.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/2464890/pexels-photo-2464890.jpeg?auto=compress&cs=tinysrgb&w=1400 1400w" sizes="(max-width: 760px) 90vw, 45vw" width="4121" height="3072" loading="lazy" decoding="async" alt="People walking along a commercial street with shops and office buildings in Johannesburg"/>
         </figure>
       </div>
       {cooperativeCards.map(card=><article key={card.id} id={`belief-${card.id}`} className={styles.beliefCard} data-pillar={card.id} data-mobile-active={mobileBelief===card.id} aria-labelledby={`belief-${card.id}-title`}>
@@ -904,13 +902,13 @@ export default function Home(){
         <div className={styles.involvementPanel}>
           <p className={styles.involvementKicker}>Three steps to a conversation</p>
           <ParticipationSteps className={styles.introductionSteps}>
-            <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Introduce yourself.</h3><p>Five questions about you, your work and your interests.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">01</span><div><h3>Answer five questions.</h3><p>Tell us about you, your work and what you’d like to contribute.</p></div></li>
             <li><span className={styles.introductionNumber} aria-hidden="true">02</span><div><h3>{directIntroductions ? 'Review & submit.' : 'Review & email.'}</h3><p>{directIntroductions ? 'Review your answers, then submit them. Nothing sends automatically.' : 'Review your answers, then send the draft from your email app.'}</p></div></li>
-            <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Start a conversation.</h3><p>Discuss eligibility, fees and next steps with the team.</p></div></li>
+            <li><span className={styles.introductionNumber} aria-hidden="true">03</span><div><h3>Talk with the team.</h3><p>Discuss eligibility, fees and what comes next.</p></div></li>
           </ParticipationSteps>
           <div className={styles.involvementAction}>
             <Link className={styles.involvementButton} href="/join">Introduce yourself <ArrowUpRightIcon/></Link>
-            <p>An introduction does not confirm membership. Terms and opportunities are still being finalized.</p>
+            <p>An introduction does not confirm membership. Eligibility, terms and opportunities are still being finalized.</p>
           </div>
         </div>
       </div>

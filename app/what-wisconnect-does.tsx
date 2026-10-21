@@ -67,7 +67,7 @@ export function WhatWisConnectDoes() {
           <div className={styles.artwork}><div className={styles.loop}/><SupportIllustration index={index}/></div>
         </article>)}
       </div>
-      <p className={styles.note}>Opportunities are developing. Ask the team what is available for your business.</p>
+      <p className={styles.note}>Support is still taking shape and varies by location. Ask the team what’s available for your business today.</p>
     </div>
   </section>;
 }
