@@ -40,7 +40,7 @@
   .deck { flex-direction: column; gap: 14px; }
   .card,.card[data-active=true] { flex: none; min-height: 0; }
   .card[data-active=true] { min-height: 345px; padding-bottom: 30px; }
-  .card:not(:last-child)::after { display: none; }
+  .card:not(:last-child)::after { display: block; right: auto; top: auto; bottom: -14px; left: 50%; width: 2px; height: 14px; transform: translateX(-50%); background: var(--purple); }
   .cardHeading button { padding: 22px 28px 14px; display: flex; align-items: center; gap: 20px; font-size: 30px; }
   .toggle { margin-left: auto; }
   .summary { padding: 0 28px 24px 62px; }
