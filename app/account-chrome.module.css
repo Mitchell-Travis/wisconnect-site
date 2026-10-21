@@ -65,14 +65,19 @@
   .bar { padding-inline: 24px; gap: 8px; }
   .brand { width: 132px; }
   .join { min-height: 42px; padding: 10px 14px; font-size: 12px; }
-  .announcement { justify-content: flex-start; padding: 8px 48px 8px 24px; font-size: 12px; }
-  .announcement > button { right: 4px; }
-  .announcementMessage { gap: 8px; }
   .footer { width: calc(100% - 48px); padding: 32px 0 max(24px, env(safe-area-inset-bottom)); }
   .footerRow { align-items: flex-start; flex-direction: column; gap: 16px; }
   .footerLinks { gap: 0 16px; }
   .copyright { margin-top: 4px; }
   .invitationNote { margin-top: 12px; }
+}
+@media (max-width: 620px) {
+  .announcement { justify-content: flex-start; padding: 10px 48px 10px 20px; font-size: 12px; }
+  .announcementMessage { display: grid; flex: 1; grid-template-columns: 16px minmax(0, 1fr); gap: 4px 8px; }
+  .announcementMessage > svg { grid-row: 1; align-self: start; margin-top: 2px; }
+  .announcementStatic { grid-column: 2; }
+  .announcementLink { grid-column: 2; min-height: 28px; justify-self: start; }
+  .announcement > button { right: 8px; width: 36px; }
 }
 @media (max-width: 359px) {
   .bar { padding-inline: 16px; gap: 4px; }
