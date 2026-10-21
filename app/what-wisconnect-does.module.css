@@ -40,7 +40,7 @@
   .deck { flex-direction: column; gap: 18px; }
   .card,.card[data-active=true] { flex: none; min-height: 0; }
   .card[data-active=true] { min-height: 345px; padding-bottom: 30px; }
-  .card:not(:last-child)::after { display: block; right: auto; top: auto; bottom: -19px; left: 68px; width: 12px; height: 20px; background: white; }
+  .card:not(:last-child)::after { display: block; right: 31px; top: auto; bottom: -19px; left: auto; width: 12px; height: 20px; background: white; }
   .cardHeading button { padding: 22px 28px 14px; display: flex; align-items: center; gap: 20px; font-size: 30px; }
   .toggle { margin-left: auto; }
   .summary { padding: 0 28px 24px 62px; }
@@ -61,7 +61,7 @@
   .intro { font-size: 15px; margin: 22px auto 24px; }
   .card,.artwork { border-radius: 20px; }
   .cardHeading button { padding: 22px 20px 14px; gap: 13px; font-size: 27px; }
-  .card:not(:last-child)::after { left: 56px; }
+  .card:not(:last-child)::after { right: 23px; }
   .summary { padding: 0 20px 24px; font-size: 13px; }
   .detail { padding: 0 20px; width: 100%; }
   .detail ul { margin-top: 16px; }
