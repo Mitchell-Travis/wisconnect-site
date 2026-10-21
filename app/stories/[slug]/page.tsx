@@ -53,6 +53,7 @@ export default async function StoryPage({params}:Props){
               <figcaption>{image.caption}</figcaption>
             </figure>)}
             {story.source&&<p className={styles.source}><a href={story.source.url}>{story.source.label} <span aria-hidden="true"><Icon kind="external"/></span></a></p>}
+            {story.links?.length ? <p className={styles.source}>Project partners: {story.links.map((link,index)=><span key={link.url}>{index>0?' · ':''}<a href={link.url}>{link.label} <span aria-hidden="true"><Icon kind="external"/></span></a></span>)}</p> : null}
             <div className={styles.actions}><Link className={styles.contact} href="/contact">Talk with WisConnect <span aria-hidden="true"><Icon kind="external"/></span></Link><Link className={styles.back} href="/#community-projects">Back to the stories <span aria-hidden="true"><Icon kind="arrow"/></span></Link></div>
           </div>
         </div>

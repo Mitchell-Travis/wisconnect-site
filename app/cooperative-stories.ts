@@ -20,6 +20,7 @@ export type CooperativeStory={
   focus:string;
   paragraphs:string[];
   source?:{label:string;url:string};
+  links?:{label:string;url:string}[];
 };
 
 export const cooperativeStories:CooperativeStory[]=[
