@@ -68,11 +68,12 @@ export function HeroAnimation() {
       <video
         ref={video}
         className={`${styles.heroPortrait} ${styles.heroVideo}`}
-        src={assetPath('hero-shared-enterprise-loop.mp4')}
+        src={assetPath('hero-shared-enterprise-exchange-720.mp4')}
         poster={assetPath('hero-shared-enterprise-640.webp')}
-        width="960" height="1200" muted playsInline loop preload="none"
+        width="960" height="1200" muted playsInline preload="none"
         aria-hidden="true" tabIndex={-1}
         onPlaying={() => setReady(true)}
+        onEnded={() => setPaused(true)}
         onError={() => { setFailed(true); setReady(false); }}
       />
       <button
