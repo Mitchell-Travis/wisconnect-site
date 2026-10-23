@@ -58,15 +58,12 @@ function OfficialGallery({business}:{business:PublicBusiness}){
 export type BusinessDirectoryHandle = { open: (id: string, source: HTMLButtonElement) => void };
 
 export function BusinessDirectory({onProfile,ref}:{onProfile:(name:string)=>void;ref?:Ref<BusinessDirectoryHandle>}){
-  const [records,setRecords]=useState<PublicBusiness[] | null>(process.env.NEXT_PUBLIC_BASE_PATH ? fallbackBusinesses : null);
-  const [catalogError,setCatalogError]=useState('');
-  const [loadAttempt,setLoadAttempt]=useState(0);
+  const [records,setRecords]=useState<PublicBusiness[]>(fallbackBusinesses);
   const businesses=records ?? [];
   const currentPreviewIds=[...businesses.filter(b=>previewIds.includes(b.id)),...businesses.filter(b=>!previewIds.includes(b.id))].slice(0,4).map(b=>b.id);
   useEffect(()=>{
-    if(!localApiAvailable()){setRecords(fallbackBusinesses);return;}
+    if(!localApiAvailable())return;
     const controller=new AbortController();const pending=requestSignal(controller.signal);
-    setCatalogError('');setRecords(null);
     (async()=>{
       const items:PublicBusiness[]=[];let cursor:number|null=0;
       while(cursor!==null){
@@ -76,9 +73,9 @@ export function BusinessDirectory({onProfile,ref}:{onProfile:(name:string)=>void
         items.push(...page.items);cursor=page.next_cursor;
       }
       if(!controller.signal.aborted)setRecords(items.sort((a,b)=>a.name.localeCompare(b.name)));
-    })().catch(()=>{if(!controller.signal.aborted)setCatalogError('The business directory is temporarily unavailable. Please try again.');}).finally(()=>pending.dispose());
+    })().catch(()=>{}).finally(()=>pending.dispose());
     return()=>controller.abort();
-  },[loadAttempt]);
+  },[]);
   const [location,setLocation]=useState('All locations');
   const [category,setCategory]=useState('All sectors');
   const [query,setQuery]=useState('');
@@ -176,8 +173,7 @@ export function BusinessDirectory({onProfile,ref}:{onProfile:(name:string)=>void
     </div>
     <div className={styles.categories} role="group" aria-label="Filter businesses by sector">{categories.map(item=><button key={item} type="button" aria-pressed={category===item} onClick={()=>setCategory(item)}>{item}</button>)}</div>
     </div>
-    <div className={styles.results}><p role="status" aria-live="polite">{records===null?(catalogError?'': 'Loading businesses…'):`${!expanded&&!isFiltered?`Showing ${currentPreviewIds.length} of ${visible.length}`:visible.length} ${visible.length===1?'business':'businesses'} · Select a business to explore`}</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
-    {catalogError&&<div className={styles.empty} role="alert"><p>{catalogError}</p><button type="button" onClick={()=>setLoadAttempt(value=>value+1)}>Try again</button></div>}
+    <div className={styles.results}><p role="status" aria-live="polite">{`${!expanded&&!isFiltered?`Showing ${currentPreviewIds.length} of ${visible.length}`:visible.length} ${visible.length===1?'business':'businesses'} · Select a business to explore`}</p>{isFiltered&&<button type="button" onClick={reset}>Clear filters <Icon kind="close"/></button>}</div>
     <div id="directory-businesses" className={styles.grid} data-preview={!expanded&&!isFiltered}>{visible.map(b=><button id={`business-${b.id}`} key={b.id} hidden={!expanded&&!isFiltered&&!currentPreviewIds.includes(b.id)} type="button" className={`${styles.tile} ${styles.tone}`} data-business={b.id} data-tone={b.visual.tone} data-poster={b.visual.poster} aria-label={`Explore ${b.name}`} aria-haspopup="dialog" data-dialog-control onClick={event=>{trigger.current=event.currentTarget;setSelected(b.id);}}><BrandMark business={b}/>{b.id!=='ilava'&&<span className={styles.preview} data-business-image><BusinessVisual business={b}/></span>}<span className={styles.tileMeta} aria-hidden="true"><span>{b.location}</span><Icon kind="external"/></span></button>)}</div>
     {!isFiltered&&businesses.length>4&&<div className={styles.browse}><button type="button" aria-expanded={expanded} aria-controls="directory-businesses" onClick={event=>{
       const control=event.currentTarget;
@@ -185,10 +181,10 @@ export function BusinessDirectory({onProfile,ref}:{onProfile:(name:string)=>void
       if(expanded)requestAnimationFrame(()=>control.scrollIntoView({block:'center',behavior:'instant'}));
       else requestAnimationFrame(()=>document.getElementById(`business-${businesses.find(b=>!currentPreviewIds.includes(b.id))?.id}`)?.focus());
     }}>{expanded?'Show fewer businesses':`Explore all ${businesses.length} businesses`} <span aria-hidden="true"><Icon kind={expanded ? "minus" : "plus"}/></span></button></div>}
-    {records!==null&&visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="external"/></button></div>}
+    {visible.length===0&&<div className={styles.empty}><h3>No businesses found.</h3><p>Try another name, location or sector.</p><button type="button" onClick={reset}>Show all businesses <Icon kind="external"/></button></div>}
     <div className={styles.directoryFooter}><p>A local business. A wider circle of possibility.</p><Link href="/contact">Ask us for an introduction <Icon kind="external"/></Link></div>
   </div>
     <dialog ref={dialog} className={`${styles.dialog} ${styles.tone}`} data-tone={business?business.visual.tone:undefined} aria-labelledby="business-detail-title" onCancel={event=>{event.preventDefault();closeBusiness();}}>
-    <span className={styles.dialogBrand}>WisConnect</span><button type="button" className={styles.close} data-dialog-control aria-label="Close business details" onClick={()=>closeBusiness()} autoFocus><Icon kind="close"/></button>{business?<div className={`${styles.dialogLayout} ${business.id==='ilava'?styles.ilavaLayout:''} ${business.id==='momentum'||business.id==='bdavis'?styles.officialGalleryLayout:''}`}><div className={`${styles.dialogIdentity} ${business.id==='momentum'?styles.momentumIdentity:''}`}><BrandMark business={business}/><div ref={visual} className={styles.detailVisual}>{business.id==='momentum'||business.id==='bdavis'?<OfficialGallery business={business}/>:<BusinessVisual business={business}/>}</div>{business.visual.image&&<p className={styles.imageCaption}>{business.id==='ilava'?"Photos from ILAVA's website.":business.id==='momentum'?"Photos from Momentum Coffee's website.":business.id==='bdavis'?"Photos from BDavis Designs' website.":'Illustrative imagery for this business sector.'}</p>}</div><div ref={detail} className={styles.detailCopy}><p className={styles.detailMeta}>{business.sector} <span>·</span> {business.location}</p><h2 id="business-detail-title">{business.name}</h2><p className={styles.detailDescription}>{business.description}</p>{business.person&&<p className={styles.owner}>{business.person}</p>}<div className={styles.detailActions}>{business.website&&<a href={business.website} target="_blank" rel="noopener noreferrer">Visit website <Icon kind="external"/></a>}{business.public_email&&<a href={`mailto:${business.public_email}`}>Email this business</a>}{business.public_phone&&<span>{business.public_phone}</span>}<Link href="/contact" aria-label={`Ask WisConnect about ${business.name}`}>Connect with this business <Icon kind="external"/></Link>{business.profile&&<button type="button" onClick={()=>closeBusiness(()=>onProfile(business.profile!))}>Meet {business.profile.split(' ')[0]} <Icon kind="external"/></button>}</div></div></div>:<div className={styles.empty}><h2 id="business-detail-title">{records===null&&!catalogError?'Loading business details…':'Business details unavailable'}</h2><p role="status">{catalogError || (records===null?'Please wait a moment.':'This business is not currently listed.')}</p>{catalogError&&<button type="button" onClick={()=>setLoadAttempt(value=>value+1)}>Try again</button>}</div>}
+    <span className={styles.dialogBrand}>WisConnect</span><button type="button" className={styles.close} data-dialog-control aria-label="Close business details" onClick={()=>closeBusiness()} autoFocus><Icon kind="close"/></button>{business?<div className={`${styles.dialogLayout} ${business.id==='ilava'?styles.ilavaLayout:''} ${business.id==='momentum'||business.id==='bdavis'?styles.officialGalleryLayout:''}`}><div className={`${styles.dialogIdentity} ${business.id==='momentum'?styles.momentumIdentity:''}`}><BrandMark business={business}/><div ref={visual} className={styles.detailVisual}>{business.id==='momentum'||business.id==='bdavis'?<OfficialGallery business={business}/>:<BusinessVisual business={business}/>}</div>{business.visual.image&&<p className={styles.imageCaption}>{business.id==='ilava'?"Photos from ILAVA's website.":business.id==='momentum'?"Photos from Momentum Coffee's website.":business.id==='bdavis'?"Photos from BDavis Designs' website.":'Illustrative imagery for this business sector.'}</p>}</div><div ref={detail} className={styles.detailCopy}><p className={styles.detailMeta}>{business.sector} <span>·</span> {business.location}</p><h2 id="business-detail-title">{business.name}</h2><p className={styles.detailDescription}>{business.description}</p>{business.person&&<p className={styles.owner}>{business.person}</p>}<div className={styles.detailActions}>{business.website&&<a href={business.website} target="_blank" rel="noopener noreferrer">Visit website <Icon kind="external"/></a>}{business.public_email&&<a href={`mailto:${business.public_email}`}>Email this business</a>}{business.public_phone&&<span>{business.public_phone}</span>}<Link href="/contact" aria-label={`Ask WisConnect about ${business.name}`}>Connect with this business <Icon kind="external"/></Link>{business.profile&&<button type="button" onClick={()=>closeBusiness(()=>onProfile(business.profile!))}>Meet {business.profile.split(' ')[0]} <Icon kind="external"/></button>}</div></div></div>:<div className={styles.empty}><h2 id="business-detail-title">Business details unavailable</h2><p role="status">This business is not currently listed.</p></div>}
   </dialog></section>;
 }
