@@ -885,6 +885,7 @@
 .page[data-home-system] :global(#community-projects),
 .page[data-home-system] :global(#impact),
 .page[data-home-system] :global(#member-stories),
+.page[data-home-system] :global(#join),
 .page[data-home-system] :global(.site-footer) {
   width: calc(100% - 2 * var(--surface-inset));
   margin: var(--surface-inset) auto;
@@ -892,11 +893,11 @@
 }
 .page[data-home-system] :global(#what-we-do) { background: var(--mist); }
 .page[data-home-system] :global(#business-directory) { background: #eee6f3; }
+.page[data-home-system] :global(#join) { background: #0b090d; }
 .page[data-home-system] :global(#members),
 .page[data-home-system] :global(#purpose),
 .page[data-home-system] :global(#businesses),
 .page[data-home-system] :global(#faq),
-.page[data-home-system] :global(#join),
 .page[data-home-system] .hero { background: var(--sand); }
 .page[data-home-system] .heroArt { background: var(--sand); }
 .page[data-home-system] :global(#community-projects),

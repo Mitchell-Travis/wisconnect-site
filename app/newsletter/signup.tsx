@@ -7,7 +7,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { newsletterAvailable, newsletterRequest } from './api';
 import styles from './signup.module.css';
 
-export function NewsletterSignup() {
+export function NewsletterSignup({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
   const [available, setAvailable] = useState(false);
   const [email, setEmail] = useState('');
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
@@ -20,7 +20,7 @@ export function NewsletterSignup() {
     try { await newsletterRequest('subscribe', { email, consent: true }); setState('sent'); }
     catch (failure) { setError(failure instanceof Error ? failure.message : 'Please try again.'); setState('error'); }
   }
-  return <div className={styles.signup}>
+  return <div className={`${styles.signup} ${tone === 'dark' ? styles.dark : ''}`}>
     <h3>Stay connected.</h3>
     <p className={styles.description}>Stories, news and opportunities from WisConnect, straight to your inbox.</p>
     {state === 'sent' ? <div role="status" className={styles.success}><strong>Check your inbox.</strong><p>If this address needs confirmation, you’ll receive a link. Click it to join the list.</p><p className={styles.note}><LocalInboxLink>Open the local test inbox <Icon kind="external" size={16}/></LocalInboxLink></p><button type="button" className={styles.reset} onClick={() => {setState('idle'); setEmail('');}}>Use another email</button></div> : <form onSubmit={submit}>

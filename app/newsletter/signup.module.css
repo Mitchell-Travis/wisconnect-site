@@ -18,6 +18,23 @@
 .success a,.reset{text-decoration:underline;text-underline-offset:3px}
 .reset{font:inherit;font-size:12px;background:none;border:0;color:#4b2e68;padding:8px 0;cursor:pointer}
 @media(max-width:450px){.controls{flex-direction:column}}
+.dark{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-areas:"title form" "description form";column-gap:48px;row-gap:8px;align-items:start}
+.dark h3{grid-area:title;align-self:end;color:#fff9ef;font-size:clamp(28px,3vw,36px)}
+.dark .description{grid-area:description;margin:0;color:#d2c8d5;font-size:14px}
+.dark form,.dark .success{grid-area:form;align-self:center}
+.dark label{color:#f4edf6}
+.dark .controls input{background:transparent;border-color:rgba(255,249,239,.48);color:#fff9ef}
+.dark .controls button{background:#e8c875;color:#241a28;border-radius:999px}
+.dark .controls button:hover{background:#f3d995}
+.dark :focus-visible{outline-color:#e8c875}
+.dark input:focus{border-color:#e8c875;outline-color:#e8c875}
+.dark .note{color:#c9bece}
+.dark .error{color:#ffb2bc}
+.dark .success strong{color:#f2ce7e}
+.dark .success p{color:#e0d7e4}
+.dark .success a,.dark .reset{color:#f2ce7e}
+@media(max-width:760px){.dark{grid-template-columns:1fr;grid-template-areas:"title" "description" "form";row-gap:7px;text-align:center}.dark .description{margin-inline:auto}.dark form,.dark .success{margin-top:12px;text-align:left}}
+@media(max-width:450px){.dark .controls button{align-self:flex-start}}
 .page{min-height:100vh;background:#f3edf5;color:#291833}
 .panel{margin:80px auto;padding:40px;background:#fffcf7;width:min(540px,calc(100% - 32px));border-radius:8px}
 .panel h1{font-size:40px;line-height:1.1}.panel p{line-height:1.6}.panel .action{margin:24px 0}.panel>a{font-size:14px;text-decoration:underline;text-underline-offset:4px}
