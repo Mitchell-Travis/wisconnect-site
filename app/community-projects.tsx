@@ -31,11 +31,19 @@ export function CommunityProjects(){
     const stack=storyStack.current;
     if(!stack||desktop)return;
     const cards=Array.from(stack.querySelectorAll<HTMLElement>('[data-story-index]'));
+    const visibleCards=new Map<Element,IntersectionObserverEntry>();
     const observer=new IntersectionObserver(entries=>{
-      const visible=entries.filter(entry=>entry.isIntersecting)
-        .sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+      entries.forEach(entry=>{
+        if(entry.isIntersecting)visibleCards.set(entry.target,entry);
+        else visibleCards.delete(entry.target);
+      });
+      const visible=[...visibleCards.values()]
+        .sort((a,b)=>
+          b.intersectionRect.width*b.intersectionRect.height-
+          a.intersectionRect.width*a.intersectionRect.height
+        )[0];
       if(visible)setActive(Number((visible.target as HTMLElement).dataset.storyIndex));
-    },{threshold:[.4,.55,.7],rootMargin:'-12% 0px -18% 0px'});
+    },{threshold:[0,.2,.4,.6,.8,1],rootMargin:'-22% 0px -22% 0px'});
     cards.forEach(card=>observer.observe(card));
     return()=>observer.disconnect();
   },[desktop]);
@@ -58,7 +66,7 @@ export function CommunityProjects(){
               <span className={styles.shade} aria-hidden="true"/>
               <span className={styles.place}>{item.place}</span>
               <span className={styles.imageLabel}>{item.imageLabel}</span>
-              <span className={styles.cardTitle}>{cardLabels[index]??item.title}</span>
+              <span className={styles.cardTitle}>{expanded?item.title:(cardLabels[index]??item.title)}</span>
             </button>
             <motion.div id={`project-panel-${item.id}`} className={styles.details} role="region" aria-labelledby={`project-heading-${item.id}`} aria-hidden={!expanded} inert={!expanded}
               initial={false} animate={{opacity:expanded?1:0,y:expanded?0:14}} transition={{duration:reducedMotion?0:.3,ease:[.22,1,.36,1]}}>

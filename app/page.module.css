@@ -929,6 +929,10 @@
   .page[data-home-system] .involvementCredit { right: var(--surface-content-inset); }
 }
 
+@media (max-width: 959px) {
+  .page[data-home-system] :global(#community-projects) { background: #17131b; }
+}
+
 @media (max-width: 980px) {
   .page[data-home-system] { --layout-gutter: 36px; --section-space-y: 80px; --type-section: 40px; }
 }
@@ -941,6 +945,14 @@
     --section-content-gap: 28px;
     --type-section: 32px;
     --type-section-copy: 16px;
+  }
+  .page[data-home-system] :global(#community-projects) {
+    --surface-inset: 0px;
+    --surface-radius: 0px;
+    width: 100%;
+    margin-inline: 0;
+    border-radius: 0;
+    background: #17131b;
   }
   .page[data-home-system] .navShell { width: 100%; padding-inline: var(--layout-gutter); }
   .page[data-home-system] .heroLede { font-size: 18px; }
