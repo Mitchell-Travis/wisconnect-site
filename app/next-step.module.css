@@ -145,6 +145,11 @@
   padding: 38px 0 8px;
 }
 
+.connection form {
+  width: 100%;
+  max-width: 560px;
+}
+
 .otherSteps {
   display: flex;
   align-items: center;
@@ -370,6 +375,10 @@
   .connection {
     margin-top: 18px;
     padding: 28px 0 8px;
+  }
+
+  .connection form {
+    max-width: none;
   }
 
   .section::before {

@@ -209,7 +209,7 @@
     margin: 0;
     border-radius: 0;
     overflow: visible;
-    background: #17131b;
+    background: #0b090d;
     color: #fff;
   }
   .section :global(.shell) {
@@ -295,7 +295,7 @@
     flex-direction: column;
     justify-content: center;
     padding: 14px 18px;
-    background: #17131b;
+    background: #0b090d;
     pointer-events: none;
   }
   .details::before { display: none; }
