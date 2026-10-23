@@ -60,6 +60,25 @@ const navigationMenus = [
   ]},
   allNavigationMenus[4]
 ];
+const mobileNavigationMenus = [
+  {id:'explore',label:'Explore',links:[
+    {label:'Mission & vision',href:'#purpose'},
+    {label:'The cooperative model',href:'#cooperative-model'},
+    {label:'Meet the visionaries',href:'#members'},
+    {label:'Business directory',href:'#business-directory'},
+    {label:'Chicago business sectors',href:'#businesses'},
+    {label:'Member stories',href:'#member-stories'},
+    {label:'Impact & connections',href:'#impact'},
+    {label:'Services & support',href:'#what-we-do'},
+    {label:'Community projects',href:'#community-projects'}
+  ]},
+  {id:'connect',label:'Connect',links:[
+    {label:'How to get involved',href:'#get-involved'},
+    {label:'Membership interest',href:'/join'},
+    {label:'Contact WisConnect',href:'/contact'},
+    {label:'Frequently asked questions',href:'#faq'}
+  ]}
+] as const;
 const networkStories = [
   {image:'enterprise',category:'Enterprise',title:'Made by her. Ready for more.',description:'A good product is a beginning. The next chapter takes connections, practical support and room to grow.',alt:'A woman sewing fabric at her workshop table',position:'65% center',credit:'Joaquin Reyes Ramos',source:'https://www.pexels.com/photo/african-woman-sewing-fabric-with-vintage-machine-37409120/',paragraphs:[
     'Picture the work behind a finished garment: choosing the cloth, cutting the pattern, stitching the seams and finding the person who will wear it. The maker brings the skill. Building a business around that skill asks something more of her every day.',
@@ -313,6 +332,7 @@ export default function Home(){
   },[]);
   const [menuOpen,setMenuOpen]=useState(false);
   const [activeNav,setActiveNav]=useState<number|null>(null);
+  const [mobileNavOpen,setMobileNavOpen]=useState<'explore'|'connect'|null>(null);
   const navHover=useRef(false);
   const navFocus=useRef<string|null>(null);
   const navCloseTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
@@ -444,7 +464,7 @@ export default function Home(){
       const y=Math.max(0,Math.min(window.scrollY,document.documentElement.scrollHeight-window.innerHeight));
       const delta=y-previousY;
       previousY=y;
-      setScrolled(y>96);
+      setScrolled(y>(desktop.matches?96:32));
       const nav=header.current;
       const interacting=nav?.dataset.submenuOpen==='true'||nav?.querySelector('details[open], :focus-visible');
       if(!desktop.matches||y<=160||interacting){
@@ -511,7 +531,7 @@ export default function Home(){
       if(dialog?.open)dialog.close();
     };
   },[selectedMember,selectedStory]);
-  const close=()=>{cancelNavClose();setMenuOpen(false);setActiveNav(null);if(languagePicker.current)languagePicker.current.open=false};
+  const close=()=>{cancelNavClose();setMenuOpen(false);setActiveNav(null);setMobileNavOpen(null);if(languagePicker.current)languagePicker.current.open=false};
   return <MotionConfig reducedMotion="user"><div className={styles.page} data-home-system data-nav-scrolled={scrolled} style={backgroundAssets} onPointerDownCapture={event=>{event.currentTarget.dataset.inputMethod='pointer';}} onKeyDownCapture={event=>{if(!['Shift','Control','Alt','Meta'].includes(event.key))event.currentTarget.dataset.inputMethod='keyboard';}}>
     <a className={styles.skipLink} href="#main-content">Skip to content</a>
     {announcementOpen&&<aside className={`${styles.announcement} ${announcementFont.className}`} aria-label="WisConnect announcement">
@@ -521,16 +541,20 @@ export default function Home(){
       </div>
       <button type="button" aria-label="Dismiss announcement" onClick={()=>{setAnnouncementOpen(false);header.current?.querySelector<HTMLAnchorElement>('a')?.focus({preventScroll:true});}}><Icon kind="close" size={16}/></button>
     </aside>}
-    {(activeNav!==null||menuOpen)&&<div className={styles.navBackdrop} aria-hidden="true" onPointerDown={close}/>}
+    {(activeNav!==null||menuOpen||mobileNavOpen!==null)&&<div className={styles.navBackdrop} aria-hidden="true" onPointerDown={close}/>}
     <header ref={header} className={styles.header} data-scrolled={scrolled} data-hidden={navHidden&&activeNav===null&&!menuOpen} data-menu-open={menuOpen} data-submenu-open={activeNav!==null}
       onFocusCapture={()=>setNavHidden(false)}
       onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))close()}}
       onKeyDown={event=>{
-        if(event.key==='Escape'){if(activeNav!==null){event.preventDefault();cancelNavClose();backToNavigation();}else if(menuOpen){close();menuButton.current?.focus();}}
+        if(event.key==='Escape'){if(mobileNavOpen!==null){event.preventDefault();const target=mobileNavOpen;close();document.getElementById(`mobile-nav-${target}`)?.focus();}else if(activeNav!==null){event.preventDefault();cancelNavClose();backToNavigation();}else if(menuOpen){close();menuButton.current?.focus();}}
         if(event.key==='Tab'&&menuOpen){const items=Array.from(event.currentTarget.querySelectorAll<HTMLElement>('a[href],button:not(:disabled),summary')).filter(el=>el.getClientRects().length>0&&getComputedStyle(el).visibility==='visible');const first=items[0],last=items.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}
       }}>
       <div className={styles.navShell}>
         <a className={styles.brand} href="#top" aria-label="WisConnect home" onClick={close}><img src={assetPath('logo-nav.webp')} alt="WisConnect" width="480" height="160"/></a>
+        <nav className={styles.mobileQuickNav} aria-label="Mobile navigation">
+          <a className={`${styles.mobileNavHome} ${styles.mobileNavActive}`} href="#top" aria-current="page" onClick={close}>Home</a>
+          {mobileNavigationMenus.map(menu=><button id={`mobile-nav-${menu.id}`} key={menu.id} type="button" className={styles.mobileNavTrigger} aria-expanded={mobileNavOpen===menu.id} aria-controls={`mobile-nav-panel-${menu.id}`} onClick={()=>setMobileNavOpen(current=>current===menu.id?null:menu.id)}>{menu.label}<Icon kind="chevronDown"/></button>)}
+        </nav>
         <button ref={menuButton} className={styles.menuToggle} type="button" onClick={()=>{if(menuOpen)close();else setMenuOpen(true);}} aria-controls="primary-navigation" aria-expanded={menuOpen} aria-label={menuOpen?'Close navigation':'Open navigation'}><Icon kind={menuOpen ? "close" : "menu"}/></button>
         {activeNav!==null&&<button type="button" className={styles.navBack} onClick={backToNavigation}><ArrowDownIcon/> Back</button>}
         <div id="primary-navigation" className={styles.navPanel} data-open={menuOpen}>
@@ -566,12 +590,16 @@ export default function Home(){
         </details>
         <div className={styles.mobileNavActions}><Link href="/join" onClick={close}>Membership interest <ArrowUpRightIcon/></Link><Link href="/contact" onClick={close}>Contact us</Link></div>
         </div>
+        {mobileNavigationMenus.map(menu=><div key={menu.id} id={`mobile-nav-panel-${menu.id}`} className={styles.mobileQuickPanel} aria-labelledby={`mobile-nav-${menu.id}`} hidden={mobileNavOpen!==menu.id}>
+          <p>{menu.id==='explore'?'Explore WisConnect':'Start a conversation'}</p>
+          <ul>{menu.links.map(link=><li key={link.label}><a href={link.href} onClick={close}>{link.label}<ArrowUpRightIcon/></a></li>)}</ul>
+        </div>)}
         <Link className={styles.navContact} href="/contact" onClick={close}>Contact</Link>
         <Link className={styles.navJoin} href="/join" onClick={close}>Membership <ArrowUpRightIcon/></Link>
       </div>
     </header>
 
-    <main id="main-content" tabIndex={-1} inert={menuOpen}>
+    <main id="main-content" tabIndex={-1} inert={menuOpen||mobileNavOpen!==null}>
     <section id="top" className={styles.hero} aria-labelledby="hero-title">
       <div className="hero-textile-ribbon" aria-hidden="true"/>
       <div className={styles.heroGrid}>
