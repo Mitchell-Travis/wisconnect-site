@@ -8,7 +8,10 @@ export function localApiAvailable() {
 
 export function localApiUrl(path: string) {
   if (!localApiAvailable()) throw new Error('This service is available in the local preview only.');
-  return window.location.origin === 'http://localhost:3000' ? `http://localhost:8001${path}` : path;
+  if (window.location.origin !== 'http://localhost:3000') return path;
+  // Keep browser requests same-origin; Next proxies them to the loopback API.
+  // Auth stays at /auth so its HttpOnly cookie keeps the correct path.
+  return path.startsWith('/auth/') ? path : `/_local_api${path}`;
 }
 
 export function requestSignal(parent?: AbortSignal, timeoutMs = 15000) {

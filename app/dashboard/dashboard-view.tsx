@@ -6,6 +6,7 @@ import Reports from './reports';
 import Team from './team';
 import {can, staff, accessLabel, type WorkspaceUser} from '../workspace-access';
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import localFont from "next/font/local";
 import { useEffect, useRef, useState } from "react";
 import { assetPath } from "../assets";
@@ -27,6 +28,10 @@ const inter = localFont({ src: "./fonts/InterVariable.woff2", weight: "100 900",
 
 export type { View } from "./sections";
 type User = WorkspaceUser;
+const adminCoreItems = ["applications", "inquiries", "members", "businesses", "reports", "team"] as const;
+const adminDevelopmentItems = ["payments", "projects", "documents"] as const;
+const adminItemLabel = (key: View) => key === "payments" ? "Finance" : key === "team" ? "Team & access" : key === "applications" ? "Applications" : sections[key as SectionKey].title;
+const adminItemIcon = (key: View) => key === "team" ? "shield" : sections[key as SectionKey].icon;
 
 export default function DashboardView({ user, busy, error, onSignOut, view, onViewChange, onProfileSaved, loadInvitations, sendInvitation, revokeInvitation, loadInquiries, retryInquiryEmail }: {
   user: User; busy: boolean; error: string; onSignOut: () => void;
@@ -51,20 +56,32 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
   const mobileMenu = useRef<HTMLDialogElement>(null);
   const mobileMenuButton = useRef<HTMLButtonElement>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [overviewDate, setOverviewDate] = useState("");
+  const [greeting, setGreeting] = useState("Welcome back");
+  const [adminDevelopmentOpen, setAdminDevelopmentOpen] = useState(() => ["payments", "investments", "projects", "documents"].includes(view));
+  const [navTooltip, setNavTooltip] = useState<{label: string; top: number; left: number} | null>(null);
   const [openPanel, setOpenPanel] = useState<"account" | "notifications" | null>(null);
   const panelTrigger = useRef<HTMLButtonElement | null>(null);
   const isStaff = staff(user);
   const staffItems: View[] = ([["businesses", "businesses.edit"], ["applications", "applications.review"], ["inquiries", "inquiries.manage"], ["invitations", "invitations.manage"], ["reports", "reports.view"]] as const).filter(([, permission]) => can(user, permission)).map(([key]) => key);
   const navInfo = (key: View) => key === "invitations" ? {title: "Invitations", icon: "email" as const} : sections[key as SectionKey];
-  const mobileSections: readonly View[] = isStaff ? staffItems : user.role === "admin" ? (["members", "inquiries", "businesses", "reports", "team", "payments", "projects", "documents"] as const) : memberItems;
+  const mobileSections: readonly View[] = isStaff ? staffItems : memberItems;
   const firstName = user.name.trim().split(/\s+/)[0];
   const preview = view in sections ? sections[view as SectionKey] : null;
-  const memberArea = ["members", "applications", "invitations"].includes(view);
+  const memberArea = ["members", "invitations"].includes(view);
   const financeArea = ["payments", "investments"].includes(view);
+  const developmentArea = ["payments", "investments", "projects", "documents"].includes(view);
   const activeItem = user.role === "admin" && memberArea ? "members" : financeArea ? "payments" : view;
   const initials = user.name.trim().split(/\s+/).slice(0, 2).map(part => Array.from(part)[0]).join("").toUpperCase();
   const role = accessLabel(user);
   const pageTitle = preview ? preview.title : view === "home" ? "Overview" : view === "account" ? "Settings" : view === "invitations" ? "Invitations" : "Support";
+
+  useEffect(() => {
+    if (view !== "home" || user.role !== "admin") return;
+    const now = new Date();
+    setOverviewDate(new Intl.DateTimeFormat(undefined, {weekday: "long", month: "long", day: "numeric"}).format(now));
+    setGreeting(now.getHours() < 12 ? "Good morning" : now.getHours() < 18 ? "Good afternoon" : "Good evening");
+  }, [view, user.role]);
 
   useEffect(() => {
     const close = () => { setOpenPanel(null); mobileMenu.current?.close(); };
@@ -116,28 +133,41 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
 
   function selectView(next: View, status: "all" | "new" = "all") {
     setApplicationStatus(status);
+    if (["payments", "investments", "projects", "documents"].includes(next)) setAdminDevelopmentOpen(true);
     setOpenPanel(null);
     mobileMenu.current?.close();
     onViewChange(next);
     requestAnimationFrame(() => { workspace.current?.scrollTo(0, 0); if (innerWidth < 640) window.scrollTo(0, 0); heading.current?.focus({ preventScroll: true }); });
   }
 
+  function showNavTooltip(target: EventTarget | null) {
+    if (!sidebarCollapsed || !(target instanceof Element)) return;
+    const button = target.closest<HTMLButtonElement>("button[data-tooltip]");
+    if (!button) return;
+    const rect = button.getBoundingClientRect();
+    const label = button.dataset.tooltip;
+    if (label) setNavTooltip(current => current?.label === label && current.top === rect.top + rect.height / 2 ? current : {label, top: rect.top + rect.height / 2, left: rect.right + 8});
+  }
+
   return <div className={`${inter.className} ${styles.dashboard}`} data-dashboard-view={view} data-sidebar-collapsed={sidebarCollapsed}>
     <a className={styles.skip} href="#dashboard-content">Skip to dashboard</a>
     <aside className={styles.sidebar} aria-label="Member workspace">
       <Link className={styles.brand} href="/" aria-label="WisConnect home"><img src={assetPath("logo-horizontal.webp")} alt="WisConnect" width="154" height="36" /><span className={styles.brandMark} aria-hidden="true">W</span></Link>
-      <button className={styles.sidebarToggle} type="button" aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} aria-expanded={!sidebarCollapsed} aria-controls="dashboard-navigation" onClick={() => setSidebarCollapsed(value => !value)}><Icon kind="sidebar"/><span className={styles.navText}>Collapse sidebar</span></button>
+      <button className={styles.sidebarToggle} type="button" aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} aria-expanded={!sidebarCollapsed} aria-controls="dashboard-navigation" onClick={() => { setNavTooltip(null); setSidebarCollapsed(value => !value); }}><Icon kind="sidebar"/><span className={styles.navText}>Collapse sidebar</span></button>
       <div className={styles.workspaceIdentity}><span className={styles.workspaceMark} aria-hidden="true">W</span><span className={styles.navText}><strong>WisConnect</strong><small>{user.role === "admin" || isStaff ? "Cooperative workspace" : "Member workspace"}</small></span></div>
-      <nav id="dashboard-navigation" className={styles.navigation} aria-label="Dashboard navigation">
-        <button type="button" aria-label="Overview" title="Overview" aria-current={view === "home" ? "page" : undefined} onClick={() => selectView("home")}><Icon kind="home" /><span className={styles.navText}>Overview</span></button>
+      <nav id="dashboard-navigation" className={styles.navigation} aria-label="Dashboard navigation" onPointerOver={event => showNavTooltip(event.target)} onPointerLeave={() => setNavTooltip(null)} onFocus={event => showNavTooltip(event.target)} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setNavTooltip(null); }} onScroll={() => setNavTooltip(null)}>
+        <button type="button" data-tooltip="Overview" aria-label="Overview" aria-current={view === "home" ? "page" : undefined} onClick={() => selectView("home")}><Icon kind="home" /><span className={styles.navText}>Overview</span></button>
         {user.role === "admin" ? <>
-          {(["members", "inquiries", "businesses", "reports"] as const).map(key => <button key={key} type="button" aria-label={sections[key].title} title={sections[key].title} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={sections[key].icon} /><span className={styles.navText}>{sections[key].title}</span></button>)}
-          <button type="button" aria-label="Team & access" title="Team & access" aria-current={view === "team" ? "page" : undefined} onClick={() => selectView("team")}><Icon kind="shield"/><span className={styles.navText}>Team & access</span></button><p className={`${styles.navigationLabel} ${styles.navText}`}>In development</p>
-          {(["payments", "projects", "documents"] as const).map(key => <button key={key} type="button" aria-label={key === "payments" ? "Finance" : sections[key].title} title={`${key === "payments" ? "Finance" : sections[key].title} · In development`} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={sections[key].icon} /><span className={styles.navText}>{key === "payments" ? "Finance" : sections[key].title}</span></button>)}
-
-        </> : isStaff ? <>{staffItems.map(key => <button key={key} type="button" aria-current={view === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={navInfo(key).icon}/><span className={styles.navText}>{navInfo(key).title}</span></button>)}</> : <><p className={`${styles.navigationLabel} ${styles.navText}`}>In development</p>{memberItems.map(key => <button key={key} type="button" aria-label={sections[key].title} title={sections[key].title} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={sections[key].icon} /><span className={styles.navText}>{sections[key].title}</span></button>)}</>}
+          <div role="group" aria-label="Core admin menu">
+            {adminCoreItems.map(key => <button key={key} type="button" data-tooltip={adminItemLabel(key)} aria-label={adminItemLabel(key)} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={adminItemIcon(key)} /><span className={styles.navText}>{adminItemLabel(key)}</span></button>)}
+          </div>
+          <button className={styles.navigationMore} type="button" data-tooltip="In development" aria-label="In development" aria-expanded={adminDevelopmentOpen} aria-controls="admin-development-navigation" data-active={developmentArea || undefined} onClick={() => setAdminDevelopmentOpen(open => !open)}><Icon kind="more"/><span className={styles.navText}>In development</span><Icon className={styles.moreChevron} kind="chevron"/></button>
+          <div id="admin-development-navigation" className={styles.navigationSubmenu} role="group" aria-label="In development" hidden={!adminDevelopmentOpen}>
+            {adminDevelopmentItems.map(key => <button key={key} type="button" data-tooltip={`${adminItemLabel(key)} · In development`} aria-label={`${adminItemLabel(key)}, in development`} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={adminItemIcon(key)} /><span className={styles.navText}>{adminItemLabel(key)}</span></button>)}
+          </div>
+        </> : isStaff ? <>{staffItems.map(key => <button key={key} type="button" data-tooltip={navInfo(key).title} aria-label={navInfo(key).title} aria-current={view === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={navInfo(key).icon}/><span className={styles.navText}>{navInfo(key).title}</span></button>)}</> : <><p className={`${styles.navigationLabel} ${styles.navText}`}>In development</p>{memberItems.map(key => <button key={key} type="button" data-tooltip={sections[key].title} aria-label={sections[key].title} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={sections[key].icon} /><span className={styles.navText}>{sections[key].title}</span></button>)}</>}
         <div className={styles.navigationDivider}/>
-        <button type="button" aria-label="Help & support" title="Help & support" aria-current={view === "help" ? "page" : undefined} onClick={() => selectView("help")}><Icon kind="help" /><span className={styles.navText}>Help & support</span></button>
+        <button type="button" data-tooltip="Help & support" aria-label="Help & support" aria-current={view === "help" ? "page" : undefined} onClick={() => selectView("help")}><Icon kind="help" /><span className={styles.navText}>Help & support</span></button>
       </nav>
       <div className={styles.sidebarAccount}>
         <button ref={accountButton} className={styles.identity} type="button" aria-controls="account-menu" onClick={event => togglePanel("account", event.currentTarget)} aria-label={`Account menu for ${user.name}`} aria-haspopup="menu" aria-expanded={openPanel === "account"} onKeyDown={event => {
@@ -183,7 +213,13 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
       <div className={styles.mobileMenuIdentity}><span className={styles.avatar} aria-hidden="true">{initials}</span><h2>{user.name}</h2><p>{user.email}</p></div>
       <nav className={styles.mobileMenuLinks} aria-label="Mobile workspace navigation">
         <button type="button" aria-current={view === "home" ? "page" : undefined} onClick={() => selectView("home")}><Icon kind="home"/><span>Overview</span><Icon kind="chevron"/></button>
-        {mobileSections.map((key, index) => <div key={key} className={styles.mobileNavItem}>{!isStaff && index === (user.role === "admin" ? 5 : 0) && <p className={styles.mobileNavigationLabel}>In development</p>}<button key={key} type="button" aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={navInfo(key).icon}/><span>{key === "payments" ? "Finance" : key === "team" ? "Team & access" : navInfo(key).title}</span><Icon kind="chevron"/></button></div>)}
+        {user.role === "admin" ? <>
+          <div role="group" aria-label="Core admin menu">
+            {adminCoreItems.map(key => <button key={key} type="button" aria-label={adminItemLabel(key)} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={adminItemIcon(key)}/><span>{adminItemLabel(key)}</span><Icon kind="chevron"/></button>)}
+          </div>
+          <button className={styles.mobileDevelopmentToggle} type="button" aria-label="In development" aria-expanded={adminDevelopmentOpen} aria-controls="mobile-admin-development-navigation" data-active={developmentArea || undefined} onClick={() => setAdminDevelopmentOpen(open => !open)}><Icon kind="more"/><span>In development</span><Icon className={styles.moreChevron} kind="chevron"/></button>
+          <div id="mobile-admin-development-navigation" className={styles.mobileDevelopmentItems} role="group" aria-label="In development" hidden={!adminDevelopmentOpen}>{adminDevelopmentItems.map(key => <button key={key} type="button" aria-label={`${adminItemLabel(key)}, in development`} aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={adminItemIcon(key)}/><span>{adminItemLabel(key)}</span><Icon kind="chevron"/></button>)}</div>
+        </> : mobileSections.map((key, index) => <div key={key} className={styles.mobileNavItem}>{!isStaff && index === 0 && <p className={styles.mobileNavigationLabel}>In development</p>}<button type="button" aria-current={activeItem === key ? "page" : undefined} onClick={() => selectView(key)}><Icon kind={navInfo(key).icon}/><span>{navInfo(key).title}</span><Icon kind="chevron"/></button></div>)}
         <p className={styles.mobileNavigationLabel}>Your account</p>
         <button type="button" aria-current={view === "account" ? "page" : undefined} onClick={() => selectView("account")}><Icon kind="settings"/><span>Account settings</span><Icon kind="chevron"/></button>
       </nav>
@@ -205,11 +241,12 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
             <a href="#account-support"><Icon kind="help" />Support</a>
           </div>
         </div>}
-        <header className={styles.heading}>
-          <div><h1 ref={heading} tabIndex={-1}><span className={styles.desktopPageTitle}>{view === "account" ? "Account settings" : pageTitle}</span><span className={styles.mobilePageTitle}>{view === "home" ? `Hi, ${firstName}` : view === "account" ? "Account settings" : pageTitle}</span></h1>
-            {view !== "account" && <p><span className={styles.desktopPageSubtitle}>{preview ? preview.subtitle : view === "home" ? (user.role === "admin" ? "Review introductions and keep your cooperative connected." : "Your account and cooperative information.") : view === "invitations" ? "Manage access invitations." : "Account help and cooperative information."}</span><span className={styles.mobilePageSubtitle}>{view === "home" ? "Your workspace" : preview?.subtitle || (view === "invitations" ? "Manage access invitations." : "Account help and cooperative information.")}</span></p>}
+        <header className={`${styles.heading} ${view === "home" && user.role === "admin" ? styles.overviewHero : ""}`}>
+          <div className={styles.overviewWelcome}>{view === "home" && user.role === "admin" && <p className={styles.overviewDate}>{overviewDate}</p>}<h1 ref={heading} tabIndex={-1}><span className={styles.desktopPageTitle}>{view === "account" ? "Account settings" : view === "home" && user.role === "admin" ? `${greeting}, ${firstName}` : pageTitle}</span><span className={styles.mobilePageTitle}>{view === "home" ? `Hi, ${firstName}` : view === "account" ? "Account settings" : pageTitle}</span></h1>
+            {view !== "account" && <p><span className={styles.desktopPageSubtitle}>{preview ? preview.subtitle : view === "home" ? (user.role === "admin" ? "Here’s what’s happening across WisConnect." : "Your account and cooperative information.") : view === "invitations" ? "Manage access invitations." : "Account help and cooperative information."}</span><span className={styles.mobilePageSubtitle}>{view === "home" ? "Your workspace" : preview?.subtitle || (view === "invitations" ? "Manage access invitations." : "Account help and cooperative information.")}</span></p>}
           </div>
           {can(user,"invitations.manage") && view === "home" && <button className={styles.primaryAction} type="button" onClick={() => setInviteOpen(true)}>Invite member <Icon kind="plus" /></button>}
+          {view === "home" && user.role === "admin" && <div className={styles.overviewVisual} aria-hidden="true"><img src={assetPath("cooperative-shop.jpg")} alt="" width="1600" height="1067" /></div>}
         </header>
         {error && <p className={styles.error} role="alert">{error}</p>}
         {user.role === "admin" && memberArea && <MemberNavigation view={view} onViewChange={selectView} onInvite={() => setInviteOpen(true)}/>}
@@ -249,6 +286,7 @@ export default function DashboardView({ user, busy, error, onSignOut, view, onVi
         <p className={styles.localNote}>WisConnect member workspace <span aria-hidden="true">·</span> Local development</p>
       </div>
     </main>
+    {sidebarCollapsed && navTooltip && typeof document !== "undefined" ? createPortal(<div className={styles.navTooltip} role="tooltip" style={{top: navTooltip.top, left: navTooltip.left}}>{navTooltip.label}</div>, document.body) : null}
     {inviteOpen && can(user,"invitations.manage") && <InviteDialog sendInvitation={sendInvitation} onSent={() => setInvitationsVersion(value => value + 1)} onClose={() => setInviteOpen(false)} />}
   </div>;
 }

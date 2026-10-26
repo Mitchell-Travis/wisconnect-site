@@ -67,20 +67,22 @@
 .brandMark[data-business=momentum] .wordmark { font-family: var(--font-sans); font-weight: 750; letter-spacing: -.065em; }
 .brandMark[data-business=momentum] .officialLogo { display: block; width: min(100%,300px); height: auto; }
 .brandMark[data-business=ilava] .officialLogo { display: block; width: min(100%,420px); height: auto; }
+.brandMark[data-business=bdavis] .officialLogo { display: block; width: min(100%,560px); height: auto; }
 .tile[data-business=momentum] .brandMark { display: none; }
 .tile[data-business=momentum] .preview { inset: 0; border-radius: 8px; background: #fff; }
 .tile[data-business=momentum] .preview::after { display: none; }
-.tile[data-business=ilava] { align-items: center; justify-content: center; background: #fffaf4; }
-.tile[data-business=ilava] .brandMark { display: grid; place-items: center; width: min(82%,440px); }
-.tile[data-business=ilava] .brandMark .officialLogo { width: 100%; }
-.tile[data-business=ilava] .tileMeta { color: var(--plum); }
+.tile:is([data-business=ilava],[data-business=bdavis]) { background: #fff; color: var(--plum); }
+.tile:is([data-business=ilava],[data-business=bdavis]) .brandMark { position: absolute; inset: 0; display: grid; place-items: center; width: 100%; height: 100%; padding: 28px 28px 56px; background: #fff; }
+.tile:is([data-business=ilava],[data-business=bdavis]) .brandMark .officialLogo { width: 100%; height: 100%; object-fit: contain; }
+.tile:is([data-business=ilava],[data-business=bdavis]) .tileMeta { color: var(--plum); }
+.tile[data-business=bdavis] .preview { display: none; }
 .momentumVisual { display: grid; width: 100%; height: 100%; place-items: center; padding: clamp(16px,4vw,36px); }
 .momentumLogo { display: block; width: min(86%,520px); height: auto; }
 .momentumIdentity .brandMark { display: none; }
 .momentumIdentity .detailVisual { background: #fff; }
 .dialogIdentity .momentumVisual { padding: 9%; }
 .dialogIdentity .momentumLogo { width: min(92%,520px); }
-.dialogIdentity .brandMark[data-business=ilava] .officialLogo { width: min(76%,320px); }
+.dialogIdentity .brandMark[data-business=ilava] { display: none; }
 .ilavaLayout .detailVisual { aspect-ratio: 1.35; }
 .ilavaGallery { display: grid; width: 100%; height: 100%; grid-template-columns: 1.15fr .85fr; grid-template-rows: repeat(2,minmax(0,1fr)); gap: 4px; }
 .ilavaGallery img { display: block; width: 100%; height: 100%; min-width: 0; object-fit: cover; }

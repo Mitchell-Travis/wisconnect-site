@@ -16,7 +16,7 @@ const normalize=(value:string)=>value.normalize('NFKD').replace(/[\u0300-\u036f]
 
 function BrandMark({business}:{business:PublicBusiness}){
   const {id,visual:identity}=business;
-  return <span className={styles.brandMark} data-business={id} aria-hidden="true">{id==='momentum'?<img className={styles.officialLogo} src={assetPath('momentum-coffee-logo-640.webp')} alt="" width="640" height="209" loading="lazy" decoding="async"/>:id==='ilava'?<img className={styles.officialLogo} src={assetPath('ilava-logo.svg')} alt="" width="580" height="280"/>:<><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></>}</span>;
+  return <span className={styles.brandMark} data-business={id} aria-hidden="true">{id==='momentum'?<img className={styles.officialLogo} src={assetPath('momentum-coffee-logo-640.webp')} alt="" width="640" height="209" loading="lazy" decoding="async"/>:id==='ilava'?<img className={styles.officialLogo} src={assetPath('ilava-directory-logo.webp')} alt="" width="560" height="280" decoding="async"/>:id==='bdavis'?<img className={styles.officialLogo} src={assetPath('BDAVIS.png')} alt="" width="2665" height="1255" decoding="async"/>:<><span className={styles.wordmark}>{identity.name}</span><span className={styles.subline}>{identity.sub}</span></>}</span>;
 }
 
 function BusinessVisual({business}:{business:PublicBusiness}){
