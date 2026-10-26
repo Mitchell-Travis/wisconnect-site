@@ -99,7 +99,7 @@ const networkStories = [
 ] as const;
 const beliefPillars = [
   {label:'Land',title:'A place to take root.',description:'We aim to connect people and enterprises with land and commercial spaces that create room to grow.'},
-  {label:'Capital',title:'Make room for the next step.',description:'This is a developing vision. Funding opportunities and terms are still being defined.'},
+  {label:'Capital',title:'Make room for the next step.',description:'Through a community investment vehicle, we pool resources from our members and residents from the surrounding neighborhoods to raise community capital for collective use.'},
   {label:'Communities',title:'Let business growth reach further.',description:'We aim for growth that supports families, serves neighborhoods and builds stronger local economies through local work.'}
 ] as const;
 const cooperativeCards = [
